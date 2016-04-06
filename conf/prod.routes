@@ -1,5 +1,5 @@
 # Add all the application routes to the app.routes file
-->         /api-revocation-frontend              app.Routes
+->         /api-revocation            app.Routes
 ->         /                          health.Routes
 ->     	   /template                  template.Routes
 

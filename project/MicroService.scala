@@ -44,6 +44,7 @@ trait MicroService {
     .settings(
       testOptions in AcceptanceTest := Seq(Tests.Filter(acceptanceFilter)),
       unmanagedSourceDirectories   in AcceptanceTest <<= (baseDirectory in AcceptanceTest)(base => Seq(base / "test")),
+      addTestReportOption(AcceptanceTest, "int-test-reports"),
       testGrouping in AcceptanceTest := oneForkedJvmPerTest((definedTests in AcceptanceTest).value)
     )
     .settings(resolvers += Resolver.bintrayRepo("hmrc", "releases"))
