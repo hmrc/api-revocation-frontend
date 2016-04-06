@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apirevocation.controllers
+package acceptance.uk.gov.hmrc.apirevocation
 
 import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.api.http._
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import uk.gov.hmrc.play.test.UnitSpec
-import uk.gov.hmrc.play.test.{WithFakeApplication, UnitSpec}
+import uk.gov.hmrc.apirevocation.controllers.HelloWorld
+import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 
 class HelloWorldControllerSpec extends UnitSpec with WithFakeApplication{

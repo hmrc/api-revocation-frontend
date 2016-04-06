@@ -18,6 +18,9 @@ trait MicroService {
   lazy val plugins : Seq[Plugins] = Seq(play.PlayScala)
   lazy val playSettings : Seq[Setting[_]] = Seq.empty
 
+  def unitFilter(name: String): Boolean = name startsWith "unit"
+  def acceptanceFilter(name: String): Boolean = name startsWith "acceptance"
+
   lazy val microservice = Project(appName, file("."))
     .enablePlugins(Seq(play.PlayScala) ++ plugins : _*)
     .settings(playSettings : _*)
@@ -33,18 +36,21 @@ trait MicroService {
       retrieveManaged := true,
       evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
     )
-    .configs(IntegrationTest)
-    .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
+    .settings(testOptions in Test := Seq(Tests.Filter(unitFilter)),
+      addTestReportOption(Test, "test-reports")
+    )
+    .configs(AcceptanceTest)
+    .settings(inConfig(AcceptanceTest)(Defaults.testSettings): _*)
     .settings(
-      Keys.fork in IntegrationTest := false,
-      unmanagedSourceDirectories in IntegrationTest <<= (baseDirectory in IntegrationTest)(base => Seq(base / "it")),
-      addTestReportOption(IntegrationTest, "int-test-reports"),
-      testGrouping in IntegrationTest := oneForkedJvmPerTest((definedTests in IntegrationTest).value),
-      parallelExecution in IntegrationTest := false)
+      testOptions in AcceptanceTest := Seq(Tests.Filter(acceptanceFilter)),
+      unmanagedSourceDirectories   in AcceptanceTest <<= (baseDirectory in AcceptanceTest)(base => Seq(base / "test")),
+      testGrouping in AcceptanceTest := oneForkedJvmPerTest((definedTests in AcceptanceTest).value)
+    )
     .settings(resolvers += Resolver.bintrayRepo("hmrc", "releases"))
 }
 
 private object TestPhases {
+  lazy val AcceptanceTest = config("acceptance") extend Test
 
   def oneForkedJvmPerTest(tests: Seq[TestDefinition]) =
     tests map {
