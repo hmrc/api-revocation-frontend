@@ -57,8 +57,7 @@ private object AppDependencies {
         "org.jsoup" % "jsoup" % "1.7.3" % scope,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
         "com.github.tomakehurst" % "wiremock" % "1.57" % scope,
-        "org.seleniumhq.selenium" % "selenium-java" % "2.53.0" % scope,
-        "uk.gov.hmrc" %% "scala-webdriver" % "4.27.0" % scope
+        "org.seleniumhq.selenium" % "selenium-java" % "2.53.0" % scope
       )
     }.test
   }

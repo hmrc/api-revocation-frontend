@@ -19,11 +19,8 @@ package acceptance.specs
 import acceptance.BaseSpec
 import acceptance.pages.{LoginPage, AuthorizedApplicationsPage}
 import acceptance.stubs.LoginStub
-import uk.gov.hmrc.integration.GovernmentGatewayUsers
 
 class AuthorizedApplicationsSpec extends BaseSpec {
-
-  lazy val user = GovernmentGatewayUsers.UserWithNoSARegime
 
   feature("Logged in") {
 
