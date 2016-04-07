@@ -1,4 +1,5 @@
-@(appConfig: uk.gov.hmrc.apirevocation.AppConfig,
+@import config.AppConfig
+@(appConfig: AppConfig,
   title: String,
   mainClass: Option[String] = None,
   mainDataAttributes: Option[Html] = None,
@@ -22,13 +23,13 @@
 }
 
 @headerNavLinks = {
-  <li><a id="homeNavHref" href="http://www.google.com"
-         data-journey-click="primary-navigation:Click:Home">Home</a></li>
+    <li><a id="logOutNavHref" href="@appConfig.signOutUrl"
+    data-journey-click="primary-navigation:Click:Sign out">@Messages("message.signout")</a></li>
 }
 
 @insideHeader = {
     @uiLayouts.header_nav(
-      navTitle = Some("api-revocation-frontend"),
+      navTitle = Some("Your third party applications"),
       navTitleLink = None,
       showBetaLink = false,
       navLinks = Some(headerNavLinks))

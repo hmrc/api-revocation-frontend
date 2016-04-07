@@ -14,17 +14,24 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apirevocation.controllers
+package acceptance
 
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import play.api.mvc._
-import scala.concurrent.Future
+import org.openqa.selenium.firefox.{FirefoxDriver, FirefoxProfile}
+import org.openqa.selenium.{HasCapabilities, WebDriver}
 
+import scala.util.Try
 
-object HelloWorld extends HelloWorld
+trait Env {
 
-trait HelloWorld extends FrontendController {
-  val helloWorld = Action.async { implicit request =>
-		Future.successful(Ok(uk.gov.hmrc.apirevocation.views.html.helloworld.hello_world()))
+  val driver: WebDriver with HasCapabilities = {
+    val profile = new FirefoxProfile
+    profile.setAcceptUntrustedCertificates(true)
+    new FirefoxDriver(profile)
+  }
+
+  sys addShutdownHook {
+    Try(driver.quit())
   }
 }
+
+object Env extends Env

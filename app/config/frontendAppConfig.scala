@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apirevocation
+package config
 
 import play.api.Play.{configuration, current}
 import uk.gov.hmrc.play.config.ServicesConfig
@@ -25,18 +25,25 @@ trait AppConfig {
   val analyticsHost: String
   val reportAProblemPartialUrl: String
   val reportAProblemNonJSUrl: String
+  val signInUrl: String
+  val signOutUrl: String
 }
 
 object FrontendAppConfig extends AppConfig with ServicesConfig {
 
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
-  private val contactHost = configuration.getString(s"contact-frontend.host").getOrElse("")
-  private val contactFormServiceIdentifier = "MyService"
+  private val caFrontendHost = configuration.getString("ca-frontend.host").getOrElse("")
+  private val contactHost = configuration.getString("contact-frontend.host").getOrElse("")
+  private val apiRevocationFrontendHost = configuration.getString("api-revocation-frontend.host").getOrElse("")
+
+  private val contactFormServiceIdentifier = "api-revocation-frontend"
 
   override lazy val assetsPrefix = loadConfig(s"assets.url") + loadConfig(s"assets.version")
   override lazy val analyticsToken = loadConfig(s"google-analytics.token")
   override lazy val analyticsHost = loadConfig(s"google-analytics.host")
   override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+  override lazy val signInUrl = s"$caFrontendHost/gg/sign-in?continue=$apiRevocationFrontendHost/api-revocation/applications"
+  override lazy val signOutUrl = s"$caFrontendHost/gg/sign-out"
 }

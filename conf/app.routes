@@ -1,3 +1,4 @@
 # microservice specific routes
 
-GET        /hello-world             uk.gov.hmrc.apirevocation.controllers.HelloWorld.helloWorld
+GET        /applications            controllers.Revocation.listAuthorizedApplications
+GET        /start                   controllers.Revocation.start
