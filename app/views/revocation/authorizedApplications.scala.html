@@ -1,6 +1,66 @@
 @()(implicit request: Request[_])
 
+@body = {
+
+    <div class="content__body">
+
+        <header>
+            <h1>Authorised software applications</h1>
+        </header>
+
+        <p>You have granted permission to the following software applications to access HMRC data. You can with withdraw this permission at any time.</p>
+
+        <ul>
+            <li>
+                <details>
+                    <summary>Lion</summary>
+                    <div class="panel-indent">
+                        <p>
+                            <strong>This application can perform the following actions in relation to HMRC data:</strong>
+                        </p>
+                        <ul class="bullets">
+                            <li>access national insurance information</li>
+                            <li>access tax account information</li>
+                            <li>access income information</li>
+                            <li>access benefits information</li>
+                        </ul>
+                        <p>
+                            <strong>Permission granted on:</strong> 6 April 2016
+                        </p>
+                        <form action="">
+                            <input type="submit" class="button" value="Withdraw permission"/>
+                        </form>
+                    </div>
+                </details>
+            </li>
+            <li>
+                <details>
+                    <summary>Fast Trax Tax</summary>
+                    <div class="panel-indent">
+                        <p>
+                            <strong>Has access to your clients' data relating to:</strong>
+                        </p>
+                        <ul class="bullets">
+                            <li>access income information</li>
+                            <li>access benefits information</li>
+                        </ul>
+                        <p>
+                            <strong>Permission granted on:</strong> 21 January 2015
+                        </p>
+                        <form action="">
+                            <input type="submit" class="button" value="Withdraw permission"/>
+                        </form>
+                    </div>
+                </details>
+            </li>
+        </ul>
+
+        <p class="faded-text">You can grant permission to software to access data in the software application itself.</p>
+
+    </div>
+
+}
+
 @main_template(title = "Authorised software applications", bodyClasses = None) {
-    <h1>Authorised software applications</h1>
-    <p>You have granted permission to the following software applications to access HMRC data. You can with withdraw this permission at any time.</p>
+    @body
 }
