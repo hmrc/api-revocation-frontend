@@ -16,6 +16,7 @@
 
 package controllers
 
+import connectors.DelegatedAuthorityConnector
 import play.api.mvc.Action
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.controller.FrontendController
@@ -26,16 +27,19 @@ import scala.concurrent.Future
 trait Revocation extends FrontendController with Authentication {
 
   val authConnector: AuthConnector
+  val delegatedAuthorityConnector: DelegatedAuthorityConnector
 
   val start = Action.async { implicit request =>
     Future.successful(Ok(views.html.revocation.start()))
   }
 
   val listAuthorizedApplications = authenticated.async { implicit user => implicit request =>
-    Future.successful(Ok(views.html.revocation.authorizedApplications()))
+    delegatedAuthorityConnector.fetchApplicationAuthorities()
+      .map(applications => Ok(views.html.revocation.authorizedApplications(applications)))
   }
 }
 
 object Revocation extends Revocation {
   override val authConnector = FrontendAuthConnector
+  override val delegatedAuthorityConnector = DelegatedAuthorityConnector
 }

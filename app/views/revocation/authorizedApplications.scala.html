@@ -1,4 +1,5 @@
-@()(implicit request: Request[_])
+@import org.joda.time.format.DateTimeFormat
+@(applications: Seq[AppAuthorisation])(implicit request: Request[_])
 
 @body = {
 
@@ -8,57 +9,46 @@
             <h1>Authorised software applications</h1>
         </header>
 
-        <p>You have granted permission to the following software applications to access HMRC data. You can with withdraw this permission at any time.</p>
+        @if(applications.isEmpty) {
+            <p data-info-message>There are currently no applications which have access to HMRC data. If you want to grant permission to an application, you must do so in the application itself.</p>
+        } else {
+            <p data-info-message>You have granted permission to the following software applications to access HMRC data. You can with withdraw this permission at any time.</p>
 
-        <ul>
-            <li>
-                <details>
-                    <summary>Lion</summary>
-                    <div class="panel-indent">
-                        <p>
-                            <strong>This application can perform the following actions in relation to HMRC data:</strong>
-                        </p>
-                        <ul class="bullets">
-                            <li>access national insurance information</li>
-                            <li>access tax account information</li>
-                            <li>access income information</li>
-                            <li>access benefits information</li>
-                        </ul>
-                        <p>
-                            <strong>Permission granted on:</strong> 6 April 2016
-                        </p>
-                        <form action="">
-                            <input type="submit" class="button" value="Withdraw permission"/>
-                        </form>
-                    </div>
-                </details>
-            </li>
-            <li>
-                <details>
-                    <summary>Fast Trax Tax</summary>
-                    <div class="panel-indent">
-                        <p>
-                            <strong>Has access to your clients' data relating to:</strong>
-                        </p>
-                        <ul class="bullets">
-                            <li>access income information</li>
-                            <li>access benefits information</li>
-                        </ul>
-                        <p>
-                            <strong>Permission granted on:</strong> 21 January 2015
-                        </p>
-                        <form action="">
-                            <input type="submit" class="button" value="Withdraw permission"/>
-                        </form>
-                    </div>
-                </details>
-            </li>
-        </ul>
+            @defining(DateTimeFormat.forPattern("dd MMMM yyyy")) { dateFormatter =>
+                <ul>
+                    @for(application <- applications) {
+                        <li>
+                            <details data-@{application.application.id}>
+                                <summary data-name-@{application.application.id}>
+                                    @{application.application.name}
+                                </summary>
+                                <div class="panel-indent">
+                                    <p>
+                                        <strong>This application can perform the following actions in relation to HMRC data:</strong>
+                                    </p>
+                                    <ul class="bullets">
+                                    @for(scope <- application.scopes) {
+                                        <li data-scope-@{application.application.id}='@{scope.key}'>
+                                            @{scope.description}
+                                        </li>
+                                    }
+                                    </ul>
+                                    <p data-grant-date-@{application.application.id}>
+                                        <strong>Permission granted on:</strong> @{dateFormatter.print(application.earliestGrantDate)}
+                                    </p>
+                                    <form action="">
+                                        <input type="submit" class="button" value="Withdraw permission"/>
+                                    </form>
+                                </div>
+                            </details>
+                        </li>
+                    }
+                </ul>
+            }
 
-        <p class="faded-text">You can grant permission to software to access data in the software application itself.</p>
-
+            <p class="faded-text">You can grant permission to software to access data in the software application itself.</p>
+        }
     </div>
-
 }
 
 @main_template(title = "Authorised software applications", bodyClasses = None) {
