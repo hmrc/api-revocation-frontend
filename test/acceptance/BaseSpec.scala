@@ -41,6 +41,8 @@ trait BaseSpec extends FeatureSpec with BeforeAndAfterAll with BeforeAndAfterEac
         "auditing.traceRequests" -> false,
         "microservice.services.auth.host" -> stubHost,
         "microservice.services.auth.port" -> stubPort,
+        "microservice.services.third-party-delegated-authority.host" -> stubHost,
+        "microservice.services.third-party-delegated-authority.port" -> stubPort,
         "api-revocation-frontend.host" -> "",
         "ca-frontend.host" -> s"http://localhost:$stubPort"
       ))

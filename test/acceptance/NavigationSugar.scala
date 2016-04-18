@@ -16,13 +16,12 @@
 
 package acceptance
 
-import acceptance.{WebLink, WebPage}
 import org.openqa.selenium.support.ui.{ExpectedCondition, WebDriverWait}
 import org.openqa.selenium.{By, WebDriver, WebElement}
-import org.scalatest.{Assertions, Matchers}
 import org.scalatest.concurrent.Eventually
 import org.scalatest.selenium.WebBrowser
 import org.scalatest.selenium.WebBrowser.{go => goo}
+import org.scalatest.{Assertions, Matchers}
 
 trait NavigationSugar extends WebBrowser with Eventually with Assertions with Matchers {
 
@@ -33,6 +32,14 @@ trait NavigationSugar extends WebBrowser with Eventually with Assertions with Ma
 
   def go(page: WebLink)(implicit webDriver: WebDriver) = {
     goo to page
+  }
+
+  def clickOnElement(selectorId: String)(implicit webDriver: WebDriver) = {
+    webDriver.findElement(By.cssSelector(s"[$selectorId]")).click()
+  }
+
+  def verifyText(selectorId: String, expected: String)(implicit webDriver: WebDriver) = {
+    webDriver.findElement(By.cssSelector(s"[$selectorId]")).getText contains expected
   }
 
   def redirectedTo(page: WebLink)(implicit webDriver: WebDriver) = {

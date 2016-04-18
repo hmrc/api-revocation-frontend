@@ -16,22 +16,18 @@
 
 package unit.controllers
 
-import config.{WSHttp, FrontendAuthConnector}
-import config.FrontendAuthConnector._
+import connectors.DelegatedAuthorityConnector
 import controllers.Revocation
 import org.mockito.BDDMockito.given
 import org.mockito.Matchers.any
-import org.mockito.{Matchers, Mockito, BDDMockito}
 import org.scalatest.mock.MockitoSugar
 import play.api.http.Status
 import play.api.test.FakeRequest
 import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds.GovernmentGatewayId
-import uk.gov.hmrc.play.frontend.auth.{AuthenticationProviderIds, AuthContext}
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.{CredentialStrength, ConfidenceLevel, Accounts, Authority}
-import uk.gov.hmrc.play.http.logging.Authorization
+import uk.gov.hmrc.play.frontend.auth.connectors.domain.{Accounts, Authority, ConfidenceLevel, CredentialStrength}
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
-import uk.gov.hmrc.play.test.{WithFakeApplication, UnitSpec}
+import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar {
 
@@ -49,7 +45,9 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
   val underTest = new Revocation {
     implicit val hc = headerCarrier
     override val authConnector: AuthConnector = mock[AuthConnector]
+    override val delegatedAuthorityConnector: DelegatedAuthorityConnector = mock[DelegatedAuthorityConnector]
     given(authConnector.currentAuthority(any())).willReturn(Some(authority))
+    given(delegatedAuthorityConnector.fetchApplicationAuthorities()(any())).willReturn(Seq.empty)
   }
 
   "Start" should {
