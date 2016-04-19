@@ -16,20 +16,33 @@
 
 package connectors
 
+import java.util.UUID
+
 import config.WSHttp
 import models.AppAuthorisation
 import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost}
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpDelete, HttpGet, HttpPost}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 trait DelegatedAuthorityConnector {
 
   val delegatedAuthorityUrl: String
-  val http: HttpPost with HttpGet
+  val http: HttpPost with HttpGet with HttpDelete
 
   def fetchApplicationAuthorities()(implicit hc: HeaderCarrier) = {
     http.GET[Seq[AppAuthorisation]](s"$delegatedAuthorityUrl/authority/granted-applications")
   }
+
+  def revokeApplicationAuthority(applicationId: UUID)(implicit hc: HeaderCarrier) = {
+    val url = s"$delegatedAuthorityUrl/authority/granted-application/$applicationId"
+    http.DELETE(url)
+      .recover {
+        case e: Throwable => throw DelegatedAuthorityMicroserviceException(url, e)
+      }
+  }
 }
+
+case class DelegatedAuthorityMicroserviceException(url: String, t: Throwable) extends RuntimeException(s"Unable to revoke application authority for $url", t)
 
 object DelegatedAuthorityConnector extends DelegatedAuthorityConnector with ServicesConfig {
   override val delegatedAuthorityUrl = s"${baseUrl("third-party-delegated-authority")}"

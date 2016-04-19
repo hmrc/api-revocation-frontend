@@ -37,11 +37,11 @@ object LoginStub extends SessionCookieBaker {
       SessionKeys.token -> "token",
       SessionKeys.authProvider -> "GGW"
     )
-    stubFor(get(urlEqualTo("/gg/sign-in?continue=/api-revocation/applications"))
+    stubFor(get(urlEqualTo("/gg/sign-in?continue=/applications-permissions-withdrawal/applications"))
       .willReturn(aResponse()
         .withStatus(303)
         .withHeader(HeaderNames.SET_COOKIE, cookieValue(data))
-        .withHeader(HeaderNames.LOCATION, "http://localhost:9000/api-revocation/applications")))
+        .withHeader(HeaderNames.LOCATION, "http://localhost:9000/applications-permissions-withdrawal/applications")))
 
     stubFor(get(urlEqualTo("/auth/authority"))
       .willReturn(

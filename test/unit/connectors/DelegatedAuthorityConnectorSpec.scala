@@ -16,6 +16,8 @@
 
 package unit.connectors
 
+import java.util.UUID
+
 import com.github.tomakehurst.wiremock.client.WireMock._
 import config.WSHttp
 import connectors.DelegatedAuthorityConnector
@@ -23,7 +25,7 @@ import models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import org.joda.time.DateTime
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{BeforeAndAfterEach, Matchers}
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost}
+import uk.gov.hmrc.play.http.{HttpDelete, HeaderCarrier, HttpGet, HttpPost}
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 class DelegatedAuthorityConnectorSpec extends UnitSpec with Matchers with ScalaFutures with WiremockSugar with BeforeAndAfterEach with WithFakeApplication {
@@ -34,11 +36,11 @@ class DelegatedAuthorityConnectorSpec extends UnitSpec with Matchers with ScalaF
 
     val connector = new DelegatedAuthorityConnector {
       override val delegatedAuthorityUrl: String = wireMockUrl
-      override val http: HttpPost with HttpGet = WSHttp
+      override val http: HttpPost with HttpGet with HttpDelete = WSHttp
     }
   }
 
-  val appId = "applicationId"
+  val appId = UUID.randomUUID()
   val appName = "My App"
   val scopeKey = "read:api-name"
   val scopeName = "Access personal info"

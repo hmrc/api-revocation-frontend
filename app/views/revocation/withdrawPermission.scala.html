@@ -1,0 +1,25 @@
+@(application: ApplicationDetails)(implicit request: Request[_])
+
+@body = {
+    @helper.form(action = controllers.routes.Revocation.withdrawAction(application.id), 'class -> "form") {
+        @helper.CSRF.formField
+        <div class="content__body">
+            <header>
+                <h1>Withdraw permission</h1>
+            </header>
+
+            <div data-withdraw-warning class="highlight-message highlight-message--full-width">
+                <span>You are about to stop <strong>@{application.name}</strong> from accessing HMRC data.</span>
+            </div>
+        </div>
+
+        <div class="form-field form-field--submit">
+            <input id="submit" type="submit" class="button" role="button" value="Confirm"/>
+            <a data-cancel-withdraw-permission href="@controllers.routes.Revocation.listAuthorizedApplications" class="button button--link">Cancel</a>
+        </div>
+    }
+}
+
+@main_template(title = "Withdraw permission", bodyClasses = None) {
+    @body
+}

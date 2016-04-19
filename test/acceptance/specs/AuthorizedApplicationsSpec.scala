@@ -16,6 +16,9 @@
 
 package acceptance.specs
 
+import java.util.UUID
+
+import acceptance.pages.AuthorizedApplicationsPage.{applicationNameLink, applicationScopeElement, applicationsMessageText, authorityGrantDateElement}
 import acceptance.pages.{AuthorizedApplicationsPage, LoginPage}
 import acceptance.stubs.{DelegatedAuthorityStub, LoginStub}
 import acceptance.{BaseSpec, NavigationSugar}
@@ -24,7 +27,7 @@ import org.joda.time.DateTime
 
 class AuthorizedApplicationsSpec extends BaseSpec with NavigationSugar {
 
-  feature("Logged in") {
+  feature("Viewing authorised applications for user") {
 
     scenario("User is redirected to the sign in page when not logged in") {
 
@@ -35,14 +38,14 @@ class AuthorizedApplicationsSpec extends BaseSpec with NavigationSugar {
     scenario("User sees his authorized applications when logged in") {
 
       val applications = Seq(
-        applicationAuthority("firstAppId", "First Application",
+        applicationAuthority(UUID.randomUUID(), "First Application",
           Set(Scope("read:api-1", "scope name", "Access personal information"),
               Scope("read:api-3", "scope name", "Access tax information")), DateTime.now),
 
-        applicationAuthority("secondAppId", "Second Application",
+        applicationAuthority(UUID.randomUUID(), "Second Application",
           Set(Scope("read:api-2", "scope name", "Access confidential information")), DateTime.now.minusDays(2)),
 
-        applicationAuthority("thirdAppId", "Third Application",
+        applicationAuthority(UUID.randomUUID(), "Third Application",
           Set(), DateTime.now.minusMonths(2))
       )
 
@@ -52,7 +55,7 @@ class AuthorizedApplicationsSpec extends BaseSpec with NavigationSugar {
       go(AuthorizedApplicationsPage)
       on(AuthorizedApplicationsPage)
 
-      verifyText("data-info-message", "You have granted permission to the following software applications to access HMRC data. You can with withdraw this permission at any time.")
+      verifyText(applicationsMessageText, "You have granted permission to the following software applications to access HMRC data. You can with withdraw this permission at any time.")
       applications.foreach(assertApplication)
     }
 
@@ -63,18 +66,18 @@ class AuthorizedApplicationsSpec extends BaseSpec with NavigationSugar {
       go(AuthorizedApplicationsPage)
       on(AuthorizedApplicationsPage)
 
-      verifyText("data-info-message", "There are currently no applications which have access to HMRC data. If you want to grant permission to an application, you must do so in the application itself.")
+      verifyText(applicationsMessageText, "There are currently no applications which have access to HMRC data. If you want to grant permission to an application, you must do so in the application itself.")
     }
   }
 
   private def assertApplication(app: AppAuthorisation) = {
-    verifyText(s"data-name-${app.application.id}", app.application.name)
-    clickOnElement(s"data-name-${app.application.id}")
-    app.scopes.foreach(scope => verifyText(s"data-scope-${app.application.id}='${scope.key}'", scope.description))
-    verifyText(s"data-grant-date-${app.application.id}", app.earliestGrantDate.toString("dd MMMM yyyy"))
+    verifyText(applicationNameLink(app.application.id), app.application.name)
+    clickOnElement(applicationNameLink(app.application.id))
+    app.scopes.foreach(scope => verifyText(applicationScopeElement(app.application.id, scope.key), scope.description))
+    verifyText(authorityGrantDateElement(app.application.id), app.earliestGrantDate.toString("dd MMMM yyyy"))
   }
 
-  private def applicationAuthority(appId: String, appName: String, scopes: Set[Scope], earliestGrantDate: DateTime) = {
+  private def applicationAuthority(appId: UUID, appName: String, scopes: Set[Scope], earliestGrantDate: DateTime) = {
     AppAuthorisation(ThirdPartyApplication(appId, appName), scopes, earliestGrantDate)
   }
 }

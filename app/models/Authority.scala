@@ -16,6 +16,8 @@
 
 package models
 
+import java.util.UUID
+
 import org.joda.time.DateTime
 import play.api.libs.json.Json
 
@@ -25,7 +27,7 @@ object Scope {
   implicit val format = Json.format[Scope]
 }
 
-case class ThirdPartyApplication(id: String, name: String)
+case class ThirdPartyApplication(id: UUID, name: String)
 
 object ThirdPartyApplication {
   implicit val format = Json.format[ThirdPartyApplication]
@@ -37,4 +39,10 @@ case class AppAuthorisation(application: ThirdPartyApplication,
 
 object AppAuthorisation {
   implicit val format = Json.format[AppAuthorisation]
+}
+
+case class ApplicationDetails(id: UUID, name: String)
+
+object ApplicationDetails {
+  implicit val format = Json.format[ApplicationDetails]
 }

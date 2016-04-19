@@ -16,11 +16,13 @@
 
 package controllers
 
-import connectors.DelegatedAuthorityConnector
+import java.util.UUID
+
+import config.FrontendAuthConnector
+import connectors.{DelegatedAuthorityConnector, ThirdPartyApplicationConnector}
 import play.api.mvc.Action
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import config.FrontendAuthConnector
 
 import scala.concurrent.Future
 
@@ -28,6 +30,7 @@ trait Revocation extends FrontendController with Authentication {
 
   val authConnector: AuthConnector
   val delegatedAuthorityConnector: DelegatedAuthorityConnector
+  val thirdPartyApplicationConnector: ThirdPartyApplicationConnector
 
   val start = Action.async { implicit request =>
     Future.successful(Ok(views.html.revocation.start()))
@@ -37,9 +40,27 @@ trait Revocation extends FrontendController with Authentication {
     delegatedAuthorityConnector.fetchApplicationAuthorities()
       .map(applications => Ok(views.html.revocation.authorizedApplications(applications)))
   }
+
+  def withdrawPage(id: UUID) = authenticated.async { implicit user => implicit request =>
+    thirdPartyApplicationConnector.fetchApplication(id)
+      .map(application => Ok(views.html.revocation.withdrawPermission(application)))
+  }
+
+  def withdrawAction(id: UUID) = authenticated.async { implicit user => implicit request =>
+    delegatedAuthorityConnector.revokeApplicationAuthority(id).map { _ =>
+      Redirect(routes.Revocation.withdrawConfirmationPage(id))
+    }
+  }
+
+  def withdrawConfirmationPage(id: UUID) = authenticated.async { implicit user => implicit request =>
+    thirdPartyApplicationConnector.fetchApplication(id).map { app =>
+      Ok(views.html.revocation.permissionWithdrawn(app))
+    }
+  }
 }
 
 object Revocation extends Revocation {
   override val authConnector = FrontendAuthConnector
   override val delegatedAuthorityConnector = DelegatedAuthorityConnector
+  override val thirdPartyApplicationConnector = ThirdPartyApplicationConnector
 }

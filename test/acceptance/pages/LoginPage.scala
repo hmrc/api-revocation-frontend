@@ -20,7 +20,7 @@ import acceptance.WebPage
 
 object LoginPage extends WebPage {
 
-  override val url: String = "http://localhost:11111/gg/sign-in?continue=/api-revocation/applications"
+  override val url: String = "http://localhost:11111/gg/sign-in?continue=/applications-permissions-withdrawal/applications"
 
   override def isCurrentPage: Boolean = find(cssSelector("h1")).fold(false)(_.text == "Sign in")
 
