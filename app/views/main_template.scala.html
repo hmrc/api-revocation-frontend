@@ -1,5 +1,6 @@
 @import config.FrontendAppConfig
 @(title: String,
+  headerNavLinks: Option[Html] = Some(logout_link()),
   sidebarLinks: Option[Html] = None,
   contentHeader: Option[Html] = None,
   bodyClasses: Option[String] = None,
@@ -26,6 +27,7 @@
                contentHeader = contentHeader,
                mainContent = mainContent,
                serviceInfoContent = serviceInfoContent,
-               scriptElem = scriptElem
+               scriptElem = scriptElem,
+               headerNavLinks = headerNavLinks
 )
 
