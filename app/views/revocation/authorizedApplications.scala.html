@@ -36,9 +36,8 @@
                                     <p data-grant-date-@{app.application.id}>
                                         <strong>Permission granted on:</strong> @{dateFormatter.print(app.earliestGrantDate)}
                                     </p>
-                                    <form action="application/@{app.application.id}/withdraw-permission" method="get">
-                                        <input data-withdraw-permission-@{app.application.id} type="submit" class="button" value="Withdraw permission"/>
-                                    </form>
+
+                                    <a data-withdraw-permission-@{app.application.id} href="@routes.Revocation.withdrawPage(app.application.id)" class="button">Withdraw permission</a>
                                 </div>
                             </details>
                         </li>

@@ -16,6 +16,7 @@
 
 package unit.controllers
 
+import acceptance.pages.AuthorizedApplicationsPage
 import connectors.{ThirdPartyApplicationConnector, DelegatedAuthorityConnector}
 import controllers.Revocation
 import org.mockito.BDDMockito.given
@@ -75,8 +76,5 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
       status(result) shouldBe 303
       result.header.headers("Location") shouldEqual "http://localhost:9025/gg/sign-in?continue=http://localhost:9686/applications-permissions-withdrawal/applications"
     }
-
   }
-
-
 }

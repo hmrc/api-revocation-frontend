@@ -30,19 +30,19 @@ trait DelegatedAuthorityConnector {
   val http: HttpPost with HttpGet with HttpDelete
 
   def fetchApplicationAuthorities()(implicit hc: HeaderCarrier) = {
-    http.GET[Seq[AppAuthorisation]](s"$delegatedAuthorityUrl/authority/granted-applications")
+    val url = s"$delegatedAuthorityUrl/authority/granted-applications"
+    http.GET[Seq[AppAuthorisation]](url) recover {
+      recovery(url)
+    }
   }
 
   def revokeApplicationAuthority(applicationId: UUID)(implicit hc: HeaderCarrier) = {
     val url = s"$delegatedAuthorityUrl/authority/granted-application/$applicationId"
-    http.DELETE(url)
-      .recover {
-        case e: Throwable => throw DelegatedAuthorityMicroserviceException(url, e)
-      }
+    http.DELETE(url) recover {
+      recovery(url)
+    }
   }
 }
-
-case class DelegatedAuthorityMicroserviceException(url: String, t: Throwable) extends RuntimeException(s"Unable to revoke application authority for $url", t)
 
 object DelegatedAuthorityConnector extends DelegatedAuthorityConnector with ServicesConfig {
   override val delegatedAuthorityUrl = s"${baseUrl("third-party-delegated-authority")}"

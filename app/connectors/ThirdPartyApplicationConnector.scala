@@ -24,7 +24,7 @@ import models.ApplicationDetails
 import uk.gov.hmrc.play.http._
 
 import scala.concurrent.Future
-
+import scala.concurrent.ExecutionContext.Implicits.global
 
 trait ThirdPartyApplicationConnector {
 
@@ -33,7 +33,10 @@ trait ThirdPartyApplicationConnector {
   val http: HttpPost with HttpGet
 
   def fetchApplication(applicationId: UUID)(implicit hc: HeaderCarrier): Future[ApplicationDetails] = {
-    http.GET[ApplicationDetails](s"$applicationBaseUrl/application/$applicationId")
+    val url = s"$applicationBaseUrl/application/$applicationId"
+    http.GET[ApplicationDetails](url) recover {
+      recovery(url)
+    }
   }
 }
 

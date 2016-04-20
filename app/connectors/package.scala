@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-package acceptance.pages
+package object connectors {
 
-import acceptance.WebPage
+  private[connectors] def recovery(url: String): PartialFunction[Throwable, Nothing] = {
+    case e: Throwable => throw DownstreamMicroserviceException(url, e)
+  }
 
-object LoginPage extends WebPage {
-
-  override val url= s"http://localhost:11111/gg/sign-in?continue=${AuthorizedApplicationsPage.url}"
-
-  override def isCurrentPage: Boolean = find(cssSelector("h1")).fold(false)(_.text == "Sign in")
-
+  case class DownstreamMicroserviceException(url: String, t: Throwable) extends RuntimeException(s"Error obtained while calling: [$url]", t)
 }
