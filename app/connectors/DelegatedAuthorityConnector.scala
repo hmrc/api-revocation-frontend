@@ -16,18 +16,31 @@
 
 package connectors
 
+import java.util.UUID
+
 import config.WSHttp
 import models.AppAuthorisation
 import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost}
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpDelete, HttpGet, HttpPost}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 trait DelegatedAuthorityConnector {
 
   val delegatedAuthorityUrl: String
-  val http: HttpPost with HttpGet
+  val http: HttpPost with HttpGet with HttpDelete
 
   def fetchApplicationAuthorities()(implicit hc: HeaderCarrier) = {
-    http.GET[Seq[AppAuthorisation]](s"$delegatedAuthorityUrl/authority/granted-applications")
+    val url = s"$delegatedAuthorityUrl/authority/granted-applications"
+    http.GET[Seq[AppAuthorisation]](url) recover {
+      recovery(url)
+    }
+  }
+
+  def revokeApplicationAuthority(applicationId: UUID)(implicit hc: HeaderCarrier) = {
+    val url = s"$delegatedAuthorityUrl/authority/granted-application/$applicationId"
+    http.DELETE(url) recover {
+      recovery(url)
+    }
   }
 }
 

@@ -16,29 +16,28 @@
 
             @defining(DateTimeFormat.forPattern("dd MMMM yyyy")) { dateFormatter =>
                 <ul>
-                    @for(application <- applications) {
+                    @for(app <- applications) {
                         <li>
-                            <details data-@{application.application.id}>
-                                <summary data-name-@{application.application.id}>
-                                    @{application.application.name}
+                            <details data-@{app.application.id}>
+                                <summary data-name-@{app.application.id}>
+                                    @{app.application.name}
                                 </summary>
                                 <div class="panel-indent">
                                     <p>
                                         <strong>This application can perform the following actions in relation to HMRC data:</strong>
                                     </p>
                                     <ul class="bullets">
-                                    @for(scope <- application.scopes) {
-                                        <li data-scope-@{application.application.id}='@{scope.key}'>
+                                    @for(scope <- app.scopes) {
+                                        <li data-scope-@{app.application.id}='@{scope.key}'>
                                             @{scope.description}
                                         </li>
                                     }
                                     </ul>
-                                    <p data-grant-date-@{application.application.id}>
-                                        <strong>Permission granted on:</strong> @{dateFormatter.print(application.earliestGrantDate)}
+                                    <p data-grant-date-@{app.application.id}>
+                                        <strong>Permission granted on:</strong> @{dateFormatter.print(app.earliestGrantDate)}
                                     </p>
-                                    <form action="">
-                                        <input type="submit" class="button" value="Withdraw permission"/>
-                                    </form>
+
+                                    <a data-withdraw-permission-@{app.application.id} href="@routes.Revocation.withdrawPage(app.application.id)" class="button">Withdraw permission</a>
                                 </div>
                             </details>
                         </li>

@@ -17,11 +17,13 @@
 package acceptance.pages
 
 import acceptance.WebPage
+import org.openqa.selenium.By
 
-object LoginPage extends WebPage {
+object StartPage extends WebPage {
 
-  override val url= s"http://localhost:11111/gg/sign-in?continue=${AuthorizedApplicationsPage.url}"
+  override val url: String = "http://localhost:9000/applications-permissions-withdrawal/"
 
-  override def isCurrentPage: Boolean = find(cssSelector("h1")).fold(false)(_.text == "Sign in")
+  override def isCurrentPage: Boolean = find(cssSelector("h1")).fold(false)(_.text == "Withdraw permission to software accessing HMRC data")
 
+  val startButton: By = By.cssSelector("[data-start-button]")
 }

@@ -16,7 +16,8 @@
 
 package unit.controllers
 
-import connectors.DelegatedAuthorityConnector
+import acceptance.pages.AuthorizedApplicationsPage
+import connectors.{ThirdPartyApplicationConnector, DelegatedAuthorityConnector}
 import controllers.Revocation
 import org.mockito.BDDMockito.given
 import org.mockito.Matchers.any
@@ -44,8 +45,9 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
 
   val underTest = new Revocation {
     implicit val hc = headerCarrier
-    override val authConnector: AuthConnector = mock[AuthConnector]
-    override val delegatedAuthorityConnector: DelegatedAuthorityConnector = mock[DelegatedAuthorityConnector]
+    override val authConnector = mock[AuthConnector]
+    override val delegatedAuthorityConnector = mock[DelegatedAuthorityConnector]
+    override val thirdPartyApplicationConnector = mock[ThirdPartyApplicationConnector]
     given(authConnector.currentAuthority(any())).willReturn(Some(authority))
     given(delegatedAuthorityConnector.fetchApplicationAuthorities()(any())).willReturn(Seq.empty)
   }
@@ -72,10 +74,7 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
       val result = underTest.listAuthorizedApplications(loggedOutRequest)
 
       status(result) shouldBe 303
-      result.header.headers("Location") shouldEqual s"http://localhost:9025/gg/sign-in?continue=http://localhost:9686/api-revocation/applications"
+      result.header.headers("Location") shouldEqual "http://localhost:9025/gg/sign-in?continue=http://localhost:9686/applications-permissions-withdrawal/applications"
     }
-
   }
-
-
 }

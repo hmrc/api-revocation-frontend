@@ -16,6 +16,8 @@
 
 package acceptance.stubs
 
+import java.util.UUID
+
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.{Scope, AppAuthorisation}
 
@@ -47,5 +49,16 @@ object DelegatedAuthorityStub {
     stubFor(get(urlEqualTo(s"/authority/granted-applications")).willReturn(
       aResponse().withStatus(200).withBody(
         s"""[${applications.map(toAppJson).mkString(",")}]""".stripMargin)))
+  }
+
+  def stubSuccessfulAuthorityRevocation(applicationId: UUID, applicationName: String) = {
+    stubFor(delete(urlEqualTo(s"/authority/granted-application/$applicationId")).willReturn(
+      aResponse().withStatus(200)))
+
+    stubFor(get(urlEqualTo(s"/application/$applicationId")).willReturn(
+      aResponse().withStatus(200).withBody(
+        s"""{"id":"$applicationId", "name":"$applicationName"}"""
+      )
+    ))
   }
 }

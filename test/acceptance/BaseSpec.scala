@@ -16,8 +16,6 @@
 
 package acceptance
 
-
-import acceptance.{Env, NavigationSugar}
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration._
@@ -41,8 +39,11 @@ trait BaseSpec extends FeatureSpec with BeforeAndAfterAll with BeforeAndAfterEac
         "auditing.traceRequests" -> false,
         "microservice.services.auth.host" -> stubHost,
         "microservice.services.auth.port" -> stubPort,
+        "microservice.services.auth.login-callback.base-url" -> s"http://$stubHost:$port",
         "microservice.services.third-party-delegated-authority.host" -> stubHost,
         "microservice.services.third-party-delegated-authority.port" -> stubPort,
+        "microservice.services.third-party-application.host" -> stubHost,
+        "microservice.services.third-party-application.port" -> stubPort,
         "api-revocation-frontend.host" -> "",
         "ca-frontend.host" -> s"http://localhost:$stubPort"
       ))

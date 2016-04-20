@@ -19,8 +19,8 @@ package acceptance.stubs
 import java.net.URLEncoder
 import java.util.UUID
 
-import com.github.tomakehurst.wiremock.client.WireMock.{urlEqualTo, aResponse, get, stubFor}
-import com.github.tomakehurst.wiremock.client.{WireMock, UrlMatchingStrategy}
+import acceptance.pages.AuthorizedApplicationsPage
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, stubFor, urlEqualTo}
 import play.api.http.HeaderNames
 import play.api.libs.Crypto
 import uk.gov.hmrc.crypto.{CompositeSymmetricCrypto, PlainText}
@@ -37,11 +37,11 @@ object LoginStub extends SessionCookieBaker {
       SessionKeys.token -> "token",
       SessionKeys.authProvider -> "GGW"
     )
-    stubFor(get(urlEqualTo("/gg/sign-in?continue=/api-revocation/applications"))
+    stubFor(get(urlEqualTo(s"/gg/sign-in?continue=${AuthorizedApplicationsPage.url}"))
       .willReturn(aResponse()
         .withStatus(303)
         .withHeader(HeaderNames.SET_COOKIE, cookieValue(data))
-        .withHeader(HeaderNames.LOCATION, "http://localhost:9000/api-revocation/applications")))
+        .withHeader(HeaderNames.LOCATION, AuthorizedApplicationsPage.url)))
 
     stubFor(get(urlEqualTo("/auth/authority"))
       .willReturn(

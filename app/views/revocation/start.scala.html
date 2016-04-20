@@ -13,12 +13,9 @@
             <li>withdraw permission from those applications</li>
         </ul>
         <p>Note that if you withdraw permission, it may stop the application from working.</p>
-        <form action="">
-            <input type="submit" class="button--get-started" value="Start now"/>
-        </form>
 
+        <a data-start-button href="@routes.Revocation.listAuthorizedApplications" class="button button--get-started">Start now</a>
     </div>
-
 }
 
 @main_template(title = "Withdraw permission to software accessing HMRC data", bodyClasses = None) {

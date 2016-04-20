@@ -1,0 +1,22 @@
+@(application: ApplicationDetails)(implicit request: Request[_])
+
+@body = {
+    <div class="content__body">
+        <header>
+            <h1>Permission withdrawn</h1>
+        </header>
+
+        <p data-withdrawn-message>
+            <strong>@{application.name}</strong> can no longer access HMRC data.
+        </p>
+        <p>
+            <a data-applications-link href="@controllers.routes.Revocation.listAuthorizedApplications">
+                Continue to your authorised software applications.
+            </a>
+        </p>
+    </div>
+}
+
+@main_template(title = "Permission withdrawn", bodyClasses = None) {
+    @body
+}

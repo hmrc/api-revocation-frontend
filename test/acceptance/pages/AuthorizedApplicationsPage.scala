@@ -16,11 +16,24 @@
 
 package acceptance.pages
 
+import java.util.UUID
+
 import acceptance.WebPage
+import org.openqa.selenium.By
 
 object AuthorizedApplicationsPage extends WebPage {
 
-  override val url: String = "http://localhost:9000/api-revocation/applications"
+  override val url: String = "http://localhost:9000/applications-permissions-withdrawal/applications"
 
   override def isCurrentPage: Boolean = find(cssSelector("h1")).fold(false)(_.text == "Authorised software applications")
+
+  def applicationNameLink(appId: UUID): By = By.cssSelector(s"[data-name-$appId]")
+
+  def applicationScopeElement(appId: UUID, scopeKey: String): By = By.cssSelector(s"[data-scope-$appId='$scopeKey']")
+
+  def authorityGrantDateElement(appId: UUID): By = By.cssSelector(s"[data-grant-date-$appId]")
+
+  val applicationsMessageText: By = By.cssSelector("[data-info-message]")
+
+  def withdrawPermissionButton(appId: UUID): By = By.cssSelector(s"[data-withdraw-permission-$appId]")
 }

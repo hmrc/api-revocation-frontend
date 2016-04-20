@@ -35,7 +35,7 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
 
   private val caFrontendHost = configuration.getString("ca-frontend.host").getOrElse("")
   private val contactHost = configuration.getString("contact-frontend.host").getOrElse("")
-  private val apiRevocationFrontendHost = configuration.getString("api-revocation-frontend.host").getOrElse("")
+  private val loginCallbackBaseUrl = getConfString("auth.login-callback.base-url", "")
 
   private val contactFormServiceIdentifier = "api-revocation-frontend"
 
@@ -44,6 +44,6 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
   override lazy val analyticsHost = loadConfig(s"google-analytics.host")
   override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
-  override lazy val signInUrl = s"$caFrontendHost/gg/sign-in?continue=$apiRevocationFrontendHost/api-revocation/applications"
+  override lazy val signInUrl = s"$caFrontendHost/gg/sign-in?continue=$loginCallbackBaseUrl/applications-permissions-withdrawal/applications"
   override lazy val signOutUrl = s"$caFrontendHost/gg/sign-out"
 }
