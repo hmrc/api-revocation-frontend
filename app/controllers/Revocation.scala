@@ -36,6 +36,10 @@ trait Revocation extends FrontendController with Authentication {
     Future.successful(Ok(views.html.revocation.start()))
   }
 
+  val loggedOut = Action.async { implicit request =>
+    Future.successful(Ok(views.html.revocation.loggedOut()))
+  }
+
   val listAuthorizedApplications = authenticated.async { implicit user => implicit request =>
     delegatedAuthorityConnector.fetchApplicationAuthorities()
       .map(applications => Ok(views.html.revocation.authorizedApplications(applications)))

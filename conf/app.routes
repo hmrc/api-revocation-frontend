@@ -5,3 +5,4 @@ GET        /applications                               controllers.Revocation.li
 GET        /application/:id/withdraw-permission        controllers.Revocation.withdrawPage(id: java.util.UUID)
 POST       /application/:id/withdraw-permission        controllers.Revocation.withdrawAction(id: java.util.UUID)
 GET        /application/:id/permission-withdrawn       controllers.Revocation.withdrawConfirmationPage(id: java.util.UUID)
+GET        /loggedout                                  controllers.Revocation.loggedOut

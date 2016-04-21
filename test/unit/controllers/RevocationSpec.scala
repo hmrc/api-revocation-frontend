@@ -61,6 +61,15 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
     }
   }
 
+  "Logged Out" should {
+    "return 200" in {
+
+      val result = underTest.loggedOut(loggedOutRequest)
+
+      status(result) shouldBe Status.OK
+    }
+  }
+
   "listAuthorizedApplications" should {
     "return 200 when the user is logged in" in {
 
