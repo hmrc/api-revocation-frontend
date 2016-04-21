@@ -8,7 +8,8 @@
   contentHeader: Option[Html] = None,
   mainContent: Html = HtmlFormat.empty,
   serviceInfoContent: Html = HtmlFormat.empty,
-  scriptElem: Option[Html] = None)(implicit request: Request[_])
+  scriptElem: Option[Html] = None,
+  headerNavLinks: Option[Html] = None)(implicit request: Request[_])
 
 @import layouts.{govuk_template => hmrcGovUkTemplate}
 @import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
@@ -22,17 +23,12 @@
     <meta name="format-detection" content="telephone=no" />
 }
 
-@headerNavLinks = {
-    <li><a id="logOutNavHref" href="@appConfig.signOutUrl"
-    data-journey-click="primary-navigation:Click:Sign out">@Messages("message.signout")</a></li>
-}
-
 @insideHeader = {
     @uiLayouts.header_nav(
       navTitle = Some("Applications permissions withdrawal"),
       navTitleLink = None,
       showBetaLink = false,
-      navLinks = Some(headerNavLinks))
+      navLinks = headerNavLinks)
 }
 
 @afterHeader = {}

@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-package object connectors {
+package connectors
 
-  private[connectors] def recovery(url: String): PartialFunction[Throwable, Nothing] = {
-    case e: Throwable => throw DownstreamMicroserviceException(url, e)
-  }
-}
+case class DownstreamMicroserviceException(url: String, t: Throwable) extends RuntimeException(s"Error obtained while calling: [$url]", t)
