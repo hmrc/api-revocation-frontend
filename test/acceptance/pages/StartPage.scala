@@ -23,7 +23,10 @@ object StartPage extends WebPage {
 
   override val url: String = "http://localhost:9000/applications-permissions-withdrawal/"
 
-  override def isCurrentPage: Boolean = find(cssSelector("h1")).fold(false)(_.text == "Withdraw permission to software accessing HMRC data")
+  override def isCurrentPage: Boolean =
+    find(cssSelector("h1"))
+      .map(_.text == "Manage the authority you have granted to software applications")
+      .getOrElse(false)
 
   val startButton: By = By.cssSelector("[data-start-button]")
 }
