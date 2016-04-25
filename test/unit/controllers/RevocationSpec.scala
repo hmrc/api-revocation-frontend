@@ -83,7 +83,7 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
       val result = underTest.listAuthorizedApplications(loggedOutRequest)
 
       status(result) shouldBe 303
-      result.header.headers("Location") shouldEqual "http://localhost:9025/gg/sign-in?continue=http://localhost:9686/applications-permissions-withdrawal/applications"
+      result.header.headers("Location") shouldEqual "http://localhost:9025/gg/sign-in?continue=http://localhost:9686/applications-manage-authority/applications"
     }
   }
 }

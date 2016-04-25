@@ -2,7 +2,7 @@
 
 GET        /                                           controllers.Revocation.start
 GET        /applications                               controllers.Revocation.listAuthorizedApplications
-GET        /application/:id/withdraw-permission        controllers.Revocation.withdrawPage(id: java.util.UUID)
-POST       /application/:id/withdraw-permission        controllers.Revocation.withdrawAction(id: java.util.UUID)
-GET        /application/:id/permission-withdrawn       controllers.Revocation.withdrawConfirmationPage(id: java.util.UUID)
+GET        /application/:id/remove-authority           controllers.Revocation.withdrawPage(id: java.util.UUID)
+POST       /application/:id/remove-authority           controllers.Revocation.withdrawAction(id: java.util.UUID)
+GET        /application/:id/authority-removed          controllers.Revocation.withdrawConfirmationPage(id: java.util.UUID)
 GET        /loggedout                                  controllers.Revocation.loggedOut

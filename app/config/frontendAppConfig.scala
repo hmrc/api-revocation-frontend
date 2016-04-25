@@ -48,6 +48,6 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
   override lazy val betaFeedbackUnauthenticatedUrl: String = s"$contactHost/contact/beta-feedback-unauthenticated"
   override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
-  override lazy val signInUrl = s"$caFrontendHost/gg/sign-in?continue=$loginCallbackBaseUrl/applications-permissions-withdrawal/applications"
-  override lazy val signOutUrl = s"$caFrontendHost/gg/sign-out?continue=$loginCallbackBaseUrl/applications-permissions-withdrawal/loggedout"
+  override lazy val signInUrl = s"$caFrontendHost/gg/sign-in?continue=$loginCallbackBaseUrl/applications-manage-authority/applications"
+  override lazy val signOutUrl = s"$caFrontendHost/gg/sign-out?continue=$loginCallbackBaseUrl/applications-manage-authority/loggedout"
 }
