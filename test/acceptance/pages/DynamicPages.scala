@@ -30,7 +30,7 @@ trait DynamicPage extends WebPage {
 }
 
 case class WithdrawPermissionPage(applicationId: UUID) extends DynamicPage {
-  override val pageHeading = "Withdraw permission"
+  override val pageHeading = "Remove authority"
   override val url = s"http://localhost:9000/applications-permissions-withdrawal/$applicationId/withdraw-permission"
 }
 
@@ -42,7 +42,7 @@ object WithdrawPermissionPage {
 }
 
 case class PermissionWithdrawnPage(applicationId: UUID) extends DynamicPage {
-  override val pageHeading = "Permission withdrawn"
+  override val pageHeading = "Authority removed"
   override val url = s"http://localhost:9000/applications-permissions-withdrawal/$applicationId/permission-withdrawn"
 }
 

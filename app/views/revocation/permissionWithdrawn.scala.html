@@ -3,12 +3,14 @@
 @body = {
     <div class="content__body">
         <header>
-            <h1>Permission withdrawn</h1>
+            <h1>Authority removed</h1>
         </header>
 
         <p data-withdrawn-message>
-            <strong>@{application.name}</strong> can no longer access HMRC data.
+            <strong>@{application.name}</strong> no longer has the authority.
         </p>
+
+        <p class="faded-text">You can grant authority again in the <strong>@{application.name}</strong> application.</p>
         <p>
             <a data-applications-link href="@controllers.routes.Revocation.listAuthorizedApplications">
                 Continue to your authorised software applications.
