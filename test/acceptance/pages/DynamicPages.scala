@@ -24,14 +24,14 @@ import org.openqa.selenium.By
 trait DynamicPage extends WebPage {
   val pageHeading: String
 
-  override def isCurrentPage: Boolean = find(tagName("h1")).fold(false)({
+  override def isCurrentPage: Boolean = find(tagName("h1")).exists {
     e => e.text == pageHeading
-  })
+  }
 }
 
 case class WithdrawPermissionPage(applicationId: UUID) extends DynamicPage {
   override val pageHeading = "Remove authority"
-  override val url = s"http://localhost:9000/applications-permissions-withdrawal/$applicationId/withdraw-permission"
+  override val url = s"http://localhost:9000/applications-manage-authority/$applicationId/remove-authority"
 }
 
 object WithdrawPermissionPage {
@@ -42,8 +42,9 @@ object WithdrawPermissionPage {
 }
 
 case class PermissionWithdrawnPage(applicationId: UUID) extends DynamicPage {
+
   override val pageHeading = "Authority removed"
-  override val url = s"http://localhost:9000/applications-permissions-withdrawal/$applicationId/permission-withdrawn"
+  override val url = s"http://localhost:9000/applications-manage-authority/$applicationId/remove-authority"
 }
 
 object PermissionWithdrawnPage {

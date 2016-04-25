@@ -23,9 +23,9 @@ import org.openqa.selenium.By
 
 object AuthorizedApplicationsPage extends WebPage {
 
-  override val url: String = "http://localhost:9000/applications-permissions-withdrawal/applications"
+  override val url: String = "http://localhost:9000/applications-manage-authority/applications"
 
-  override def isCurrentPage: Boolean = find(cssSelector("h1")).fold(false)(_.text == "Authorised software applications")
+  override def isCurrentPage: Boolean = find(cssSelector("h1")).exists(_.text == "Authorised software applications")
 
   def applicationNameLink(appId: UUID): By = By.cssSelector(s"[data-name-$appId]")
 

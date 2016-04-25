@@ -21,12 +21,11 @@ import org.openqa.selenium.By
 
 object StartPage extends WebPage {
 
-  override val url: String = "http://localhost:9000/applications-permissions-withdrawal/"
+  override val url: String = "http://localhost:9000/applications-manage-authority/"
 
   override def isCurrentPage: Boolean =
     find(cssSelector("h1"))
-      .map(_.text == "Manage the authority you have granted to software applications")
-      .getOrElse(false)
+      .exists(_.text == "Manage the authority you have granted to software applications")
 
   val startButton: By = By.cssSelector("[data-start-button]")
 }

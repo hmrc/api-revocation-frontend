@@ -22,6 +22,6 @@ object LoginPage extends WebPage {
 
   override val url= s"http://localhost:11111/gg/sign-in?continue=${AuthorizedApplicationsPage.url}"
 
-  override def isCurrentPage: Boolean = find(cssSelector("h1")).fold(false)(_.text == "Sign in")
+  override def isCurrentPage: Boolean = find(cssSelector("h1")).exists(_.text == "Sign in")
 
 }
