@@ -7,7 +7,7 @@
         </header>
 
         <p data-withdrawn-message>
-            <strong>@{application.name}</strong> no longer has the authority.
+            <strong>@{application.name}</strong> no longer has authority to interact with HMRC on your behalf.
         </p>
 
         <p class="faded-text">You can grant authority again in the <strong>@{application.name}</strong> application.</p>
@@ -19,6 +19,6 @@
     </div>
 }
 
-@main_template(title = "Permission withdrawn") {
+@main_template(title = "Authority removed") {
     @body
 }

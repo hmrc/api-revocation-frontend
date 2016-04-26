@@ -55,7 +55,7 @@ class AuthorizedApplicationsSpec extends BaseSpec with NavigationSugar {
       go(AuthorizedApplicationsPage)
       on(AuthorizedApplicationsPage)
 
-      verifyText(applicationsMessageText, "You have granted permission to the following software applications to access HMRC data. You can with withdraw this permission at any time.")
+      verifyText(applicationsMessageText, "You have granted authority to the following software applications. You can remove this authority below.")
       applications.foreach(assertApplication)
     }
 
@@ -66,7 +66,8 @@ class AuthorizedApplicationsSpec extends BaseSpec with NavigationSugar {
       go(AuthorizedApplicationsPage)
       on(AuthorizedApplicationsPage)
 
-      verifyText(applicationsMessageText, "There are currently no applications which have access to HMRC data. If you want to grant permission to an application, you must do so in the application itself.")
+      verifyText(applicationsMessageText, "You currently have no authorised software applications.")
+      verifyText(applicationsMessageText, "If you want to grant authority to an application you must do it in the application itself.")
     }
   }
 
