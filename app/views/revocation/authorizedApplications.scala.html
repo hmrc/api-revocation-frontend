@@ -10,8 +10,11 @@
         </header>
 
         @if(applications.isEmpty) {
-            <p data-info-message>You currently have no authorised software applications.</p>
-            <p>If you want to grant authority to an application you must do it in the application itself.</p>
+            <div data-info-message>
+                <p>You currently have no authorised software applications.</p>
+                <p>If you want to grant authority to an application you must do it in the application itself.</p>
+            </div>
+
         } else {
             <p data-info-message>You have granted authority to the following software applications. You can remove this authority below.</p>
 

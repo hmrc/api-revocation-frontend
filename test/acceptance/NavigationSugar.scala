@@ -47,11 +47,11 @@ trait NavigationSugar extends WebBrowser with Eventually with Assertions with Ma
   }
 
   def verifyText(selectorId: String, expected: String)(implicit webDriver: WebDriver) = {
-    webDriver.findElement(By.cssSelector(s"[$selectorId]")).getText contains expected
+    webDriver.findElement(By.cssSelector(s"[$selectorId]")).getText should include (expected)
   }
 
   def verifyText(locator: By, expected: String)(implicit webDriver: WebDriver) = {
-    webDriver.findElement(locator).getText contains expected
+    webDriver.findElement(locator).getText should include (expected)
   }
 
   def redirectedTo(page: WebLink)(implicit webDriver: WebDriver) = {

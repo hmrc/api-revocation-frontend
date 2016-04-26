@@ -48,11 +48,11 @@ class RevokeApplicationAuthoritySpec extends BaseSpec with NavigationSugar {
       clickOnElement(withdrawPermissionButton(app.application.id))
 
       on(WithdrawPermissionPage(app.application.id))
-      verifyText(withdrawWarningText, s"You are about to stop ${app.application.name} from accessing HMRC data.")
+      verifyText(withdrawWarningText, s"You are about to remove authority from ${app.application.name}.")
       clickOnSubmit()
 
       on(PermissionWithdrawnPage(app.application.id))
-      verifyText(withdrawnMessageText, s"${app.application.name} can no longer access HMRC data.")
+      verifyText(withdrawnMessageText, s"${app.application.name} no longer has authority to interact with HMRC on your behalf.")
       clickOnElement(withdrawnContinueLink)
 
       on(AuthorizedApplicationsPage)
