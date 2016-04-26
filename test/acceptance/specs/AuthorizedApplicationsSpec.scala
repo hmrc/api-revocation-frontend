@@ -39,11 +39,11 @@ class AuthorizedApplicationsSpec extends BaseSpec with NavigationSugar {
 
       val applications = Seq(
         applicationAuthority(UUID.randomUUID(), "First Application",
-          Set(Scope("read:api-1", "scope name", "Access personal information"),
-              Scope("read:api-3", "scope name", "Access tax information")), DateTime.now),
+          Set(Scope("read:api-1", "access personal information", "Access personal information description"),
+              Scope("read:api-3", "access tax information", "Access tax information description")), DateTime.now),
 
         applicationAuthority(UUID.randomUUID(), "Second Application",
-          Set(Scope("read:api-2", "scope name", "Access confidential information")), DateTime.now.minusDays(2)),
+          Set(Scope("read:api-2", "access confidential information", "Access confidential information description")), DateTime.now.minusDays(2)),
 
         applicationAuthority(UUID.randomUUID(), "Third Application",
           Set(), DateTime.now.minusMonths(2))
@@ -74,7 +74,7 @@ class AuthorizedApplicationsSpec extends BaseSpec with NavigationSugar {
   private def assertApplication(app: AppAuthorisation) = {
     verifyText(applicationNameLink(app.application.id), app.application.name)
     clickOnElement(applicationNameLink(app.application.id))
-    app.scopes.foreach(scope => verifyText(applicationScopeElement(app.application.id, scope.key), scope.description))
+    app.scopes.foreach(scope => verifyText(applicationScopeElement(app.application.id, scope.key), scope.name))
     verifyText(authorityGrantDateElement(app.application.id), app.earliestGrantDate.toString("dd MMMM yyyy"))
   }
 
