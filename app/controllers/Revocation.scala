@@ -46,20 +46,18 @@ trait Revocation extends FrontendController with Authentication {
   }
 
   def withdrawPage(id: UUID) = authenticated.async { implicit user => implicit request =>
-    thirdPartyApplicationConnector.fetchApplication(id)
-      .map(application => Ok(views.html.revocation.withdrawPermission(application)))
+    delegatedAuthorityConnector.fetchApplicationAuthority(id)
+      .map(authority => Ok(views.html.revocation.withdrawPermission(authority)))
   }
 
   def withdrawAction(id: UUID) = authenticated.async { implicit user => implicit request =>
     delegatedAuthorityConnector.revokeApplicationAuthority(id).map { _ =>
-      Redirect(routes.Revocation.withdrawConfirmationPage(id))
+      Redirect(routes.Revocation.withdrawConfirmationPage())
     }
   }
 
-  def withdrawConfirmationPage(id: UUID) = authenticated.async { implicit user => implicit request =>
-    thirdPartyApplicationConnector.fetchApplication(id).map { app =>
-      Ok(views.html.revocation.permissionWithdrawn(app))
-    }
+  val withdrawConfirmationPage = authenticated.async { implicit user => implicit request =>
+    Future.successful(Ok(views.html.revocation.permissionWithdrawn()))
   }
 }
 

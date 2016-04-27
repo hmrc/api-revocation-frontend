@@ -16,8 +16,7 @@
 
 package unit.controllers
 
-import acceptance.pages.AuthorizedApplicationsPage
-import connectors.{ThirdPartyApplicationConnector, DelegatedAuthorityConnector}
+import connectors.{DelegatedAuthorityConnector, ThirdPartyApplicationConnector}
 import controllers.Revocation
 import org.mockito.BDDMockito.given
 import org.mockito.Matchers.any
@@ -84,6 +83,15 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
 
       status(result) shouldBe 303
       result.header.headers("Location") shouldEqual "http://localhost:9025/gg/sign-in?continue=http://localhost:9686/applications-manage-authority/applications"
+    }
+  }
+
+  "withdrawConfirmationPage" should {
+    "return 200" in {
+
+      val result = underTest.withdrawConfirmationPage(loggedInRequest)
+
+      status(result) shouldBe Status.OK
     }
   }
 }

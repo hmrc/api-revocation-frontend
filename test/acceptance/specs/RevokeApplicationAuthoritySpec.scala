@@ -39,6 +39,7 @@ class RevokeApplicationAuthoritySpec extends BaseSpec with NavigationSugar {
 
       LoginStub.stubSuccessfulLogin()
       DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(Seq(app))
+      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthority(app)
       DelegatedAuthorityStub.stubSuccessfulAuthorityRevocation(app.application.id, app.application.name)
 
       go(AuthorizedApplicationsPage)
@@ -52,7 +53,7 @@ class RevokeApplicationAuthoritySpec extends BaseSpec with NavigationSugar {
       clickOnSubmit()
 
       on(PermissionWithdrawnPage(app.application.id))
-      verifyText(withdrawnMessageText, s"${app.application.name} no longer has authority to interact with HMRC on your behalf.")
+      verifyText(withdrawnMessageText, "This application no longer has authority to interact with HMRC on your behalf.")
       clickOnElement(withdrawnContinueLink)
 
       on(AuthorizedApplicationsPage)
@@ -65,6 +66,7 @@ class RevokeApplicationAuthoritySpec extends BaseSpec with NavigationSugar {
 
       LoginStub.stubSuccessfulLogin()
       DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(Seq(app))
+      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthority(app)
       DelegatedAuthorityStub.stubSuccessfulAuthorityRevocation(app.application.id, app.application.name)
 
       go(AuthorizedApplicationsPage)

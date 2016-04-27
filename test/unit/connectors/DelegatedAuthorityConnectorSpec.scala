@@ -25,7 +25,7 @@ import models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import org.joda.time.DateTime
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{BeforeAndAfterEach, Matchers}
-import uk.gov.hmrc.play.http.{HttpDelete, HeaderCarrier, HttpGet, HttpPost}
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpDelete, HttpGet, HttpPost}
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 class DelegatedAuthorityConnectorSpec extends UnitSpec with Matchers with ScalaFutures with WiremockSugar with BeforeAndAfterEach with WithFakeApplication {
@@ -84,6 +84,37 @@ class DelegatedAuthorityConnectorSpec extends UnitSpec with Matchers with ScalaF
         aResponse().withStatus(200).withBody("[]")))
 
       await(connector.fetchApplicationAuthorities()) shouldBe Seq()
+    }
+  }
+
+  "fetchApplicationAuthority" should {
+
+    "retrieve a single third party delegated authority granted by a user to the given application" in new Setup {
+
+      stubFor(get(urlEqualTo(s"/authority/granted-application/$appId")).willReturn(
+        aResponse().withStatus(200).withBody(
+          s"""
+             |{
+             |  "application" : {
+             |    "id":"$appId",
+             |    "name":"$appName"
+             |  },
+             |  "scopes": [
+             |    {
+             |      "key":"$scopeKey",
+             |      "name":"$scopeName",
+             |      "description":"$scopeDescription"
+             |    }
+             |  ],
+             |  "earliestGrantDate":$earliestGrantDate
+              |}""".stripMargin)
+      ))
+
+      await(connector.fetchApplicationAuthority(appId)) shouldBe AppAuthorisation(
+        application = ThirdPartyApplication(appId, appName),
+        scopes = Set(Scope(scopeKey, scopeName, scopeDescription)),
+        earliestGrantDate = new DateTime(earliestGrantDate)
+      )
     }
   }
 }
