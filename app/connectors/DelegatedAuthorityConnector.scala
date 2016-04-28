@@ -23,15 +23,23 @@ import models.AppAuthorisation
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpDelete, HttpGet, HttpPost}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 trait DelegatedAuthorityConnector {
 
   val delegatedAuthorityUrl: String
   val http: HttpPost with HttpGet with HttpDelete
 
-  def fetchApplicationAuthorities()(implicit hc: HeaderCarrier) = {
+  def fetchApplicationAuthorities()(implicit hc: HeaderCarrier): Future[Seq[AppAuthorisation]] = {
     val url = s"$delegatedAuthorityUrl/authority/granted-applications"
     http.GET[Seq[AppAuthorisation]](url) recover {
+      recovery(url)
+    }
+  }
+
+  def fetchApplicationAuthority(applicationId: UUID)(implicit hc: HeaderCarrier): Future[AppAuthorisation] = {
+    val url = s"$delegatedAuthorityUrl/authority/granted-application/$applicationId"
+    http.GET[AppAuthorisation](url) recover {
       recovery(url)
     }
   }

@@ -19,36 +19,24 @@ package acceptance.stubs
 import java.util.UUID
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.{Scope, AppAuthorisation}
+import models.{AppAuthorisation, Scope}
 
 object DelegatedAuthorityStub {
+
   def stubSuccessfulFetchApplicationAuthorities(applications: Seq[AppAuthorisation]) = {
-
-    def toScopeJson(scope: Scope) =
-      s"""
-         |{
-         |  "key":"${scope.key}",
-         |  "name":"${scope.name}",
-         |  "description":"${scope.description}"
-         |}
-         """.stripMargin
-
-    def toAppJson(application: AppAuthorisation) = {
-      s"""
-         |{
-         |  "application" : {
-         |    "id":"${application.application.id}",
-         |    "name":"${application.application.name}"
-         |    },
-         |  "scopes": [${application.scopes.map(toScopeJson).mkString(",")}],
-         |  "earliestGrantDate":${application.earliestGrantDate.getMillis}
-         |}
-       """.stripMargin
-    }
-
     stubFor(get(urlEqualTo(s"/authority/granted-applications")).willReturn(
-      aResponse().withStatus(200).withBody(
-        s"""[${applications.map(toAppJson).mkString(",")}]""".stripMargin)))
+      aResponse()
+        .withStatus(200)
+        .withBody(s"""[${applications.map(toAppJson).mkString(",")}]""".stripMargin)
+    ))
+  }
+
+  def stubSuccessfulFetchApplicationAuthority(appAuthorisation: AppAuthorisation) = {
+    stubFor(get(urlEqualTo(s"/authority/granted-application/${appAuthorisation.application.id}")).willReturn(
+      aResponse()
+        .withStatus(200)
+        .withBody(toAppJson(appAuthorisation))
+    ))
   }
 
   def stubSuccessfulAuthorityRevocation(applicationId: UUID, applicationName: String) = {
@@ -60,5 +48,27 @@ object DelegatedAuthorityStub {
         s"""{"id":"$applicationId", "name":"$applicationName"}"""
       )
     ))
+  }
+
+  private def toScopeJson(scope: Scope) =
+    s"""
+       |{
+       |  "key":"${scope.key}",
+       |  "name":"${scope.name}",
+       |  "description":"${scope.description}"
+       |}
+       |""".stripMargin
+
+  private def toAppJson(application: AppAuthorisation) = {
+    s"""
+       |{
+       |  "application": {
+       |    "id":"${application.application.id}",
+       |    "name":"${application.application.name}"
+       |  },
+       |  "scopes": [${application.scopes.map(toScopeJson).mkString(",")}],
+       |  "earliestGrantDate":${application.earliestGrantDate.getMillis}
+       |}
+       |""".stripMargin
   }
 }

@@ -1,4 +1,4 @@
-@(application: ApplicationDetails)(implicit request: Request[_])
+@()(implicit request: Request[_])
 
 @body = {
     <div class="content__body">
@@ -6,11 +6,10 @@
             <h1>Authority removed</h1>
         </header>
 
-        <p data-withdrawn-message>
-            <strong>@{application.name}</strong> no longer has authority to interact with HMRC on your behalf.
-        </p>
+        <p data-withdrawn-message>This application no longer has authority to interact with HMRC on your behalf.</p>
 
-        <p class="faded-text">You can grant authority again in the <strong>@{application.name}</strong> application.</p>
+        <p>You can grant authority again in the application itself.</p>
+
         <p>
             <a data-applications-link href="@controllers.routes.Revocation.listAuthorizedApplications">
                 Continue to your authorised software applications.

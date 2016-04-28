@@ -1,7 +1,7 @@
-@(application: ApplicationDetails)(implicit request: Request[_])
+@(authorisation: AppAuthorisation)(implicit request: Request[_])
 
 @body = {
-    @helper.form(action = controllers.routes.Revocation.withdrawAction(application.id), 'class -> "form") {
+    @helper.form(action = controllers.routes.Revocation.withdrawAction(authorisation.application.id), 'class -> "form") {
         @helper.CSRF.formField
         <div class="content__body">
             <header>
@@ -9,7 +9,7 @@
             </header>
 
             <div data-withdraw-warning class="highlight-message highlight-message--full-width">
-                <span>You are about to remove authority from <strong>@{application.name}</strong>.</span>
+                <span>You are about to remove authority from <strong>@{authorisation.application.name}</strong>.</span>
             </div>
         </div>
 
