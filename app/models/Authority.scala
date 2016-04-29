@@ -27,7 +27,7 @@ object Scope {
   implicit val format = Json.format[Scope]
 }
 
-case class ThirdPartyApplication(id: UUID, name: String)
+case class ThirdPartyApplication(id: UUID, name: String, trusted: Boolean)
 
 object ThirdPartyApplication {
   implicit val format = Json.format[ThirdPartyApplication]

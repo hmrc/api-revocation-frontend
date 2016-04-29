@@ -19,7 +19,7 @@
             <p data-info-message>You have granted authority to the following software applications. You can remove this authority below.</p>
 
             @defining(DateTimeFormat.forPattern("dd MMMM yyyy")) { dateFormatter =>
-                <ul>
+                <ul data-applications>
                     @for(app <- applications) {
                         <li>
                             <details data-@{app.application.id}>

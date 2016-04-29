@@ -32,10 +32,7 @@ class RevokeApplicationAuthoritySpec extends BaseSpec with NavigationSugar {
   feature("Revoking application authority") {
 
     scenario("User is able to revoke application authority") {
-
-      val app = applicationAuthority(UUID.randomUUID(), "First Application",
-          Set(Scope("read:api-1", "scope name", "Access personal information"),
-              Scope("read:api-3", "scope name", "Access tax information")), DateTime.now)
+      val app = someAppAuthorisation(trusted = false)
 
       LoginStub.stubSuccessfulLogin()
       DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(Seq(app))
@@ -52,7 +49,7 @@ class RevokeApplicationAuthoritySpec extends BaseSpec with NavigationSugar {
       verifyText(withdrawWarningText, s"You are about to remove authority from ${app.application.name}.")
       clickOnSubmit()
 
-      on(PermissionWithdrawnPage(app.application.id))
+      on(PermissionWithdrawnPage)
       verifyText(withdrawnMessageText, "This application no longer has authority to interact with HMRC on your behalf.")
       clickOnElement(withdrawnContinueLink)
 
@@ -60,9 +57,7 @@ class RevokeApplicationAuthoritySpec extends BaseSpec with NavigationSugar {
     }
 
     scenario("User is able to cancel application authority revocation") {
-      val app = applicationAuthority(UUID.randomUUID(), "First Application",
-        Set(Scope("read:api-1", "scope name", "Access personal information"),
-          Scope("read:api-3", "scope name", "Access tax information")), DateTime.now)
+      val app = someAppAuthorisation(trusted = false)
 
       LoginStub.stubSuccessfulLogin()
       DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(Seq(app))
@@ -80,9 +75,27 @@ class RevokeApplicationAuthoritySpec extends BaseSpec with NavigationSugar {
 
       on(AuthorizedApplicationsPage)
     }
+
+    scenario("User is not able to revoke application authority if the application is trusted") {
+      val trustedApp = someAppAuthorisation(trusted = true)
+
+      LoginStub.stubSuccessfulLogin()
+      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(Seq(trustedApp))
+      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthority(trustedApp)
+
+      go(AuthorizedApplicationsPage)
+
+      go(WithdrawPermissionPage(trustedApp.application.id))
+
+      on(TechnicalDifficultiesPage)
+    }
   }
 
-  private def applicationAuthority(appId: UUID, appName: String, scopes: Set[Scope], earliestGrantDate: DateTime) = {
-    AppAuthorisation(ThirdPartyApplication(appId, appName), scopes, earliestGrantDate)
+  private def someAppAuthorisation(trusted: Boolean) = {
+    AppAuthorisation(
+      application = ThirdPartyApplication(UUID.randomUUID(), "First Application", trusted = trusted),
+      scopes = Set(Scope("read:api-1", "scope name", "Access personal information"), Scope("read:api-3", "scope name", "Access tax information")),
+      earliestGrantDate = DateTime.now
+    )
   }
 }

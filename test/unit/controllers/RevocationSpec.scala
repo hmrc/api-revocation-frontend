@@ -16,18 +16,27 @@
 
 package unit.controllers
 
-import connectors.{DelegatedAuthorityConnector, ThirdPartyApplicationConnector}
+import java.util.UUID
+
 import controllers.Revocation
+import models.{AppAuthorisation, ThirdPartyApplication}
+import org.joda.time.DateTime
 import org.mockito.BDDMockito.given
+import org.mockito.Matchers
 import org.mockito.Matchers.any
 import org.scalatest.mock.MockitoSugar
 import play.api.http.Status
 import play.api.test.FakeRequest
+import play.filters.csrf.CSRF.SignedTokenProvider
+import service.RevocationService
 import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds.GovernmentGatewayId
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.{Accounts, Authority, ConfidenceLevel, CredentialStrength}
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar {
 
@@ -39,16 +48,16 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
     SessionKeys.sessionId -> "SessionId",
     SessionKeys.token -> "Token",
     SessionKeys.userId -> "Test User",
-    SessionKeys.authProvider -> GovernmentGatewayId
+    SessionKeys.authProvider -> GovernmentGatewayId,
+    "csrfToken" -> SignedTokenProvider.generateToken
   )
 
   val underTest = new Revocation {
     implicit val hc = headerCarrier
     override val authConnector = mock[AuthConnector]
-    override val delegatedAuthorityConnector = mock[DelegatedAuthorityConnector]
-    override val thirdPartyApplicationConnector = mock[ThirdPartyApplicationConnector]
+    override val revocationService = mock[RevocationService]
     given(authConnector.currentAuthority(any())).willReturn(Some(authority))
-    given(delegatedAuthorityConnector.fetchApplicationAuthorities()(any())).willReturn(Seq.empty)
+    given(revocationService.fetchUntrustedApplicationAuthorities()(any())).willReturn(Seq.empty)
   }
 
   "Start" should {
@@ -83,6 +92,32 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
 
       status(result) shouldBe 303
       result.header.headers("Location") shouldEqual "http://localhost:9025/gg/sign-in?continue=http://localhost:9686/applications-manage-authority/applications"
+    }
+  }
+
+  "withdrawPage" should {
+    "return 200" in {
+      val appId = UUID.randomUUID()
+      val appAuthority = AppAuthorisation(ThirdPartyApplication(appId, "appName", false), Set(), DateTime.now)
+
+      given(underTest.revocationService.fetchUntrustedApplicationAuthority(Matchers.eq(appId))(any())).willReturn(Future(appAuthority))
+
+      val result = underTest.withdrawPage(appId)(loggedInRequest)
+
+      status(result) shouldBe Status.OK
+    }
+  }
+
+  "withdrawAction" should {
+    "redirect to authorisation withdrawn page" in {
+      val appId = UUID.randomUUID()
+
+      given(underTest.revocationService.revokeApplicationAuthority(Matchers.eq(appId))(any())).willReturn(Future(()))
+
+      val result = underTest.withdrawAction(appId)(loggedInRequest)
+
+      status(result) shouldBe 303
+      result.header.headers("Location") shouldEqual controllers.routes.Revocation.withdrawConfirmationPage().url
     }
   }
 

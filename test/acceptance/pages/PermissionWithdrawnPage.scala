@@ -14,24 +14,18 @@
  * limitations under the License.
  */
 
-package acceptance
+package acceptance.pages
 
-import org.openqa.selenium.WebDriver
-import org.scalatest._
-import org.scalatest.selenium.{Page, WebBrowser}
+import acceptance.WebPage
+import org.openqa.selenium.By
 
-trait WebLink extends Page with WebBrowser with ShouldMatchers {
-  implicit val webDriver: WebDriver = Env.driver
+object PermissionWithdrawnPage extends WebPage {
 
-  override def toString = this.getClass.getSimpleName
-}
+  override val url = s"http://localhost:9000/applications-manage-authority/application/authority-removed"
 
-trait WebPage extends WebLink {
+  override def isCurrentPage = find(cssSelector("h1")).exists(_.text == "Authority removed")
 
-  def isCurrentPage: Boolean
+  val withdrawnContinueLink: By = By.cssSelector("[data-applications-link]")
 
-  def heading = tagName("h1").element.text
-
-  def bodyText = tagName("body").element.text
-
+  val withdrawnMessageText: By = By.cssSelector("[data-withdrawn-message]")
 }

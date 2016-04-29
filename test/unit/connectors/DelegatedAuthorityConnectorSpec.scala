@@ -40,11 +40,8 @@ class DelegatedAuthorityConnectorSpec extends UnitSpec with Matchers with ScalaF
     }
   }
 
-  val appId = UUID.randomUUID()
-  val appName = "My App"
-  val scopeKey = "read:api-name"
-  val scopeName = "Access personal info"
-  val scopeDescription = "Access personal info"
+  val app = ThirdPartyApplication(UUID.randomUUID(), "My App", trusted = true)
+  val scope = Scope("read:api-name", "Access personal info", "Access personal info")
   val earliestGrantDate = 1460713641258L
 
   "fetchApplicationAuthorities" should {
@@ -57,15 +54,16 @@ class DelegatedAuthorityConnectorSpec extends UnitSpec with Matchers with ScalaF
              |[
              |{
              |  "application" : {
-             |    "id":"$appId",
-             |    "name":"$appName"
-             |    },
+             |    "id":"${app.id}",
+             |    "name":"${app.name}",
+             |    "trusted": ${app.trusted}
+             |  },
              |  "scopes":
              |    [
              |      {
-             |        "key":"$scopeKey",
-             |        "name":"$scopeName",
-             |        "description":"$scopeDescription"
+             |        "key":"${scope.key}",
+             |        "name":"${scope.name}",
+             |        "description":"${scope.description}"
              |      }
              |    ],
              |  "earliestGrantDate":$earliestGrantDate
@@ -73,10 +71,11 @@ class DelegatedAuthorityConnectorSpec extends UnitSpec with Matchers with ScalaF
              |]
      """.stripMargin)))
 
-      val response = await(connector.fetchApplicationAuthorities())
-      val expected = Seq(AppAuthorisation(ThirdPartyApplication(appId, appName), Set(Scope(scopeKey, scopeName, scopeDescription)), new DateTime(earliestGrantDate)))
-
-      response shouldBe expected
+      await(connector.fetchApplicationAuthorities()) shouldBe Seq(AppAuthorisation(
+        application = app,
+        scopes = Set(scope),
+        earliestGrantDate = new DateTime(earliestGrantDate))
+      )
     }
 
     "return an empty set if there are no authorised applications" in new Setup {
@@ -91,28 +90,29 @@ class DelegatedAuthorityConnectorSpec extends UnitSpec with Matchers with ScalaF
 
     "retrieve a single third party delegated authority granted by a user to the given application" in new Setup {
 
-      stubFor(get(urlEqualTo(s"/authority/granted-application/$appId")).willReturn(
+      stubFor(get(urlEqualTo(s"/authority/granted-application/${app.id}")).willReturn(
         aResponse().withStatus(200).withBody(
           s"""
              |{
              |  "application" : {
-             |    "id":"$appId",
-             |    "name":"$appName"
+             |    "id":"${app.id}",
+             |    "name":"${app.name}",
+             |    "trusted": ${app.trusted}
              |  },
              |  "scopes": [
              |    {
-             |      "key":"$scopeKey",
-             |      "name":"$scopeName",
-             |      "description":"$scopeDescription"
+             |      "key":"${scope.key}",
+             |      "name":"${scope.name}",
+             |      "description":"${scope.description}"
              |    }
              |  ],
              |  "earliestGrantDate":$earliestGrantDate
               |}""".stripMargin)
       ))
 
-      await(connector.fetchApplicationAuthority(appId)) shouldBe AppAuthorisation(
-        application = ThirdPartyApplication(appId, appName),
-        scopes = Set(Scope(scopeKey, scopeName, scopeDescription)),
+      await(connector.fetchApplicationAuthority(app.id)) shouldBe AppAuthorisation(
+        application = app,
+        scopes = Set(scope),
         earliestGrantDate = new DateTime(earliestGrantDate)
       )
     }

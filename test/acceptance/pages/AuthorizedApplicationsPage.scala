@@ -27,6 +27,8 @@ object AuthorizedApplicationsPage extends WebPage {
 
   override def isCurrentPage: Boolean = find(cssSelector("h1")).exists(_.text == "Authorised software applications")
 
+  val applicationList: String = "data-applications"
+
   def applicationNameLink(appId: UUID): By = By.cssSelector(s"[data-name-$appId]")
 
   def applicationScopeElement(appId: UUID, scopeKey: String): By = By.cssSelector(s"[data-scope-$appId='$scopeKey']")
