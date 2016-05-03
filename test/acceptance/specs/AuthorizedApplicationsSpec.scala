@@ -103,7 +103,7 @@ class AuthorizedApplicationsSpec extends BaseSpec with NavigationSugar {
 
   private def verifyApplicationsDisplayed(apps: Seq[AppAuthorisation]) = {
     verifyText(applicationsMessageText, "You have granted authority to the following software applications. You can remove this authority below.")
-    verifySize(applicationList, apps.size)
+    verifyListSize(applicationList, apps.size)
 
     apps.foreach { app =>
       verifyText(applicationNameLink(app.application.id), app.application.name)

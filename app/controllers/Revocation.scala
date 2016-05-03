@@ -41,7 +41,7 @@ trait Revocation extends FrontendController with Authentication {
 
   val listAuthorizedApplications = authenticated.async { implicit user => implicit request =>
     revocationService.fetchUntrustedApplicationAuthorities()
-      .map(applications => Ok(views.html.revocation.authorizedApplications(applications.filter(!_.application.trusted))))
+      .map(applications => Ok(views.html.revocation.authorizedApplications(applications)))
   }
 
   def withdrawPage(id: UUID) = authenticated.async { implicit user => implicit request =>
