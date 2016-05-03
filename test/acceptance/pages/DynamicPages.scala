@@ -31,7 +31,7 @@ trait DynamicPage extends WebPage {
 
 case class WithdrawPermissionPage(applicationId: UUID) extends DynamicPage {
   override val pageHeading = "Remove authority"
-  override val url = s"http://localhost:9000/applications-manage-authority/$applicationId/remove-authority"
+  override val url = s"http://localhost:9000/applications-manage-authority/application/$applicationId/remove-authority"
 }
 
 object WithdrawPermissionPage {
@@ -39,17 +39,4 @@ object WithdrawPermissionPage {
   val withdrawCancelButton: By = By.cssSelector("[data-cancel-withdraw-permission]")
 
   val withdrawWarningText: By = By.cssSelector("[data-withdraw-warning]")
-}
-
-case class PermissionWithdrawnPage(applicationId: UUID) extends DynamicPage {
-
-  override val pageHeading = "Authority removed"
-  override val url = s"http://localhost:9000/applications-manage-authority/$applicationId/remove-authority"
-}
-
-object PermissionWithdrawnPage {
-
-  val withdrawnContinueLink: By = By.cssSelector("[data-applications-link]")
-
-  val withdrawnMessageText: By = By.cssSelector("[data-withdrawn-message]")
 }

@@ -30,7 +30,7 @@ class StartSpec extends BaseSpec with NavigationSugar {
 
     scenario("User can see the Start page and navigate to the list of authorised applications") {
 
-      val app = AppAuthorisation(ThirdPartyApplication(UUID.randomUUID(), "First Application"), Set.empty, DateTime.now)
+      val app = AppAuthorisation(ThirdPartyApplication(UUID.randomUUID(), "First Application", trusted = false), Set.empty, DateTime.now)
 
       go(StartPage)
       on(StartPage)

@@ -22,6 +22,7 @@ import config.WSHttp
 import models.AppAuthorisation
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpDelete, HttpGet, HttpPost}
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -44,9 +45,9 @@ trait DelegatedAuthorityConnector {
     }
   }
 
-  def revokeApplicationAuthority(applicationId: UUID)(implicit hc: HeaderCarrier) = {
+  def revokeApplicationAuthority(applicationId: UUID)(implicit hc: HeaderCarrier): Future[Unit] = {
     val url = s"$delegatedAuthorityUrl/authority/granted-application/$applicationId"
-    http.DELETE(url) recover {
+    http.DELETE(url) map(_ => ()) recover {
       recovery(url)
     }
   }

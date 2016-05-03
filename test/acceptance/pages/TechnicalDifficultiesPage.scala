@@ -14,24 +14,13 @@
  * limitations under the License.
  */
 
-package acceptance
+package acceptance.pages
 
-import org.openqa.selenium.WebDriver
-import org.scalatest._
-import org.scalatest.selenium.{Page, WebBrowser}
+import acceptance.WebPage
 
-trait WebLink extends Page with WebBrowser with ShouldMatchers {
-  implicit val webDriver: WebDriver = Env.driver
+object TechnicalDifficultiesPage extends WebPage {
 
-  override def toString = this.getClass.getSimpleName
-}
+  override val url = ""
 
-trait WebPage extends WebLink {
-
-  def isCurrentPage: Boolean
-
-  def heading = tagName("h1").element.text
-
-  def bodyText = tagName("body").element.text
-
+  override def isCurrentPage = find(cssSelector("h1")).exists(_.text == "Sorry, we’re experiencing technical difficulties")
 }
