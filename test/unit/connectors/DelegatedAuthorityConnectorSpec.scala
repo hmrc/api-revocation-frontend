@@ -18,6 +18,7 @@ package unit.connectors
 
 import java.util.UUID
 
+import acceptance.stubs.DelegatedAuthorityStub
 import com.github.tomakehurst.wiremock.client.WireMock._
 import config.WSHttp
 import connectors.DelegatedAuthorityConnector
@@ -25,57 +26,29 @@ import models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import org.joda.time.DateTime
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{BeforeAndAfterEach, Matchers}
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpDelete, HttpGet, HttpPost}
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 class DelegatedAuthorityConnectorSpec extends UnitSpec with Matchers with ScalaFutures with WiremockSugar with BeforeAndAfterEach with WithFakeApplication {
-
 
   trait Setup {
     implicit val hc = HeaderCarrier()
 
     val connector = new DelegatedAuthorityConnector {
-      override val delegatedAuthorityUrl: String = wireMockUrl
-      override val http: HttpPost with HttpGet with HttpDelete = WSHttp
+      override val delegatedAuthorityUrl = wireMockUrl
+      override val http = WSHttp
     }
   }
-
-  val app = ThirdPartyApplication(UUID.randomUUID(), "My App", trusted = true)
-  val scope = Scope("read:api-name", "Access personal info", "Access personal info")
-  val earliestGrantDate = 1460713641258L
 
   "fetchApplicationAuthorities" should {
 
     "retrieve all third party delegated authorities granted by a user" in new Setup {
 
-      stubFor(get(urlEqualTo(s"/authority/granted-applications")).willReturn(
-        aResponse().withStatus(200).withBody(
-          s"""
-             |[
-             |{
-             |  "application" : {
-             |    "id":"${app.id}",
-             |    "name":"${app.name}",
-             |    "trusted": ${app.trusted}
-             |  },
-             |  "scopes":
-             |    [
-             |      {
-             |        "key":"${scope.key}",
-             |        "name":"${scope.name}",
-             |        "description":"${scope.description}"
-             |      }
-             |    ],
-             |  "earliestGrantDate":$earliestGrantDate
-             |}
-             |]
-     """.stripMargin)))
+      val authorities = Seq(anApplicationAuthority(), anApplicationAuthority())
 
-      await(connector.fetchApplicationAuthorities()) shouldBe Seq(AppAuthorisation(
-        application = app,
-        scopes = Set(scope),
-        earliestGrantDate = new DateTime(earliestGrantDate))
-      )
+      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(authorities)
+
+      await(connector.fetchApplicationAuthorities()) shouldBe authorities
     }
 
     "return an empty set if there are no authorised applications" in new Setup {
@@ -90,31 +63,19 @@ class DelegatedAuthorityConnectorSpec extends UnitSpec with Matchers with ScalaF
 
     "retrieve a single third party delegated authority granted by a user to the given application" in new Setup {
 
-      stubFor(get(urlEqualTo(s"/authority/granted-application/${app.id}")).willReturn(
-        aResponse().withStatus(200).withBody(
-          s"""
-             |{
-             |  "application" : {
-             |    "id":"${app.id}",
-             |    "name":"${app.name}",
-             |    "trusted": ${app.trusted}
-             |  },
-             |  "scopes": [
-             |    {
-             |      "key":"${scope.key}",
-             |      "name":"${scope.name}",
-             |      "description":"${scope.description}"
-             |    }
-             |  ],
-             |  "earliestGrantDate":$earliestGrantDate
-              |}""".stripMargin)
-      ))
+      val authority = anApplicationAuthority()
 
-      await(connector.fetchApplicationAuthority(app.id)) shouldBe AppAuthorisation(
-        application = app,
-        scopes = Set(scope),
-        earliestGrantDate = new DateTime(earliestGrantDate)
-      )
+      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthority(authority)
+
+      await(connector.fetchApplicationAuthority(authority.application.id)) shouldBe authority
     }
+  }
+
+  private def anApplicationAuthority() = {
+    AppAuthorisation(
+      application = ThirdPartyApplication(UUID.randomUUID(), "My App", trusted = true),
+      scopes = Set(Scope("read:api-name", "Access personal info", "Access personal info")),
+      earliestGrantDate = new DateTime(1460713641258L)
+    )
   }
 }
