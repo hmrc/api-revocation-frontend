@@ -51,11 +51,21 @@ class RevocationServiceSpec extends UnitSpec with MockitoSugar {
       val authority2 = someAppAuthorisation(trusted = false)
       val trustedAuthority = someAppAuthorisation(trusted = true)
 
-      given(underTest.delegatedAuthorityConnector.fetchApplicationAuthorities()(headerCarrier)).willReturn(Future(Seq(authority1, authority2, trustedAuthority)))
+      given(underTest.delegatedAuthorityConnector.fetchApplicationAuthorities()(headerCarrier))
+        .willReturn(Future(Seq(authority1, authority2, trustedAuthority)))
 
       await(underTest.fetchUntrustedApplicationAuthorities()) shouldBe Seq(authority1, authority2)
+    }
 
-      verify(underTest.delegatedAuthorityConnector).fetchApplicationAuthorities()(headerCarrier)
+    "return untrusted applications in application name order" in new Setup {
+      val authority1 = untrustedApplicationWithName("Zapplication")
+      val authority2 = untrustedApplicationWithName("Application")
+      val authority3 = untrustedApplicationWithName("4pplication")
+
+      given(underTest.delegatedAuthorityConnector.fetchApplicationAuthorities()(headerCarrier))
+        .willReturn(Future(Seq(authority1, authority2, authority3)))
+
+      await(underTest.fetchUntrustedApplicationAuthorities()) shouldBe Seq(authority3, authority2, authority1)
     }
   }
 
@@ -112,11 +122,20 @@ class RevocationServiceSpec extends UnitSpec with MockitoSugar {
     }
   }
 
+  private val scopes = Set(Scope("read:api-1", "scope name", "Access personal information"), Scope("read:api-3", "scope name", "Access tax information"))
+
   private def someAppAuthorisation(trusted: Boolean) = {
     AppAuthorisation(
       application = ThirdPartyApplication(UUID.randomUUID(), "First Application", trusted = trusted),
-      scopes = Set(Scope("read:api-1", "scope name", "Access personal information"), Scope("read:api-3", "scope name", "Access tax information")),
+      scopes = scopes,
       earliestGrantDate = DateTime.now
     )
   }
+
+  private def untrustedApplicationWithName(name: String) =
+    AppAuthorisation(
+      application = ThirdPartyApplication(UUID.randomUUID(), name, trusted = false),
+      scopes = scopes,
+      earliestGrantDate = DateTime.now
+    )
 }

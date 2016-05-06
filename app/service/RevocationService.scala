@@ -31,7 +31,7 @@ trait RevocationService {
 
   def fetchUntrustedApplicationAuthorities()(implicit hc: HeaderCarrier): Future[Seq[AppAuthorisation]] = {
     delegatedAuthorityConnector.fetchApplicationAuthorities().map { authorities =>
-      authorities.filter(!_.application.trusted)
+      authorities.filter(!_.application.trusted).sorted
     }
   }
 

@@ -39,6 +39,7 @@ case class AppAuthorisation(application: ThirdPartyApplication,
 
 object AppAuthorisation {
   implicit val format = Json.format[AppAuthorisation]
+  implicit val ordering: Ordering[AppAuthorisation] = Ordering.by(_.application.name)
 }
 
 case class ApplicationDetails(id: UUID, name: String)

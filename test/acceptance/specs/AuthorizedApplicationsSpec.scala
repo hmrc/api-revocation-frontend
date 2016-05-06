@@ -37,17 +37,23 @@ class AuthorizedApplicationsSpec extends BaseSpec with NavigationSugar {
 
     scenario("User sees his authorized applications") {
 
-      val applications = Seq(
-        AppAuthorisation(ThirdPartyApplication(UUID.randomUUID(), "First Application", trusted = false),
-          Set(Scope("read:api-1", "access personal information", "Access personal information description"),
-              Scope("read:api-3", "access tax information", "Access tax information description")), DateTime.now),
+      val app1 = AppAuthorisation(
+          ThirdPartyApplication(UUID.randomUUID(), "Zapplication", trusted = false),
+          Set(Scope("read:api-1", "access personal information", "Access personal information description"), Scope("read:api-3", "access tax information", "Access tax information description")),
+          DateTime.now)
 
-        AppAuthorisation(ThirdPartyApplication(UUID.randomUUID(), "Second Application", trusted = false),
-          Set(Scope("read:api-2", "access confidential information", "Access confidential information description")), DateTime.now.minusDays(2)),
+      val app2 = AppAuthorisation(
+        ThirdPartyApplication(UUID.randomUUID(), "Application", trusted = false),
+        Set(Scope("read:api-2", "access confidential information", "Access confidential information description")),
+        DateTime.now.minusDays(2))
 
-        AppAuthorisation(ThirdPartyApplication(UUID.randomUUID(), "Third Application", trusted = false),
-          Set(), DateTime.now.minusMonths(2))
-      )
+
+      val app3 = AppAuthorisation(
+        ThirdPartyApplication(UUID.randomUUID(), "4pplication", trusted = false),
+        Set.empty,
+        DateTime.now.minusMonths(2))
+
+      val applications = Seq(app1, app2, app3)
 
       LoginStub.stubSuccessfulLogin()
       DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(applications)
@@ -55,7 +61,7 @@ class AuthorizedApplicationsSpec extends BaseSpec with NavigationSugar {
       go(AuthorizedApplicationsPage)
       on(AuthorizedApplicationsPage)
 
-      verifyApplicationsDisplayed(applications)
+      verifyApplicationsDisplayedInOrder(Seq(app3, app2, app1))
     }
 
     scenario("User sees only authorized applications, which are not trusted") {
@@ -69,7 +75,7 @@ class AuthorizedApplicationsSpec extends BaseSpec with NavigationSugar {
       go(AuthorizedApplicationsPage)
       on(AuthorizedApplicationsPage)
 
-      verifyApplicationsDisplayed(Seq(otherApp))
+      verifyApplicationsDisplayedInOrder(Seq(otherApp))
     }
 
     scenario("User sees 'no authorized applications' message if all of the authorised applications are trusted") {
@@ -101,9 +107,11 @@ class AuthorizedApplicationsSpec extends BaseSpec with NavigationSugar {
     verifyText(applicationsMessageText, "If you want to grant authority to an application you must do it in the application itself.")
   }
 
-  private def verifyApplicationsDisplayed(apps: Seq[AppAuthorisation]) = {
+  private def verifyApplicationsDisplayedInOrder(apps: Seq[AppAuthorisation]) = {
     verifyText(applicationsMessageText, "You have granted authority to the following software applications. You can remove this authority below.")
     verifyListSize(applicationList, apps.size)
+
+    verifyOrderByText(applicationNameLinks, apps.map(_.application.name))
 
     apps.foreach { app =>
       verifyText(applicationNameLink(app.application.id), app.application.name)

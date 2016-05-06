@@ -23,7 +23,7 @@
                     @for(app <- applications) {
                         <li>
                             <details data-@{app.application.id}>
-                                <summary data-name-@{app.application.id}>
+                                <summary data-name-for="@{app.application.id}">
                                     @{app.application.name}
                                 </summary>
                                 <div class="panel-indent">
