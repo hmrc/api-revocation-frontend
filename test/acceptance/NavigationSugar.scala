@@ -22,6 +22,7 @@ import org.scalatest.concurrent.Eventually
 import org.scalatest.selenium.WebBrowser
 import org.scalatest.selenium.WebBrowser.{go => goo}
 import org.scalatest.{Assertions, Matchers}
+import scala.collection.convert.decorateAsScala._
 
 trait NavigationSugar extends WebBrowser with Eventually with Assertions with Matchers {
 
@@ -56,6 +57,11 @@ trait NavigationSugar extends WebBrowser with Eventually with Assertions with Ma
 
   def verifyText(locator: By, expected: String)(implicit webDriver: WebDriver) = {
     webDriver.findElement(locator).getText should include (expected)
+  }
+
+  def verifyOrderByText(locator: String, expected: Seq[String])(implicit webDriver: WebDriver) = {
+    val elements = webDriver.findElements(By.cssSelector(locator)).listIterator.asScala.toSeq
+    elements.map(_.getText) == expected
   }
 
   def redirectedTo(page: WebLink)(implicit webDriver: WebDriver) = {

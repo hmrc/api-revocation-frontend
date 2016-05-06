@@ -29,7 +29,9 @@ object AuthorizedApplicationsPage extends WebPage {
 
   val applicationList: String = "data-applications"
 
-  def applicationNameLink(appId: UUID): By = By.cssSelector(s"[data-name-$appId]")
+  val applicationNameLinks: String = "[data-name-for]"
+
+  def applicationNameLink(appId: UUID): By = By.cssSelector(s"[data-name-for='$appId']")
 
   def applicationScopeElement(appId: UUID, scopeKey: String): By = By.cssSelector(s"[data-scope-$appId='$scopeKey']")
 
