@@ -18,14 +18,14 @@ package unit.connectors
 
 import java.util.UUID
 
-import acceptance.stubs.DelegatedAuthorityStub
 import com.github.tomakehurst.wiremock.client.WireMock._
 import config.WSHttp
-import connectors.DelegatedAuthorityConnector
+import connectors.{AuthorityNotFound, DelegatedAuthorityConnector}
 import models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import org.joda.time.DateTime
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{BeforeAndAfterEach, Matchers}
+import stubs.DelegatedAuthorityStub
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
@@ -68,6 +68,36 @@ class DelegatedAuthorityConnectorSpec extends UnitSpec with Matchers with ScalaF
       DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthority(authority)
 
       await(connector.fetchApplicationAuthority(authority.application.id)) shouldBe authority
+    }
+
+    "throw exception if third party delegated authority is not found" in new Setup {
+
+      val authority = anApplicationAuthority()
+
+      DelegatedAuthorityStub.stubFailedFetchApplicationAuthority(authority, status = 404)
+
+      intercept[AuthorityNotFound]{ await(connector.fetchApplicationAuthority(authority.application.id)) }
+    }
+  }
+
+  "revokeApplicationAuthority" should {
+
+    "remove a third party delegated authority" in new Setup {
+
+      val authority = anApplicationAuthority()
+
+      DelegatedAuthorityStub.stubSuccessfulAuthorityRevocation(authority)
+
+      await(connector.revokeApplicationAuthority(authority.application.id))
+    }
+
+    "throw exception if third party delegated authority is not found" in new Setup {
+
+      val authority = anApplicationAuthority()
+
+      DelegatedAuthorityStub.stubFailedAuthorityRevocation(authority, status = 404)
+
+      intercept[AuthorityNotFound]{ await(connector.revokeApplicationAuthority(authority.application.id)) }
     }
   }
 

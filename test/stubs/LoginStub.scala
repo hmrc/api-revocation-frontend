@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package acceptance.stubs
+package stubs
 
 import java.net.URLEncoder
 import java.util.UUID

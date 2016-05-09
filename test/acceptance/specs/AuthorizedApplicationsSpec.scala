@@ -20,10 +20,10 @@ import java.util.UUID
 
 import acceptance.pages.AuthorizedApplicationsPage._
 import acceptance.pages.{AuthorizedApplicationsPage, LoginPage}
-import acceptance.stubs.{DelegatedAuthorityStub, LoginStub}
 import acceptance.{BaseSpec, NavigationSugar}
 import models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import org.joda.time.DateTime
+import stubs.{DelegatedAuthorityStub, LoginStub}
 
 class AuthorizedApplicationsSpec extends BaseSpec with NavigationSugar {
 

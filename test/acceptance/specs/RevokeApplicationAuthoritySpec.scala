@@ -22,31 +22,31 @@ import acceptance.pages.AuthorizedApplicationsPage.{applicationNameLink, withdra
 import acceptance.pages.PermissionWithdrawnPage.{withdrawnContinueLink, withdrawnMessageText}
 import acceptance.pages.WithdrawPermissionPage.{withdrawCancelButton, withdrawWarningText}
 import acceptance.pages._
-import acceptance.stubs.{DelegatedAuthorityStub, LoginStub}
 import acceptance.{BaseSpec, NavigationSugar}
 import models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import org.joda.time.DateTime
+import stubs.{DelegatedAuthorityStub, LoginStub}
 
 class RevokeApplicationAuthoritySpec extends BaseSpec with NavigationSugar {
 
   feature("Revoking application authority") {
 
     scenario("User is able to revoke application authority") {
-      val app = someAppAuthorisation(trusted = false)
+      val authority = someAppAuthority(trusted = false)
 
       LoginStub.stubSuccessfulLogin()
-      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(Seq(app))
-      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthority(app)
-      DelegatedAuthorityStub.stubSuccessfulAuthorityRevocation(app.application.id, app.application.name)
+      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(Seq(authority))
+      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthority(authority)
+      DelegatedAuthorityStub.stubSuccessfulAuthorityRevocation(authority)
 
       go(AuthorizedApplicationsPage)
 
       on(AuthorizedApplicationsPage)
-      clickOnElement(applicationNameLink(app.application.id))
-      clickOnElement(withdrawPermissionButton(app.application.id))
+      clickOnElement(applicationNameLink(authority.application.id))
+      clickOnElement(withdrawPermissionButton(authority.application.id))
 
-      on(WithdrawPermissionPage(app.application.id))
-      verifyText(withdrawWarningText, s"You are about to remove authority from ${app.application.name}.")
+      on(WithdrawPermissionPage(authority.application.id))
+      verifyText(withdrawWarningText, s"You are about to remove authority from ${authority.application.name}.")
       clickOnSubmit()
 
       on(PermissionWithdrawnPage)
@@ -57,41 +57,55 @@ class RevokeApplicationAuthoritySpec extends BaseSpec with NavigationSugar {
     }
 
     scenario("User is able to cancel application authority revocation") {
-      val app = someAppAuthorisation(trusted = false)
+      val authority = someAppAuthority(trusted = false)
 
       LoginStub.stubSuccessfulLogin()
-      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(Seq(app))
-      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthority(app)
-      DelegatedAuthorityStub.stubSuccessfulAuthorityRevocation(app.application.id, app.application.name)
+      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(Seq(authority))
+      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthority(authority)
+      DelegatedAuthorityStub.stubSuccessfulAuthorityRevocation(authority)
 
       go(AuthorizedApplicationsPage)
 
       on(AuthorizedApplicationsPage)
-      clickOnElement(applicationNameLink(app.application.id))
-      clickOnElement(withdrawPermissionButton(app.application.id))
+      clickOnElement(applicationNameLink(authority.application.id))
+      clickOnElement(withdrawPermissionButton(authority.application.id))
 
-      on(WithdrawPermissionPage(app.application.id))
+      on(WithdrawPermissionPage(authority.application.id))
       clickOnElement(withdrawCancelButton)
 
       on(AuthorizedApplicationsPage)
     }
 
     scenario("User is not able to revoke application authority if the application is trusted") {
-      val trustedApp = someAppAuthorisation(trusted = true)
+      val authorityForTrustedApp = someAppAuthority(trusted = true)
 
       LoginStub.stubSuccessfulLogin()
-      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(Seq(trustedApp))
-      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthority(trustedApp)
+      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(Seq(authorityForTrustedApp))
+      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthority(authorityForTrustedApp)
 
       go(AuthorizedApplicationsPage)
 
-      go(WithdrawPermissionPage(trustedApp.application.id))
+      go(WithdrawPermissionPage(authorityForTrustedApp.application.id))
 
       on(TechnicalDifficultiesPage)
     }
+
+    scenario("User is not able to revoke non existent application authority") {
+      val authority = someAppAuthority(trusted = false)
+
+      LoginStub.stubSuccessfulLogin()
+      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(Seq(authority))
+      DelegatedAuthorityStub.stubFailedFetchApplicationAuthority(authority, status = 404)
+
+      go(AuthorizedApplicationsPage)
+
+      go(WithdrawPermissionPage(authority.application.id))
+
+      on(NotFoundPage)
+    }
   }
 
-  private def someAppAuthorisation(trusted: Boolean) = {
+  private def someAppAuthority(trusted: Boolean) = {
     AppAuthorisation(
       application = ThirdPartyApplication(UUID.randomUUID(), "First Application", trusted = trusted),
       scopes = Set(Scope("read:api-1", "scope name", "Access personal information"), Scope("read:api-3", "scope name", "Access tax information")),

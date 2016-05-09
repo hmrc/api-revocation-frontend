@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
-package object connectors {
+package acceptance.pages
 
-  private[connectors] def recovery(url: String): PartialFunction[Throwable, Nothing] = {
-    case e: Throwable => throw DownstreamMicroserviceException(url, e)
-  }
+import acceptance.WebPage
+
+object NotFoundPage extends WebPage {
+
+  override val url = ""
+
+  override def isCurrentPage = find(cssSelector("h1")).exists(_.text == "This page can’t be found")
 }

@@ -21,7 +21,7 @@ import java.util.UUID
 import config.WSHttp
 import models.AppAuthorisation
 import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpDelete, HttpGet, HttpPost}
+import uk.gov.hmrc.play.http._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -32,24 +32,23 @@ trait DelegatedAuthorityConnector {
   val http: HttpPost with HttpGet with HttpDelete
 
   def fetchApplicationAuthorities()(implicit hc: HeaderCarrier): Future[Seq[AppAuthorisation]] = {
-    val url = s"$delegatedAuthorityUrl/authority/granted-applications"
-    http.GET[Seq[AppAuthorisation]](url) recover {
-      recovery(url)
-    }
+    http.GET[Seq[AppAuthorisation]](s"$delegatedAuthorityUrl/authority/granted-applications")
   }
 
   def fetchApplicationAuthority(applicationId: UUID)(implicit hc: HeaderCarrier): Future[AppAuthorisation] = {
-    val url = s"$delegatedAuthorityUrl/authority/granted-application/$applicationId"
-    http.GET[AppAuthorisation](url) recover {
-      recovery(url)
+    http.GET[AppAuthorisation](s"$delegatedAuthorityUrl/authority/granted-application/$applicationId") recover {
+      recovery
     }
   }
 
   def revokeApplicationAuthority(applicationId: UUID)(implicit hc: HeaderCarrier): Future[Unit] = {
-    val url = s"$delegatedAuthorityUrl/authority/granted-application/$applicationId"
-    http.DELETE(url) map(_ => ()) recover {
-      recovery(url)
+    http.DELETE(s"$delegatedAuthorityUrl/authority/granted-application/$applicationId") map (_ => ()) recover {
+      recovery
     }
+  }
+
+  private def recovery: PartialFunction[Throwable, Nothing] = {
+    case e: NotFoundException => throw new AuthorityNotFound
   }
 }
 
@@ -57,3 +56,5 @@ object DelegatedAuthorityConnector extends DelegatedAuthorityConnector with Serv
   override val delegatedAuthorityUrl = s"${baseUrl("third-party-delegated-authority")}"
   override val http = WSHttp
 }
+
+class AuthorityNotFound extends RuntimeException
