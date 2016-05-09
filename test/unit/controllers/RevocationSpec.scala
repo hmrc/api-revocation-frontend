@@ -29,7 +29,7 @@ import org.scalatest.mock.MockitoSugar
 import play.api.http.Status
 import play.api.test.FakeRequest
 import play.filters.csrf.CSRF.SignedTokenProvider
-import service.RevocationService
+import service.{TrustedAuthorityRevocationException, RevocationService}
 import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds.GovernmentGatewayId
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.{Accounts, Authority, ConfidenceLevel, CredentialStrength}
@@ -123,6 +123,15 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
     "return 404 if authorisation not found" in {
 
       given(underTest.revocationService.revokeApplicationAuthority(Matchers.eq(appId))(any())).willReturn(Future.failed(new AuthorityNotFound()))
+
+      val result = underTest.withdrawAction(appId)(loggedInRequest)
+
+      status(result) shouldBe 404
+    }
+
+    "return 404 if authorisation does exist, but is for a trusted application" in {
+
+      given(underTest.revocationService.revokeApplicationAuthority(Matchers.eq(appId))(any())).willReturn(Future.failed(new TrustedAuthorityRevocationException(appId)))
 
       val result = underTest.withdrawAction(appId)(loggedInRequest)
 

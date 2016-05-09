@@ -21,7 +21,7 @@ import java.util.UUID
 import config.{FrontendAuthConnector, FrontendGlobal}
 import connectors.AuthorityNotFound
 import play.api.mvc.Action
-import service.RevocationService
+import service.{TrustedAuthorityRevocationException, TrustedAuthorityRetrievalException, RevocationService}
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
@@ -51,6 +51,7 @@ trait Revocation extends FrontendController with Authentication {
       authority => Ok(views.html.revocation.withdrawPermission(authority))
     } recover {
       case _: AuthorityNotFound => NotFound(FrontendGlobal.notFoundTemplate)
+      case _: TrustedAuthorityRetrievalException => NotFound(FrontendGlobal.notFoundTemplate)
     }
   }
 
@@ -59,6 +60,7 @@ trait Revocation extends FrontendController with Authentication {
       _ => Redirect(routes.Revocation.withdrawConfirmationPage())
     } recover {
       case _: AuthorityNotFound => NotFound(FrontendGlobal.notFoundTemplate)
+      case _: TrustedAuthorityRevocationException => NotFound(FrontendGlobal.notFoundTemplate)
     }
   }
 

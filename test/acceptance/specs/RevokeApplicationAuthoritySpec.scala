@@ -87,7 +87,7 @@ class RevokeApplicationAuthoritySpec extends BaseSpec with NavigationSugar {
 
       go(WithdrawPermissionPage(authorityForTrustedApp.application.id))
 
-      on(TechnicalDifficultiesPage)
+      on(NotFoundPage)
     }
 
     scenario("User is not able to revoke non existent application authority") {
