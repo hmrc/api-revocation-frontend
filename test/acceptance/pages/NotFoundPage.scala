@@ -18,9 +18,9 @@ package acceptance.pages
 
 import acceptance.WebPage
 
-object TechnicalDifficultiesPage extends WebPage {
+object NotFoundPage extends WebPage {
 
   override val url = ""
 
-  override def isCurrentPage = find(cssSelector("h1")).exists(_.text == "Sorry, we’re experiencing technical difficulties")
+  override def isCurrentPage = find(cssSelector("h1")).exists(_.text == "This page can’t be found")
 }

@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package acceptance.stubs
-
-import java.util.UUID
+package stubs
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.{AppAuthorisation, Scope}
@@ -39,14 +37,24 @@ object DelegatedAuthorityStub {
     ))
   }
 
-  def stubSuccessfulAuthorityRevocation(applicationId: UUID, applicationName: String) = {
-    stubFor(delete(urlEqualTo(s"/authority/granted-application/$applicationId")).willReturn(
-      aResponse().withStatus(200)))
+  def stubFailedFetchApplicationAuthority(appAuthorisation: AppAuthorisation, status: Int) = {
+    stubFor(get(urlEqualTo(s"/authority/granted-application/${appAuthorisation.application.id}")).willReturn(
+      aResponse()
+        .withStatus(status)
+    ))
+  }
 
-    stubFor(get(urlEqualTo(s"/application/$applicationId")).willReturn(
-      aResponse().withStatus(200).withBody(
-        s"""{"id":"$applicationId", "name":"$applicationName"}"""
-      )
+  def stubSuccessfulAuthorityRevocation(appAuthorisation: AppAuthorisation) = {
+    stubFor(delete(urlEqualTo(s"/authority/granted-application/${appAuthorisation.application.id}")).willReturn(
+      aResponse()
+        .withStatus(200)
+    ))
+  }
+
+  def stubFailedAuthorityRevocation(appAuthorisation: AppAuthorisation, status: Int) = {
+    stubFor(delete(urlEqualTo(s"/authority/granted-application/${appAuthorisation.application.id}")).willReturn(
+      aResponse()
+        .withStatus(status)
     ))
   }
 

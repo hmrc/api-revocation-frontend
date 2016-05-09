@@ -19,10 +19,10 @@ package acceptance.specs
 import java.util.UUID
 
 import acceptance.pages.{AuthorizedApplicationsPage, StartPage}
-import acceptance.stubs.{DelegatedAuthorityStub, LoginStub}
 import acceptance.{BaseSpec, NavigationSugar}
 import models.{AppAuthorisation, ThirdPartyApplication}
 import org.joda.time.DateTime
+import stubs.{DelegatedAuthorityStub, LoginStub}
 
 class StartSpec extends BaseSpec with NavigationSugar {
 

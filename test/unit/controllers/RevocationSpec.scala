@@ -18,6 +18,7 @@ package unit.controllers
 
 import java.util.UUID
 
+import connectors.AuthorityNotFound
 import controllers.Revocation
 import models.{AppAuthorisation, ThirdPartyApplication}
 import org.joda.time.DateTime
@@ -28,7 +29,7 @@ import org.scalatest.mock.MockitoSugar
 import play.api.http.Status
 import play.api.test.FakeRequest
 import play.filters.csrf.CSRF.SignedTokenProvider
-import service.RevocationService
+import service.{TrustedAuthorityRevocationException, RevocationService}
 import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds.GovernmentGatewayId
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.{Accounts, Authority, ConfidenceLevel, CredentialStrength}
@@ -40,6 +41,7 @@ import scala.concurrent.Future
 
 class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar {
 
+  val appId = UUID.randomUUID()
   val authority = Authority(s"Test User", Accounts(), None, None, CredentialStrength.Strong, ConfidenceLevel.L50)
   val headerCarrier = HeaderCarrier()
 
@@ -97,7 +99,6 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
 
   "withdrawPage" should {
     "return 200" in {
-      val appId = UUID.randomUUID()
       val appAuthority = AppAuthorisation(ThirdPartyApplication(appId, "appName", false), Set(), DateTime.now)
 
       given(underTest.revocationService.fetchUntrustedApplicationAuthority(Matchers.eq(appId))(any())).willReturn(Future(appAuthority))
@@ -110,7 +111,6 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
 
   "withdrawAction" should {
     "redirect to authorisation withdrawn page" in {
-      val appId = UUID.randomUUID()
 
       given(underTest.revocationService.revokeApplicationAuthority(Matchers.eq(appId))(any())).willReturn(Future(()))
 
@@ -118,6 +118,24 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
 
       status(result) shouldBe 303
       result.header.headers("Location") shouldEqual controllers.routes.Revocation.withdrawConfirmationPage().url
+    }
+
+    "return 404 if authorisation not found" in {
+
+      given(underTest.revocationService.revokeApplicationAuthority(Matchers.eq(appId))(any())).willReturn(Future.failed(new AuthorityNotFound()))
+
+      val result = underTest.withdrawAction(appId)(loggedInRequest)
+
+      status(result) shouldBe 404
+    }
+
+    "return 404 if authorisation does exist, but is for a trusted application" in {
+
+      given(underTest.revocationService.revokeApplicationAuthority(Matchers.eq(appId))(any())).willReturn(Future.failed(new TrustedAuthorityRevocationException(appId)))
+
+      val result = underTest.withdrawAction(appId)(loggedInRequest)
+
+      status(result) shouldBe 404
     }
   }
 

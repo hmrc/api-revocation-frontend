@@ -18,9 +18,10 @@ package controllers
 
 import java.util.UUID
 
-import config.FrontendAuthConnector
+import config.{FrontendAuthConnector, FrontendGlobal}
+import connectors.AuthorityNotFound
 import play.api.mvc.Action
-import service.RevocationService
+import service.{TrustedAuthorityRevocationException, TrustedAuthorityRetrievalException, RevocationService}
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
@@ -40,18 +41,27 @@ trait Revocation extends FrontendController with Authentication {
   }
 
   val listAuthorizedApplications = authenticated.async { implicit user => implicit request =>
-    revocationService.fetchUntrustedApplicationAuthorities()
-      .map(applications => Ok(views.html.revocation.authorizedApplications(applications)))
+    revocationService.fetchUntrustedApplicationAuthorities() map {
+      applications => Ok(views.html.revocation.authorizedApplications(applications))
+    }
   }
 
   def withdrawPage(id: UUID) = authenticated.async { implicit user => implicit request =>
-    revocationService.fetchUntrustedApplicationAuthority(id)
-      .map(authority => Ok(views.html.revocation.withdrawPermission(authority)))
+    revocationService.fetchUntrustedApplicationAuthority(id) map {
+      authority => Ok(views.html.revocation.withdrawPermission(authority))
+    } recover {
+      case _: AuthorityNotFound => NotFound(FrontendGlobal.notFoundTemplate)
+      case _: TrustedAuthorityRetrievalException => NotFound(FrontendGlobal.notFoundTemplate)
+    }
   }
 
   def withdrawAction(id: UUID) = authenticated.async { implicit user => implicit request =>
-    revocationService.revokeApplicationAuthority(id)
-      .map(_ => Redirect(routes.Revocation.withdrawConfirmationPage()))
+    revocationService.revokeApplicationAuthority(id) map {
+      _ => Redirect(routes.Revocation.withdrawConfirmationPage())
+    } recover {
+      case _: AuthorityNotFound => NotFound(FrontendGlobal.notFoundTemplate)
+      case _: TrustedAuthorityRevocationException => NotFound(FrontendGlobal.notFoundTemplate)
+    }
   }
 
   val withdrawConfirmationPage = authenticated.async { implicit user => implicit request =>
