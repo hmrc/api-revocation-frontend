@@ -27,6 +27,7 @@ private object AppDependencies {
   private val playAuthorisedFrontendVersion = "4.7.0"
   private val playConfigVersion = "2.0.1"
   private val hmrcTestVersion = "1.6.0"
+  private val httpMetrics = "0.4.0"
   
   val compile = Seq(
     ws,
@@ -38,6 +39,7 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "govuk-template" % govukTemplateVersion,
     "uk.gov.hmrc" %% "play-health" % playHealthVersion,
     "uk.gov.hmrc" %% "play-ui" % playUiVersion,
+    "uk.gov.hmrc" %% "http-metrics" % httpMetrics,
     "org.apache.httpcomponents" % "httpclient" % "4.3.3",
     "org.apache.httpcomponents" % "httpcore" % "4.3.3"
   )
