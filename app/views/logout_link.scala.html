@@ -1,2 +1,5 @@
 @import config.FrontendAppConfig
+@import play.api.i18n.Messages.Implicits._
+@import play.api.Play.current
+
 <li><a id="logOutNavHref" href="@FrontendAppConfig.signOutUrl" data-journey-click="primary-navigation:Click:Sign out">@Messages("message.signout")</a></li>

@@ -29,6 +29,7 @@ trait AppConfig {
   val reportAProblemNonJSUrl: String
   val signInUrl: String
   val signOutUrl: String
+  val continueUrl: String
 }
 
 object FrontendAppConfig extends AppConfig with ServicesConfig {
@@ -50,4 +51,5 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
   override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
   override lazy val signInUrl = s"$caFrontendHost/gg/sign-in?continue=$loginCallbackBaseUrl/applications-manage-authority/applications"
   override lazy val signOutUrl = s"$caFrontendHost/gg/sign-out?continue=$loginCallbackBaseUrl/applications-manage-authority/loggedout"
+  override lazy val continueUrl: String = s"applications-manage-authority/applications"
 }

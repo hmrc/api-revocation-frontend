@@ -57,7 +57,8 @@ object LoginStub extends SessionCookieBaker {
                |    },
                |    "levelOfAssurance": "2",
                |    "confidenceLevel" : 50,
-               |    "credentialStrength": "strong"
+               |    "credentialStrength": "strong",
+               |    "legacyOid":"1234567890"
                |}
                |
             """.stripMargin
