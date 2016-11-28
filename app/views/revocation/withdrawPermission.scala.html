@@ -1,4 +1,4 @@
-@(authorisation: AppAuthorisation)(implicit request: Request[_])
+@(authorisation: AppAuthorisation)(implicit request: Request[_], messages: Messages)
 
 @body = {
     @helper.form(action = controllers.routes.Revocation.withdrawAction(authorisation.application.id), 'class -> "form") {

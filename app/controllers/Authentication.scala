@@ -27,9 +27,11 @@ trait Authentication extends Actions {
 object ValidSessionCredentialsProvider extends AnyAuthenticationProvider with Results {
 
   private lazy val loginUrl = FrontendAppConfig.signInUrl
+  private lazy val continueUrl = FrontendAppConfig.continueUrl
 
   override def ggwAuthenticationProvider: GovernmentGateway = new GovernmentGateway {
-    override def login = loginUrl
+    override def loginURL = loginUrl
+    override def continueURL = continueUrl
   }
   override def verifyAuthenticationProvider: Verify  = new Verify {
     override def login = loginUrl

@@ -1,32 +1,25 @@
 import sbt._
-import uk.gov.hmrc.SbtAutoBuildPlugin
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
-import uk.gov.hmrc.versioning.SbtGitVersioning
 
 object FrontendBuild extends Build with MicroService {
 
   val appName = "api-revocation-frontend"
 
-  override lazy val plugins: Seq[Plugins] = Seq(
-    SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin
-  )
-
   override lazy val appDependencies: Seq[ModuleID] = AppDependencies()
 }
 
 private object AppDependencies {
-  import play.PlayImport._
+  import play.sbt.PlayImport._
   import play.core.PlayVersion
 
-  private val playHealthVersion = "1.1.0"    
-  private val playJsonLoggerVersion = "2.1.1"      
-  private val frontendBootstrapVersion = "6.7.0"
-  private val govukTemplateVersion = "4.0.0"
-  private val playUiVersion = "4.10.0"
-  private val playPartialsVersion = "4.5.0"
-  private val playAuthorisedFrontendVersion = "4.7.0"
-  private val playConfigVersion = "2.0.1"
-  private val hmrcTestVersion = "1.6.0"
+  private val playHealthVersion = "2.0.0"
+  private val logbackJsonLogger = "3.1.0"
+  private val frontendBootstrapVersion = "7.10.0"
+  private val govukTemplateVersion = "5.0.0"
+  private val playUiVersion = "5.2.0"
+  private val playPartialsVersion = "5.2.0"
+  private val playAuthorisedFrontendVersion = "6.2.0"
+  private val playConfigVersion = "3.0.0"
+  private val hmrcTestVersion = "2.2.0"
   
   val compile = Seq(
     ws,
@@ -34,7 +27,7 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "play-partials" % playPartialsVersion,
     "uk.gov.hmrc" %% "play-authorised-frontend" % playAuthorisedFrontendVersion,
     "uk.gov.hmrc" %% "play-config" % playConfigVersion,
-    "uk.gov.hmrc" %% "play-json-logger" % playJsonLoggerVersion,
+    "uk.gov.hmrc" %% "logback-json-logger" % logbackJsonLogger,
     "uk.gov.hmrc" %% "govuk-template" % govukTemplateVersion,
     "uk.gov.hmrc" %% "play-health" % playHealthVersion,
     "uk.gov.hmrc" %% "play-ui" % playUiVersion,
@@ -52,12 +45,13 @@ private object AppDependencies {
       override lazy val test = Seq(
         "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
         "org.scalatest" %% "scalatest" % "2.2.6" % scope,
-        "org.scalatestplus" %% "play" % "1.2.0" % scope,
+        "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % scope,
         "org.pegdown" % "pegdown" % "1.5.0" % scope,
         "org.jsoup" % "jsoup" % "1.7.3" % scope,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
         "com.github.tomakehurst" % "wiremock" % "1.57" % scope,
-        "org.seleniumhq.selenium" % "selenium-java" % "2.53.0" % scope
+        "org.seleniumhq.selenium" % "selenium-java" % "2.53.0" % scope,
+        "org.mockito" % "mockito-all" % "1.9.5" % scope
       )
     }.test
   }

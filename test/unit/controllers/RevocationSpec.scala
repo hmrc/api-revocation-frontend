@@ -18,6 +18,7 @@ package unit.controllers
 
 import java.util.UUID
 
+import com.kenshoo.play.metrics.PlayModule
 import connectors.AuthorityNotFound
 import controllers.Revocation
 import models.{AppAuthorisation, ThirdPartyApplication}
@@ -28,7 +29,7 @@ import org.mockito.Matchers.any
 import org.scalatest.mock.MockitoSugar
 import play.api.http.Status
 import play.api.test.FakeRequest
-import play.filters.csrf.CSRF.SignedTokenProvider
+import play.filters.csrf.CSRF.{Token, TokenProvider}
 import service.{TrustedAuthorityRevocationException, RevocationService}
 import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds.GovernmentGatewayId
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
@@ -41,8 +42,10 @@ import scala.concurrent.Future
 
 class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar {
 
+  override def bindModules = Seq(new PlayModule)
+
   val appId = UUID.randomUUID()
-  val authority = Authority(s"Test User", Accounts(), None, None, CredentialStrength.Strong, ConfidenceLevel.L50)
+  val authority = Authority(s"Test User", Accounts(), None, None, CredentialStrength.Strong, ConfidenceLevel.L50, None, None, None, "legacyOid")
   val headerCarrier = HeaderCarrier()
 
   lazy val loggedOutRequest = FakeRequest()
@@ -50,9 +53,10 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
     SessionKeys.sessionId -> "SessionId",
     SessionKeys.token -> "Token",
     SessionKeys.userId -> "Test User",
-    SessionKeys.authProvider -> GovernmentGatewayId,
-    "csrfToken" -> SignedTokenProvider.generateToken
-  )
+    SessionKeys.authProvider -> GovernmentGatewayId
+  ).copyFakeRequest(tags = Map(
+    Token.NameRequestTag -> "csrfToken",
+    Token.RequestTag -> fakeApplication.injector.instanceOf[TokenProvider].generateToken))
 
   val underTest = new Revocation {
     implicit val hc = headerCarrier
