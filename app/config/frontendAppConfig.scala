@@ -20,7 +20,6 @@ import play.api.Play.{configuration, current}
 import uk.gov.hmrc.play.config.ServicesConfig
 
 trait AppConfig {
-  val assetsPrefix: String
   val analyticsToken: String
   val analyticsHost: String
   val betaFeedbackUrl: String
@@ -42,7 +41,6 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
 
   private val contactFormServiceIdentifier = "api-revocation-frontend"
 
-  override lazy val assetsPrefix = loadConfig(s"assets.url") + loadConfig(s"assets.version")
   override lazy val analyticsToken = loadConfig(s"google-analytics.token")
   override lazy val analyticsHost = loadConfig(s"google-analytics.host")
   override lazy val betaFeedbackUrl: String = s"$contactHost/contact/beta-feedback"
