@@ -38,7 +38,7 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.Future.{failed, successful}
 
 class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar {
 
@@ -62,8 +62,11 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
     implicit val hc = headerCarrier
     override val authConnector = mock[AuthConnector]
     override val revocationService = mock[RevocationService]
-    given(authConnector.currentAuthority(any())).willReturn(Some(authority))
-    given(revocationService.fetchUntrustedApplicationAuthorities()(any())).willReturn(Seq.empty)
+
+    given(authConnector.currentAuthority(any(classOf[HeaderCarrier])))
+      .willReturn(successful(Some(authority)))
+    given(revocationService.fetchUntrustedApplicationAuthorities()(any(classOf[HeaderCarrier])))
+      .willReturn(successful(Seq.empty))
   }
 
   "Start" should {
@@ -103,9 +106,10 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
 
   "withdrawPage" should {
     "return 200" in {
-      val appAuthority = AppAuthorisation(ThirdPartyApplication(appId, "appName", false), Set(), DateTime.now)
+      val appAuthority = AppAuthorisation(ThirdPartyApplication(appId, "appName", trusted = false), Set(), DateTime.now)
 
-      given(underTest.revocationService.fetchUntrustedApplicationAuthority(Matchers.eq(appId))(any())).willReturn(Future(appAuthority))
+      given(underTest.revocationService.fetchUntrustedApplicationAuthority(Matchers.eq(appId))(any(classOf[HeaderCarrier])))
+        .willReturn(successful(appAuthority))
 
       val result = underTest.withdrawPage(appId)(loggedInRequest)
 
@@ -116,7 +120,8 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
   "withdrawAction" should {
     "redirect to authorisation withdrawn page" in {
 
-      given(underTest.revocationService.revokeApplicationAuthority(Matchers.eq(appId))(any())).willReturn(Future(()))
+      given(underTest.revocationService.revokeApplicationAuthority(Matchers.eq(appId))(any(classOf[HeaderCarrier])))
+        .willReturn(successful(()))
 
       val result = underTest.withdrawAction(appId)(loggedInRequest)
 
@@ -124,18 +129,20 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
       result.header.headers("Location") shouldEqual controllers.routes.Revocation.withdrawConfirmationPage().url
     }
 
-    "return 404 if authorisation not found" in {
+    "return 404 if the authorisation is not found" in {
 
-      given(underTest.revocationService.revokeApplicationAuthority(Matchers.eq(appId))(any())).willReturn(Future.failed(new AuthorityNotFound()))
+      given(underTest.revocationService.revokeApplicationAuthority(Matchers.eq(appId))(any(classOf[HeaderCarrier])))
+        .willReturn(failed(new AuthorityNotFound()))
 
       val result = underTest.withdrawAction(appId)(loggedInRequest)
 
       status(result) shouldBe 404
     }
 
-    "return 404 if authorisation does exist, but is for a trusted application" in {
+    "return 404 if the authorisation does exist, but it is for a trusted application" in {
 
-      given(underTest.revocationService.revokeApplicationAuthority(Matchers.eq(appId))(any())).willReturn(Future.failed(new TrustedAuthorityRevocationException(appId)))
+      given(underTest.revocationService.revokeApplicationAuthority(Matchers.eq(appId))(any(classOf[HeaderCarrier])))
+        .willReturn(failed(TrustedAuthorityRevocationException(appId)))
 
       val result = underTest.withdrawAction(appId)(loggedInRequest)
 
