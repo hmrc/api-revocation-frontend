@@ -1,8 +1,18 @@
-# api-revocation-frontend
+# API Revocation Front-end
 
 [![Build Status](https://travis-ci.org/hmrc/api-revocation-frontend.svg?branch=master)](https://travis-ci.org/hmrc/api-revocation-frontend) [ ![Download](https://api.bintray.com/packages/hmrc/releases/api-revocation-frontend/images/download.svg) ](https://bintray.com/hmrc/releases/api-revocation-frontend/_latestVersion)
 
-This is a placeholder README.md for a new repository
+This microservice allows a user to revoke authorities previously granted to an application.
+
+### Unit tests
+```
+sbt test
+```
+
+### Acceptance tests
+```
+sbt acceptance:test
+```
 
 ### License
 

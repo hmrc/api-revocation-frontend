@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ trait RevocationService {
       case authority => authority
     }
   }
-  
+
   def revokeApplicationAuthority(appId: UUID)(implicit hc: HeaderCarrier): Future[Unit] = {
     delegatedAuthorityConnector.fetchApplicationAuthority(appId).flatMap {
       case authority if authority.application.trusted => throw TrustedAuthorityRevocationException(appId)

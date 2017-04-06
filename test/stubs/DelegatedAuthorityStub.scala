@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,43 +18,66 @@ package stubs
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.{AppAuthorisation, Scope}
+import play.api.http.HeaderNames._
+import uk.gov.hmrc.play.http.HeaderNames._
 
 object DelegatedAuthorityStub {
 
+  val appName = "api-revocation-frontend"
+  val requestId = "requestId"
+
   def stubSuccessfulFetchApplicationAuthorities(applications: Seq[AppAuthorisation]) = {
-    stubFor(get(urlEqualTo(s"/authority/granted-applications")).willReturn(
-      aResponse()
-        .withStatus(200)
-        .withBody(s"""[${applications.map(toAppJson).mkString(",")}]""".stripMargin)
+    stubFor(
+      get(urlEqualTo(s"/authority/granted-applications"))
+        .withHeader(USER_AGENT, equalTo(appName))
+        .withHeader(xRequestId, equalTo(requestId))
+        .willReturn(
+          aResponse()
+            .withStatus(200)
+            .withBody(s"""[${applications.map(toAppJson).mkString(",")}]""".stripMargin)
     ))
   }
 
   def stubSuccessfulFetchApplicationAuthority(appAuthorisation: AppAuthorisation) = {
-    stubFor(get(urlEqualTo(s"/authority/granted-application/${appAuthorisation.application.id}")).willReturn(
-      aResponse()
-        .withStatus(200)
-        .withBody(toAppJson(appAuthorisation))
+    stubFor(
+      get(urlEqualTo(s"/authority/granted-application/${appAuthorisation.application.id}"))
+        .withHeader(USER_AGENT, equalTo(appName))
+        .withHeader(xRequestId, equalTo(requestId))
+        .willReturn(
+          aResponse()
+            .withStatus(200)
+            .withBody(toAppJson(appAuthorisation))
     ))
   }
 
   def stubFailedFetchApplicationAuthority(appAuthorisation: AppAuthorisation, status: Int) = {
-    stubFor(get(urlEqualTo(s"/authority/granted-application/${appAuthorisation.application.id}")).willReturn(
-      aResponse()
-        .withStatus(status)
+    stubFor(
+      get(urlEqualTo(s"/authority/granted-application/${appAuthorisation.application.id}"))
+        .withHeader(USER_AGENT, equalTo(appName))
+        .withHeader(xRequestId, equalTo(requestId))
+        .willReturn(
+          aResponse()
+            .withStatus(status)
     ))
   }
 
   def stubSuccessfulAuthorityRevocation(appAuthorisation: AppAuthorisation) = {
-    stubFor(delete(urlEqualTo(s"/authority/granted-application/${appAuthorisation.application.id}")).willReturn(
-      aResponse()
-        .withStatus(200)
+    stubFor(delete(urlEqualTo(s"/authority/granted-application/${appAuthorisation.application.id}"))
+      .withHeader(USER_AGENT, equalTo(appName))
+      .withHeader(xRequestId, equalTo(requestId))
+      .willReturn(
+        aResponse()
+          .withStatus(200)
     ))
   }
 
   def stubFailedAuthorityRevocation(appAuthorisation: AppAuthorisation, status: Int) = {
-    stubFor(delete(urlEqualTo(s"/authority/granted-application/${appAuthorisation.application.id}")).willReturn(
-      aResponse()
-        .withStatus(status)
+    stubFor(delete(urlEqualTo(s"/authority/granted-application/${appAuthorisation.application.id}"))
+      .withHeader(USER_AGENT, equalTo(appName))
+      .withHeader(xRequestId, equalTo(requestId))
+      .willReturn(
+        aResponse()
+          .withStatus(status)
     ))
   }
 
