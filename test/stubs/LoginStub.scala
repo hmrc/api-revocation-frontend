@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,11 +28,11 @@ import uk.gov.hmrc.play.http.SessionKeys
 
 object LoginStub extends SessionCookieBaker {
 
-  val SessionId = s"stubbed-${UUID.randomUUID}"
+  private val sessionId = s"stubbed-${UUID.randomUUID}"
 
   def stubSuccessfulLogin() = {
     val data = Map(
-      SessionKeys.sessionId -> SessionId,
+      SessionKeys.sessionId -> sessionId,
       SessionKeys.userId -> "/auth/oid/1234567890",
       SessionKeys.token -> "token",
       SessionKeys.authProvider -> "GGW"

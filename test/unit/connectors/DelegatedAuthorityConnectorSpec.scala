@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 class DelegatedAuthorityConnectorSpec extends UnitSpec with Matchers with ScalaFutures with WiremockSugar with BeforeAndAfterEach with WithFakeApplication {
 
-  trait Setup {
+  private trait Setup {
     implicit val hc = HeaderCarrier()
 
     val connector = new DelegatedAuthorityConnector {
@@ -52,10 +52,12 @@ class DelegatedAuthorityConnectorSpec extends UnitSpec with Matchers with ScalaF
     }
 
     "return an empty set if there are no authorised applications" in new Setup {
-      stubFor(get(urlEqualTo(s"/authority/granted-applications")).willReturn(
-        aResponse().withStatus(200).withBody("[]")))
 
-      await(connector.fetchApplicationAuthorities()) shouldBe Seq()
+      val authorities = Seq.empty
+
+      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(authorities)
+
+      await(connector.fetchApplicationAuthorities()) shouldBe authorities
     }
   }
 
@@ -70,13 +72,15 @@ class DelegatedAuthorityConnectorSpec extends UnitSpec with Matchers with ScalaF
       await(connector.fetchApplicationAuthority(authority.application.id)) shouldBe authority
     }
 
-    "throw exception if third party delegated authority is not found" in new Setup {
+    "throw `AuthorityNotFound` if the third party delegated authority is not found" in new Setup {
 
       val authority = anApplicationAuthority()
 
       DelegatedAuthorityStub.stubFailedFetchApplicationAuthority(authority, status = 404)
 
-      intercept[AuthorityNotFound]{ await(connector.fetchApplicationAuthority(authority.application.id)) }
+      intercept[AuthorityNotFound] {
+        await(connector.fetchApplicationAuthority(authority.application.id))
+      }
     }
   }
 
@@ -91,13 +95,15 @@ class DelegatedAuthorityConnectorSpec extends UnitSpec with Matchers with ScalaF
       await(connector.revokeApplicationAuthority(authority.application.id))
     }
 
-    "throw exception if third party delegated authority is not found" in new Setup {
+    "throw `AuthorityNotFound` if the third party delegated authority is not found" in new Setup {
 
       val authority = anApplicationAuthority()
 
       DelegatedAuthorityStub.stubFailedAuthorityRevocation(authority, status = 404)
 
-      intercept[AuthorityNotFound]{ await(connector.revokeApplicationAuthority(authority.application.id)) }
+      intercept[AuthorityNotFound] {
+        await(connector.revokeApplicationAuthority(authority.application.id))
+      }
     }
   }
 
