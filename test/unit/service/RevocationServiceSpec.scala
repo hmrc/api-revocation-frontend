@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,13 +29,13 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.Future.successful
 
 class RevocationServiceSpec extends UnitSpec with MockitoSugar {
 
-  trait Setup {
+  private trait Setup {
 
-    implicit val headerCarrier = HeaderCarrier()
+    implicit val hc = HeaderCarrier()
     val appId = UUID.randomUUID()
 
     val underTest = new RevocationService {
@@ -51,8 +51,8 @@ class RevocationServiceSpec extends UnitSpec with MockitoSugar {
       val authority2 = someAppAuthorisation(trusted = false)
       val trustedAuthority = someAppAuthorisation(trusted = true)
 
-      given(underTest.delegatedAuthorityConnector.fetchApplicationAuthorities()(headerCarrier))
-        .willReturn(Future(Seq(authority1, authority2, trustedAuthority)))
+      given(underTest.delegatedAuthorityConnector.fetchApplicationAuthorities()(hc))
+        .willReturn(successful(Seq(authority1, authority2, trustedAuthority)))
 
       await(underTest.fetchUntrustedApplicationAuthorities()) shouldBe Seq(authority1, authority2)
     }
@@ -62,8 +62,8 @@ class RevocationServiceSpec extends UnitSpec with MockitoSugar {
       val authority2 = untrustedApplicationWithName("Application")
       val authority3 = untrustedApplicationWithName("4pplication")
 
-      given(underTest.delegatedAuthorityConnector.fetchApplicationAuthorities()(headerCarrier))
-        .willReturn(Future(Seq(authority1, authority2, authority3)))
+      given(underTest.delegatedAuthorityConnector.fetchApplicationAuthorities()(hc))
+        .willReturn(successful(Seq(authority1, authority2, authority3)))
 
       await(underTest.fetchUntrustedApplicationAuthorities()) shouldBe Seq(authority3, authority2, authority1)
     }
@@ -75,22 +75,26 @@ class RevocationServiceSpec extends UnitSpec with MockitoSugar {
 
       val authority = someAppAuthorisation(trusted = false)
 
-      given(underTest.delegatedAuthorityConnector.fetchApplicationAuthority(appId)(headerCarrier)).willReturn(Future(authority))
+      given(underTest.delegatedAuthorityConnector.fetchApplicationAuthority(appId)(hc))
+        .willReturn(successful(authority))
 
       await(underTest.fetchUntrustedApplicationAuthority(appId)) shouldBe authority
 
-      verify(underTest.delegatedAuthorityConnector).fetchApplicationAuthority(appId)(headerCarrier)
+      verify(underTest.delegatedAuthorityConnector).fetchApplicationAuthority(appId)(hc)
     }
 
     "throw exception if authority is trusted" in new Setup {
 
       val authority = someAppAuthorisation(trusted = true)
 
-      given(underTest.delegatedAuthorityConnector.fetchApplicationAuthority(appId)(headerCarrier)).willReturn(Future(authority))
+      given(underTest.delegatedAuthorityConnector.fetchApplicationAuthority(appId)(hc))
+        .willReturn(successful(authority))
 
-      intercept[TrustedAuthorityRetrievalException](await(underTest.fetchUntrustedApplicationAuthority(appId)))
+      intercept[TrustedAuthorityRetrievalException] {
+        await(underTest.fetchUntrustedApplicationAuthority(appId))
+      }
 
-      verify(underTest.delegatedAuthorityConnector).fetchApplicationAuthority(appId)(headerCarrier)
+      verify(underTest.delegatedAuthorityConnector).fetchApplicationAuthority(appId)(hc)
     }
   }
 
@@ -100,24 +104,29 @@ class RevocationServiceSpec extends UnitSpec with MockitoSugar {
 
       val authority = someAppAuthorisation(trusted = false)
 
-      given(underTest.delegatedAuthorityConnector.fetchApplicationAuthority(appId)(headerCarrier)).willReturn(Future(authority))
-      given(underTest.delegatedAuthorityConnector.revokeApplicationAuthority(appId)(headerCarrier)).willReturn(Future(()))
+      given(underTest.delegatedAuthorityConnector.fetchApplicationAuthority(appId)(hc))
+        .willReturn(successful(authority))
+      given(underTest.delegatedAuthorityConnector.revokeApplicationAuthority(appId)(hc))
+        .willReturn(successful(()))
 
       await(underTest.revokeApplicationAuthority(appId))
 
-      verify(underTest.delegatedAuthorityConnector).fetchApplicationAuthority(appId)(headerCarrier)
-      verify(underTest.delegatedAuthorityConnector).revokeApplicationAuthority(appId)(headerCarrier)
+      verify(underTest.delegatedAuthorityConnector).fetchApplicationAuthority(appId)(hc)
+      verify(underTest.delegatedAuthorityConnector).revokeApplicationAuthority(appId)(hc)
     }
 
     "throw exception if authority is trusted" in new Setup {
 
       val authority = someAppAuthorisation(trusted = true)
 
-      given(underTest.delegatedAuthorityConnector.fetchApplicationAuthority(appId)(headerCarrier)).willReturn(Future(authority))
+      given(underTest.delegatedAuthorityConnector.fetchApplicationAuthority(appId)(hc))
+        .willReturn(successful(authority))
 
-      intercept[TrustedAuthorityRevocationException](await(underTest.revokeApplicationAuthority(appId)))
+      intercept[TrustedAuthorityRevocationException] {
+        await(underTest.revokeApplicationAuthority(appId))
+      }
 
-      verify(underTest.delegatedAuthorityConnector).fetchApplicationAuthority(appId)(headerCarrier)
+      verify(underTest.delegatedAuthorityConnector).fetchApplicationAuthority(appId)(hc)
       verifyNoMoreInteractions(underTest.delegatedAuthorityConnector)
     }
   }
