@@ -25,6 +25,7 @@ import play.api.http.HeaderNames
 import play.api.libs.Crypto
 import uk.gov.hmrc.crypto.{CompositeSymmetricCrypto, PlainText}
 import uk.gov.hmrc.play.http.SessionKeys
+import uk.gov.hmrc.time.DateTimeUtils
 
 object LoginStub extends SessionCookieBaker {
 
@@ -35,7 +36,8 @@ object LoginStub extends SessionCookieBaker {
       SessionKeys.sessionId -> sessionId,
       SessionKeys.userId -> "/auth/oid/1234567890",
       SessionKeys.token -> "token",
-      SessionKeys.authProvider -> "GGW"
+      SessionKeys.authProvider -> "GGW",
+      SessionKeys.lastRequestTimestamp -> DateTimeUtils.now.getMillis.toString
     )
     stubFor(get(urlEqualTo(s"/gg/sign-in?continue=${AuthorizedApplicationsPage.url}"))
       .willReturn(aResponse()
