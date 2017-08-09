@@ -45,7 +45,7 @@ trait RevocationService {
   def revokeApplicationAuthority(appId: UUID)(implicit hc: HeaderCarrier): Future[Unit] = {
     delegatedAuthorityConnector.fetchApplicationAuthority(appId).flatMap {
       case authority if authority.application.trusted => throw TrustedAuthorityRevocationException(appId)
-      case authority => delegatedAuthorityConnector.revokeApplicationAuthority(appId)
+      case _ => delegatedAuthorityConnector.revokeApplicationAuthority(appId)
     }
   }
 }
