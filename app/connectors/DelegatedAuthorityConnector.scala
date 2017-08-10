@@ -48,7 +48,7 @@ trait DelegatedAuthorityConnector {
   }
 
   private def recovery: PartialFunction[Throwable, Nothing] = {
-    case e: NotFoundException => throw new AuthorityNotFound
+    case _: NotFoundException => throw new AuthorityNotFound
   }
 }
 
