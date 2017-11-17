@@ -38,9 +38,9 @@ class AuthorizedApplicationsSpec extends BaseSpec with NavigationSugar {
     scenario("User sees his authorized applications") {
 
       val app1 = AppAuthorisation(
-          ThirdPartyApplication(UUID.randomUUID(), "Zapplication", trusted = false),
-          Set(Scope("read:api-1", "access personal information", "Access personal information description"), Scope("read:api-3", "access tax information", "Access tax information description")),
-          DateTime.now)
+        ThirdPartyApplication(UUID.randomUUID(), "Zapplication", trusted = false),
+        Set(Scope("read:api-1", "access personal information", "Access personal information description"), Scope("read:api-3", "access tax information", "Access tax information description")),
+        DateTime.now)
 
       val app2 = AppAuthorisation(
         ThirdPartyApplication(UUID.randomUUID(), "Application", trusted = false),

@@ -35,6 +35,7 @@ object LoginStub extends SessionCookieBaker {
     val data = Map(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.userId -> "/auth/oid/1234567890",
+      SessionKeys.authToken -> "Bearer+1234",
       SessionKeys.token -> "token",
       SessionKeys.authProvider -> "GGW",
       SessionKeys.lastRequestTimestamp -> DateTimeUtils.now.getMillis.toString

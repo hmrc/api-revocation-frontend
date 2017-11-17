@@ -48,7 +48,6 @@ lazy val compile = Seq(
   "org.apache.httpcomponents" % "httpcore" % "4.3.3"
 )
 
-
 lazy val test = Seq(
   "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % "test",
   "org.scalatest" %% "scalatest" % "2.2.6" % "test",
@@ -60,6 +59,7 @@ lazy val test = Seq(
   "org.seleniumhq.selenium" % "selenium-java" % "2.53.0" % "test",
   "org.mockito" % "mockito-all" % "1.9.5" % "test"
 )
+
 lazy val plugins: Seq[Plugins] = Seq.empty
 lazy val playSettings: Seq[Setting[_]] = Seq.empty
 lazy val microservice = (project in file("."))
@@ -91,6 +91,7 @@ lazy val microservice = (project in file("."))
     testGrouping in AcceptanceTest := oneForkedJvmPerTest((definedTests in AcceptanceTest).value)
   )
   .settings(resolvers ++= Seq(Resolver.bintrayRepo("hmrc", "releases"), Resolver.jcenterRepo))
+
 lazy val AcceptanceTest = config("acceptance") extend Test
 
 def unitFilter(name: String): Boolean = name startsWith "unit"
