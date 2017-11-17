@@ -18,7 +18,6 @@ package unit.connectors
 
 import java.util.UUID
 
-import com.github.tomakehurst.wiremock.client.WireMock._
 import config.WSHttp
 import connectors.{AuthorityNotFound, DelegatedAuthorityConnector}
 import models.{AppAuthorisation, Scope, ThirdPartyApplication}
@@ -26,10 +25,15 @@ import org.joda.time.DateTime
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{BeforeAndAfterEach, Matchers}
 import stubs.DelegatedAuthorityStub
-import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
-class DelegatedAuthorityConnectorSpec extends UnitSpec with Matchers with ScalaFutures with WiremockSugar with BeforeAndAfterEach with WithFakeApplication {
+class DelegatedAuthorityConnectorSpec extends UnitSpec
+  with Matchers
+  with ScalaFutures
+  with WiremockSugar
+  with BeforeAndAfterEach
+  with WithFakeApplication {
 
   private trait Setup {
     implicit val hc = HeaderCarrier()

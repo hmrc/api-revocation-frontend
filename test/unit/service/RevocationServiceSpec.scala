@@ -25,10 +25,9 @@ import org.mockito.BDDMockito.given
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import service.{RevocationService, TrustedAuthorityRetrievalException, TrustedAuthorityRevocationException}
-import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.test.UnitSpec
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future.successful
 
 class RevocationServiceSpec extends UnitSpec with MockitoSugar {

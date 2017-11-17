@@ -20,8 +20,8 @@ import java.util.UUID
 
 import config.WSHttp
 import models.AppAuthorisation
+import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.http._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -36,15 +36,11 @@ trait DelegatedAuthorityConnector {
   }
 
   def fetchApplicationAuthority(applicationId: UUID)(implicit hc: HeaderCarrier): Future[AppAuthorisation] = {
-    http.GET[AppAuthorisation](s"$delegatedAuthorityUrl/authority/granted-application/$applicationId") recover {
-      recovery
-    }
+    http.GET[AppAuthorisation](s"$delegatedAuthorityUrl/authority/granted-application/$applicationId") recover recovery
   }
 
   def revokeApplicationAuthority(applicationId: UUID)(implicit hc: HeaderCarrier): Future[Unit] = {
-    http.DELETE(s"$delegatedAuthorityUrl/authority/granted-application/$applicationId") map (_ => ()) recover {
-      recovery
-    }
+    http.DELETE(s"$delegatedAuthorityUrl/authority/granted-application/$applicationId") map (_ => ()) recover recovery
   }
 
   private def recovery: PartialFunction[Throwable, Nothing] = {
