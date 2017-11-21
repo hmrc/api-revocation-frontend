@@ -15,23 +15,14 @@ lazy val appName = "api-revocation-frontend"
 
 lazy val appDependencies: Seq[ModuleID] = compile ++ test
 
-
 lazy val playHealthVersion = "2.1.0"
-
 lazy val logbackJsonLogger = "3.1.0"
-
 lazy val frontendBootstrapVersion = "7.22.0"
-
 lazy val govukTemplateVersion = "5.2.0"
-
 lazy val playUiVersion = "7.2.1"
-
 lazy val playPartialsVersion = "5.3.0"
-
 lazy val playAuthorisedFrontendVersion = "6.3.0"
-
 lazy val playConfigVersion = "4.3.0"
-
 lazy val hmrcTestVersion = "2.3.0"
 
 lazy val compile = Seq(
@@ -47,7 +38,6 @@ lazy val compile = Seq(
   "org.apache.httpcomponents" % "httpclient" % "4.3.3",
   "org.apache.httpcomponents" % "httpcore" % "4.3.3"
 )
-
 
 lazy val test = Seq(
   "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % "test",
