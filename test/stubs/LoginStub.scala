@@ -24,7 +24,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, stubFor,
 import play.api.http.HeaderNames
 import play.api.libs.Crypto
 import uk.gov.hmrc.crypto.{CompositeSymmetricCrypto, PlainText}
-import uk.gov.hmrc.play.http.SessionKeys
+import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.time.DateTimeUtils
 
 object LoginStub extends SessionCookieBaker {
@@ -35,6 +35,7 @@ object LoginStub extends SessionCookieBaker {
     val data = Map(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.userId -> "/auth/oid/1234567890",
+      SessionKeys.authToken -> "Bearer+1234",
       SessionKeys.token -> "token",
       SessionKeys.authProvider -> "GGW",
       SessionKeys.lastRequestTimestamp -> DateTimeUtils.now.getMillis.toString

@@ -30,14 +30,14 @@ import org.scalatest.mock.MockitoSugar
 import play.api.http.Status
 import play.api.test.FakeRequest
 import play.filters.csrf.CSRF.{Token, TokenProvider}
-import service.{TrustedAuthorityRevocationException, RevocationService}
+import service.{RevocationService, TrustedAuthorityRevocationException}
+import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds.GovernmentGatewayId
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.{Accounts, Authority, ConfidenceLevel, CredentialStrength}
-import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future.{failed, successful}
 
 class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar {
@@ -63,7 +63,7 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
     override val authConnector = mock[AuthConnector]
     override val revocationService = mock[RevocationService]
 
-    given(authConnector.currentAuthority(any(classOf[HeaderCarrier])))
+    given(authConnector.currentAuthority(any(classOf[HeaderCarrier]), any(classOf[ExecutionContext])))
       .willReturn(successful(Some(authority)))
     given(revocationService.fetchUntrustedApplicationAuthorities()(any(classOf[HeaderCarrier])))
       .willReturn(successful(Seq.empty))
