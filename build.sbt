@@ -83,3 +83,8 @@ def oneForkedJvmPerTest(tests: Seq[TestDefinition]) =
   tests map {
     test => Group(test.name, Seq(test), SubProcess(ForkOptions(runJVMOptions = Seq("-Dtest.name=" + test.name))))
   }
+
+// Coverage configuration
+coverageMinimum := 90
+coverageFailOnMinimum := true
+coverageExcludedPackages := "<empty>;com.kenshoo.play.metrics.*;.*definition.*;prod.*;testOnlyDoNotUseInAppConf.*;app.*;uk.gov.hmrc.BuildInfo"

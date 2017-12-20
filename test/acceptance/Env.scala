@@ -16,18 +16,33 @@
 
 package acceptance
 
+import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.firefox.{FirefoxDriver, FirefoxProfile}
-import org.openqa.selenium.{HasCapabilities, WebDriver}
+import org.openqa.selenium.WebDriver
 
 import scala.util.Try
 
 trait Env {
+  val driver: WebDriver = createWebDriver
+  lazy val createWebDriver: WebDriver = {
+    val targetBrowser = System.getProperty("browser", "chrome-local").toLowerCase
+    targetBrowser match {
+      case "chrome-local" => createChromeDriver()
+      case "firefox-local" => createFirefoxDriver()
+      case _ => throw new IllegalArgumentException(s"target browser $targetBrowser not recognised")
+    }
+  }
 
-  val driver: WebDriver with HasCapabilities = {
+  def createChromeDriver(): WebDriver = {
+    new ChromeDriver()
+  }
+
+  def createFirefoxDriver(): WebDriver = {
     val profile = new FirefoxProfile
     profile.setAcceptUntrustedCertificates(true)
     new FirefoxDriver(profile)
   }
+
 
   sys addShutdownHook {
     Try(driver.quit())
