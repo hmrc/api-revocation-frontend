@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +19,15 @@ package service
 import java.util.UUID
 
 import connectors.DelegatedAuthorityConnector
+import javax.inject.{Inject, Singleton}
 import models.AppAuthorisation
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-trait RevocationService {
-
-  val delegatedAuthorityConnector: DelegatedAuthorityConnector
+@Singleton
+class RevocationService @Inject()(val delegatedAuthorityConnector: DelegatedAuthorityConnector){
 
   def fetchUntrustedApplicationAuthorities()(implicit hc: HeaderCarrier): Future[Seq[AppAuthorisation]] = {
     delegatedAuthorityConnector.fetchApplicationAuthorities().map { authorities =>
@@ -48,10 +48,6 @@ trait RevocationService {
       case _ => delegatedAuthorityConnector.revokeApplicationAuthority(appId)
     }
   }
-}
-
-object RevocationService extends RevocationService {
-  override val delegatedAuthorityConnector = DelegatedAuthorityConnector
 }
 
 case class TrustedAuthorityRetrievalException(appId: UUID) extends RuntimeException(s"Authority for application [$appId] was found, but the application is trusted")

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,17 +19,18 @@ package connectors
 import java.util.UUID
 
 import config.WSHttp
+import javax.inject.{Inject, Singleton}
 import models.AppAuthorisation
 import uk.gov.hmrc.http._
-import uk.gov.hmrc.play.config.ServicesConfig
+import uk.gov.hmrc.play.config.inject.DefaultServicesConfig
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-trait DelegatedAuthorityConnector {
+@Singleton
+class DelegatedAuthorityConnector @Inject()(servicesConfig: DefaultServicesConfig, http: WSHttp){
 
-  val delegatedAuthorityUrl: String
-  val http: HttpPost with HttpGet with HttpDelete
+  val delegatedAuthorityUrl: String = servicesConfig.baseUrl("third-party-delegated-authority")
 
   def fetchApplicationAuthorities()(implicit hc: HeaderCarrier): Future[Seq[AppAuthorisation]] = {
     http.GET[Seq[AppAuthorisation]](s"$delegatedAuthorityUrl/authority/granted-applications")
@@ -46,11 +47,6 @@ trait DelegatedAuthorityConnector {
   private def recovery: PartialFunction[Throwable, Nothing] = {
     case _: NotFoundException => throw new AuthorityNotFound
   }
-}
-
-object DelegatedAuthorityConnector extends DelegatedAuthorityConnector with ServicesConfig {
-  override val delegatedAuthorityUrl = s"${baseUrl("third-party-delegated-authority")}"
-  override val http = WSHttp
 }
 
 class AuthorityNotFound extends RuntimeException

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package unit.controllers
 import java.util.UUID
 
 import com.kenshoo.play.metrics.PlayModule
+import config.FrontendAuthConnector
 import connectors.AuthorityNotFound
 import controllers.Revocation
 import models.{AppAuthorisation, ThirdPartyApplication}
@@ -33,7 +34,6 @@ import play.filters.csrf.CSRF.{Token, TokenProvider}
 import service.{RevocationService, TrustedAuthorityRevocationException}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds.GovernmentGatewayId
-import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.{Accounts, Authority, ConfidenceLevel, CredentialStrength}
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
@@ -58,10 +58,11 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
     Token.NameRequestTag -> "csrfToken",
     Token.RequestTag -> fakeApplication.injector.instanceOf[TokenProvider].generateToken))
 
-  val underTest = new Revocation {
+  val authConnector = mock[FrontendAuthConnector]
+  val revocationService = mock[RevocationService]
+
+  val underTest = new Revocation(authConnector, revocationService) {
     implicit val hc = headerCarrier
-    override val authConnector = mock[AuthConnector]
-    override val revocationService = mock[RevocationService]
 
     given(authConnector.currentAuthority(any(classOf[HeaderCarrier]), any(classOf[ExecutionContext])))
       .willReturn(successful(Some(authority)))
