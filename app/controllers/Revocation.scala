@@ -20,19 +20,17 @@ import java.util.UUID
 
 import config.{FrontendAuthConnector, FrontendGlobal}
 import connectors.AuthorityNotFound
+import javax.inject.{Inject, Singleton}
 import play.api.mvc.Action
-import service.{TrustedAuthorityRevocationException, TrustedAuthorityRetrievalException, RevocationService}
-import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
+import service.{RevocationService, TrustedAuthorityRetrievalException, TrustedAuthorityRevocationException}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 
 import scala.concurrent.Future
 
-trait Revocation extends FrontendController with Authentication {
-
-  val authConnector: AuthConnector
-  val revocationService: RevocationService
+@Singleton
+class Revocation @Inject()(override val authConnector: FrontendAuthConnector, val revocationService: RevocationService) extends FrontendController with Authentication {
 
   val start = Action.async { implicit request =>
     Future.successful(Ok(views.html.revocation.start()))
@@ -69,9 +67,4 @@ trait Revocation extends FrontendController with Authentication {
   val withdrawConfirmationPage = authenticated.async { implicit user => implicit request =>
     Future.successful(Ok(views.html.revocation.permissionWithdrawn()))
   }
-}
-
-object Revocation extends Revocation {
-  override val authConnector = FrontendAuthConnector
-  override val revocationService = RevocationService
 }

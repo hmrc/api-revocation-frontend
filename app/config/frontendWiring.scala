@@ -16,11 +16,13 @@
 
 package config
 
+import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.{HttpDelete, HttpGet, HttpPost, HttpPut}
 import uk.gov.hmrc.http.hooks.HttpHooks
 import uk.gov.hmrc.play.audit.http.HttpAuditing
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.play.config.{AppName, RunMode, ServicesConfig}
+import uk.gov.hmrc.play.config.inject.DefaultServicesConfig
+import uk.gov.hmrc.play.config.{AppName, RunMode}
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.config.LoadAuditingConfig
 import uk.gov.hmrc.play.http.ws.{WSDelete, WSGet, WSPost, WSPut}
@@ -34,10 +36,11 @@ trait Hooks extends HttpHooks with HttpAuditing {
   override val auditConnector: AuditConnector = FrontendAuditConnector
 }
 
-trait WSHttp extends HttpGet with WSGet with HttpPut with WSPut with HttpPost with WSPost with HttpDelete with WSDelete with Hooks with AppName
-object WSHttp extends WSHttp
+@Singleton
+class WSHttp extends HttpGet with WSGet with HttpPut with WSPut with HttpPost with WSPost with HttpDelete with WSDelete with Hooks with AppName
 
-object FrontendAuthConnector extends AuthConnector with ServicesConfig with WSHttp {
-  override val serviceUrl = baseUrl("auth")
-  override lazy val http = WSHttp
+@Singleton
+class FrontendAuthConnector @Inject()(servicesConfig: DefaultServicesConfig, wsHttp: WSHttp) extends AuthConnector {
+  override val serviceUrl = servicesConfig.baseUrl("auth")
+  override lazy val http = wsHttp
 }

@@ -1,8 +1,8 @@
 # microservice specific routes
 
-GET        /                                           controllers.Revocation.start
-GET        /applications                               controllers.Revocation.listAuthorizedApplications
-GET        /application/:id/remove-authority           controllers.Revocation.withdrawPage(id: java.util.UUID)
-POST       /application/:id/remove-authority           controllers.Revocation.withdrawAction(id: java.util.UUID)
-GET        /application/authority-removed              controllers.Revocation.withdrawConfirmationPage
-GET        /loggedout                                  controllers.Revocation.loggedOut
+GET        /                                           @controllers.Revocation.start
+GET        /applications                               @controllers.Revocation.listAuthorizedApplications
+GET        /application/:id/remove-authority           @controllers.Revocation.withdrawPage(id: java.util.UUID)
+POST       /application/:id/remove-authority           @controllers.Revocation.withdrawAction(id: java.util.UUID)
+GET        /application/authority-removed              @controllers.Revocation.withdrawConfirmationPage
+GET        /loggedout                                  @controllers.Revocation.loggedOut

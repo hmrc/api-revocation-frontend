@@ -37,9 +37,8 @@ class RevocationServiceSpec extends UnitSpec with MockitoSugar {
     implicit val hc = HeaderCarrier()
     val appId = UUID.randomUUID()
 
-    val underTest = new RevocationService {
-      override val delegatedAuthorityConnector = mock[DelegatedAuthorityConnector]
-    }
+    val delegatedAuthorityConnector = mock[DelegatedAuthorityConnector]
+    val underTest = new RevocationService(delegatedAuthorityConnector)
   }
 
   "fetchUntrustedApplicationAuthorities" should {

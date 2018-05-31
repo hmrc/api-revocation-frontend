@@ -15,7 +15,7 @@ lazy val appName = "api-revocation-frontend"
 
 lazy val appDependencies: Seq[ModuleID] = compile ++ test
 
-lazy val frontendBootstrapVersion = "8.11.0"
+lazy val frontendBootstrapVersion = "8.22.0"
 lazy val govukTemplateVersion = "5.3.0"
 lazy val playPartialsVersion = "6.1.0"
 lazy val hmrcTestVersion = "2.3.0"
