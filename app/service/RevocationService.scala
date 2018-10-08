@@ -41,7 +41,7 @@ class RevocationService @Inject()(val delegatedAuthorityConnector: DelegatedAuth
       case authority => authority
     }
   }
-  
+
   def revokeApplicationAuthority(appId: UUID)(implicit hc: HeaderCarrier): Future[Unit] = {
     delegatedAuthorityConnector.fetchApplicationAuthority(appId).flatMap {
       case authority if authority.application.trusted => throw TrustedAuthorityRevocationException(appId)
@@ -50,6 +50,8 @@ class RevocationService @Inject()(val delegatedAuthorityConnector: DelegatedAuth
   }
 }
 
-case class TrustedAuthorityRetrievalException(appId: UUID) extends RuntimeException(s"Authority for application [$appId] was found, but the application is trusted")
+case class TrustedAuthorityRetrievalException(appId: UUID)
+  extends RuntimeException(s"Authority for application [$appId] was found, but the application is trusted")
 
-case class TrustedAuthorityRevocationException(appId: UUID) extends RuntimeException(s"Authority for application [$appId] cannot be revoked as the application is trusted")
+case class TrustedAuthorityRevocationException(appId: UUID)
+  extends RuntimeException(s"Authority for application [$appId] cannot be revoked as the application is trusted")
