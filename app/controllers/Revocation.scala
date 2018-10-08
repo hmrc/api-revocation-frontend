@@ -30,7 +30,8 @@ import play.api.Play.current
 import scala.concurrent.Future
 
 @Singleton
-class Revocation @Inject()(override val authConnector: FrontendAuthConnector, val revocationService: RevocationService) extends FrontendController with Authentication {
+class Revocation @Inject()(override val authConnector: FrontendAuthConnector, val revocationService: RevocationService)
+  extends FrontendController with Authentication {
 
   val start = Action.async { implicit request =>
     Future.successful(Ok(views.html.revocation.start()))
