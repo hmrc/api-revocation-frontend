@@ -11,11 +11,13 @@ import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
 import uk.gov.hmrc.versioning.SbtGitVersioning
 import uk.gov.hmrc.{SbtAutoBuildPlugin, _}
 
+import scala.util.Properties
+
 lazy val appName = "api-revocation-frontend"
 
 lazy val appDependencies: Seq[ModuleID] = compile ++ test
 
-lazy val frontendBootstrapVersion = "8.22.0"
+lazy val frontendBootstrapVersion = "10.2.0"
 lazy val govukTemplateVersion = "5.3.0"
 lazy val playPartialsVersion = "6.1.0"
 lazy val hmrcTestVersion = "2.4.0"
@@ -82,7 +84,7 @@ def acceptanceFilter(name: String): Boolean = name startsWith "acceptance"
 
 def oneForkedJvmPerTest(tests: Seq[TestDefinition]) =
   tests map {
-    test => Group(test.name, Seq(test), SubProcess(ForkOptions(runJVMOptions = Seq("-Dtest.name=" + test.name))))
+    test => Group(test.name, Seq(test), SubProcess(ForkOptions(runJVMOptions = Seq(s"-Dtest.name=${test.name}", s"-Dtest_driver=${Properties.propOrElse("test_driver", "chrome")}"))))
   }
 
 // Coverage configuration
