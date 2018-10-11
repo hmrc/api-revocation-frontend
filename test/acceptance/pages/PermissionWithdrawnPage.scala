@@ -21,7 +21,7 @@ import org.openqa.selenium.By
 
 object PermissionWithdrawnPage extends WebPage {
 
-  override val url = s"http://localhost:9000/applications-manage-authority/application/authority-removed"
+  override val url = s"http://localhost:$port/applications-manage-authority/application/authority-removed"
 
   override def isCurrentPage = find(cssSelector("h1")).exists(_.text == "Authority removed")
 

@@ -26,7 +26,7 @@ import play.api.test.FakeApplication
 
 trait BaseSpec extends FeatureSpec with BeforeAndAfterAll with BeforeAndAfterEach with Matchers with NavigationSugar with OneServerPerSuite {
 
-  override lazy val port = 9000
+  override lazy val port = Env.port
   val stubPort = 11111
   val stubHost = "localhost"
 
