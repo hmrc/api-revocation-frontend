@@ -17,22 +17,17 @@ lazy val appName = "api-revocation-frontend"
 
 lazy val appDependencies: Seq[ModuleID] = compile ++ test
 
-lazy val frontendBootstrapVersion = "10.2.0"
-lazy val govukTemplateVersion = "5.3.0"
-lazy val playPartialsVersion = "6.1.0"
-lazy val hmrcTestVersion = "2.4.0"
-
 lazy val compile = Seq(
   ws,
-  "uk.gov.hmrc" %% "frontend-bootstrap" % frontendBootstrapVersion,
-  "uk.gov.hmrc" %% "play-partials" % playPartialsVersion,
-  "uk.gov.hmrc" %% "govuk-template" % govukTemplateVersion,
+  "uk.gov.hmrc" %% "frontend-bootstrap" % "10.2.0",
+  "uk.gov.hmrc" %% "play-partials" % "6.1.0",
+  "uk.gov.hmrc" %% "govuk-template" % "5.3.0",
   "org.apache.httpcomponents" % "httpclient" % "4.3.3",
   "org.apache.httpcomponents" % "httpcore" % "4.3.3"
 )
 
 lazy val test = Seq(
-  "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % "test",
+  "uk.gov.hmrc" %% "hmrctest" % "2.4.0" % "test",
   "org.scalatest" %% "scalatest" % "2.2.6" % "test",
   "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % "test",
   "org.pegdown" % "pegdown" % "1.6.0" % "test",
@@ -84,7 +79,8 @@ def acceptanceFilter(name: String): Boolean = name startsWith "acceptance"
 
 def oneForkedJvmPerTest(tests: Seq[TestDefinition]) =
   tests map {
-    test => Group(test.name, Seq(test), SubProcess(ForkOptions(runJVMOptions = Seq(s"-Dtest.name=${test.name}", s"-Dtest_driver=${Properties.propOrElse("test_driver", "chrome")}"))))
+    test => Group(test.name, Seq(test),
+      SubProcess(ForkOptions(runJVMOptions = Seq(s"-Dtest.name=${test.name}", s"-Dtest_driver=${Properties.propOrElse("test_driver", "chrome")}"))))
   }
 
 // Coverage configuration
