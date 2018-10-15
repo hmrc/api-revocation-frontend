@@ -16,11 +16,11 @@
 
 package acceptance.pages
 
-import acceptance.WebPage
+import acceptance.{Env, WebPage}
 
 object LoginPage extends WebPage {
 
-  override val url= s"http://localhost:11111/gg/sign-in?continue=${AuthorizedApplicationsPage.url}"
+  override val url= s"${Env.stubUrl}/gg/sign-in?continue=${AuthorizedApplicationsPage.url}"
 
   override def isCurrentPage: Boolean = find(cssSelector("h1")).exists(_.text == "Sign in")
 

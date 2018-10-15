@@ -31,6 +31,9 @@ trait Env {
   val driver: WebDriver = createWebDriver
   lazy val port = 6001
   lazy val windowSize = new Dimension(1024, 800)
+  val stubPort = 6010
+  val stubHost = "localhost"
+  val stubUrl = s"http://${Env.stubHost}:${Env.stubPort}"
 
   lazy val createWebDriver: WebDriver = {
     Properties.propOrElse("test_driver", "chrome") match {
