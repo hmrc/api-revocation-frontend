@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package acceptance.pages
+import com.google.inject.{AbstractModule, Provides}
+import javax.inject.Singleton
+import play.api.{Configuration, Play}
+import play.api.Mode.Mode
+import uk.gov.hmrc.play.config.ServicesConfig
 
-import acceptance.WebPage
-import org.openqa.selenium.By
+class Module extends AbstractModule {
 
-object PermissionWithdrawnPage extends WebPage {
+  @Provides
+  @Singleton
+  def servicesConfig: ServicesConfig = new ServicesConfig {
+    override protected def mode: Mode = Play.current.mode
+    override protected def runModeConfiguration: Configuration = Play.current.configuration
+  }
 
-  override val url = s"http://localhost:$port/applications-manage-authority/application/authority-removed"
-
-  override def isCurrentPage = find(cssSelector("h1")).exists(_.text == "Authority removed")
-
-  val withdrawnContinueLink: By = By.cssSelector("[data-applications-link]")
-
-  val withdrawnMessageText: By = By.cssSelector("[data-withdrawn-message]")
+  override def configure(): Unit = ()
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,23 @@
 
 package config
 
+import com.typesafe.config.Config
 import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.http.{HttpDelete, HttpGet, HttpPost, HttpPut}
+import play.api.{Configuration, Play}
+import play.api.Mode.Mode
 import uk.gov.hmrc.http.hooks.HttpHooks
+import uk.gov.hmrc.http.{HttpDelete, HttpGet, HttpPost, HttpPut}
 import uk.gov.hmrc.play.audit.http.HttpAuditing
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.play.config.inject.DefaultServicesConfig
-import uk.gov.hmrc.play.config.{AppName, RunMode}
+import uk.gov.hmrc.play.config.{AppName, RunMode, ServicesConfig}
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.config.LoadAuditingConfig
 import uk.gov.hmrc.play.http.ws.{WSDelete, WSGet, WSPost, WSPut}
 
 object FrontendAuditConnector extends AuditConnector with RunMode {
+  override protected def mode: Mode = Play.current.mode
+  override protected def runModeConfiguration: Configuration = Play.current.configuration
+
   override lazy val auditingConfig = LoadAuditingConfig("auditing")
 }
 
@@ -37,10 +42,13 @@ trait Hooks extends HttpHooks with HttpAuditing {
 }
 
 @Singleton
-class WSHttp extends HttpGet with WSGet with HttpPut with WSPut with HttpPost with WSPost with HttpDelete with WSDelete with Hooks with AppName
+class WSHttp extends HttpGet with WSGet with HttpPut with WSPut with HttpPost with WSPost with HttpDelete with WSDelete with Hooks with AppName {
+  override protected def appNameConfiguration: Configuration = Play.current.configuration
+  override protected def configuration: Option[Config] = Some(Play.current.configuration.underlying)
+}
 
 @Singleton
-class FrontendAuthConnector @Inject()(servicesConfig: DefaultServicesConfig, wsHttp: WSHttp) extends AuthConnector {
+class FrontendAuthConnector @Inject()(servicesConfig: ServicesConfig, wsHttp: WSHttp) extends AuthConnector {
   override val serviceUrl = servicesConfig.baseUrl("auth")
   override lazy val http = wsHttp
 }

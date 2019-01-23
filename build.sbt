@@ -19,17 +19,17 @@ lazy val appDependencies: Seq[ModuleID] = compile ++ test
 
 lazy val compile = Seq(
   ws,
-  "uk.gov.hmrc" %% "frontend-bootstrap" % "10.2.0",
-  "uk.gov.hmrc" %% "play-partials" % "6.1.0",
-  "uk.gov.hmrc" %% "govuk-template" % "5.3.0",
+  "uk.gov.hmrc" %% "frontend-bootstrap" % "11.3.0",
+  "uk.gov.hmrc" %% "play-partials" % "6.3.0",
+  "uk.gov.hmrc" %% "govuk-template" % "5.26.0-play-25",
   "org.apache.httpcomponents" % "httpclient" % "4.3.3",
   "org.apache.httpcomponents" % "httpcore" % "4.3.3"
 )
 
 lazy val test = Seq(
-  "uk.gov.hmrc" %% "hmrctest" % "2.4.0" % "test",
-  "org.scalatest" %% "scalatest" % "2.2.6" % "test",
-  "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % "test",
+  "uk.gov.hmrc" %% "hmrctest" % "3.3.0" % "test",
+  "org.scalatest" %% "scalatest" % "3.0.5" % "test",
+  "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.1" % "test",
   "org.pegdown" % "pegdown" % "1.6.0" % "test",
   "org.jsoup" % "jsoup" % "1.7.3" % "test",
   "com.typesafe.play" %% "play-test" % PlayVersion.current % "test",

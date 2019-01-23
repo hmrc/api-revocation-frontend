@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,11 @@ import connectors.{AuthorityNotFound, DelegatedAuthorityConnector}
 import models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import org.joda.time.DateTime
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{BeforeAndAfterEach, Matchers}
 import org.scalatest.mock.MockitoSugar
+import org.scalatest.{BeforeAndAfterEach, Matchers}
 import stubs.DelegatedAuthorityStub
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.config.inject.DefaultServicesConfig
+import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 class DelegatedAuthorityConnectorSpec extends UnitSpec
@@ -40,7 +40,7 @@ class DelegatedAuthorityConnectorSpec extends UnitSpec
 
   private trait Setup {
     implicit val hc = HeaderCarrier()
-    val serviceConfig = mock[DefaultServicesConfig]
+    val serviceConfig = mock[ServicesConfig]
     val http = new WSHttp
 
     val connector = new DelegatedAuthorityConnector(serviceConfig, http) {
