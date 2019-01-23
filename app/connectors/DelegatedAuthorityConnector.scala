@@ -22,13 +22,13 @@ import config.WSHttp
 import javax.inject.{Inject, Singleton}
 import models.AppAuthorisation
 import uk.gov.hmrc.http._
-import uk.gov.hmrc.play.config.inject.DefaultServicesConfig
+import uk.gov.hmrc.play.config.ServicesConfig
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class DelegatedAuthorityConnector @Inject()(servicesConfig: DefaultServicesConfig, http: WSHttp){
+class DelegatedAuthorityConnector @Inject()(servicesConfig: ServicesConfig, http: WSHttp){
 
   val delegatedAuthorityUrl: String = servicesConfig.baseUrl("third-party-delegated-authority")
 

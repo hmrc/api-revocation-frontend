@@ -16,6 +16,8 @@
 
 package config
 
+import play.api.{Configuration, Play}
+import play.api.Mode.Mode
 import play.api.Play.{configuration, current}
 import uk.gov.hmrc.play.config.ServicesConfig
 
@@ -34,6 +36,9 @@ trait AppConfig {
 object FrontendAppConfig extends AppConfig with ServicesConfig {
 
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
+
+  override protected def mode: Mode = Play.current.mode
+  override protected def runModeConfiguration: Configuration = Play.current.configuration
 
   private val caFrontendHost = configuration.getString("ca-frontend.host").getOrElse("")
   private val contactHost = configuration.getString("contact-frontend.host").getOrElse("")

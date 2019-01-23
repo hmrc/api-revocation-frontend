@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import org.openqa.selenium.WebDriver
 import org.scalatest._
 import org.scalatest.selenium.{Page, WebBrowser}
 
-trait WebLink extends Page with WebBrowser with ShouldMatchers {
+trait WebLink extends Page with WebBrowser with Matchers {
   implicit val webDriver: WebDriver = Env.driver
 
   override def toString = this.getClass.getSimpleName
