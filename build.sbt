@@ -19,7 +19,7 @@ lazy val appDependencies: Seq[ModuleID] = compile ++ test
 
 lazy val compile = Seq(
   ws,
-  "uk.gov.hmrc" %% "frontend-bootstrap" % "11.3.0",
+  "uk.gov.hmrc" %% "frontend-bootstrap" % "12.7.0",
   "uk.gov.hmrc" %% "play-partials" % "6.3.0",
   "uk.gov.hmrc" %% "govuk-template" % "5.26.0-play-25",
   "org.apache.httpcomponents" % "httpclient" % "4.3.3",
