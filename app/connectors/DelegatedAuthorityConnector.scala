@@ -18,17 +18,17 @@ package connectors
 
 import java.util.UUID
 
-import config.WSHttp
 import javax.inject.{Inject, Singleton}
 import models.AppAuthorisation
 import uk.gov.hmrc.http._
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.config.ServicesConfig
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DelegatedAuthorityConnector @Inject()(servicesConfig: ServicesConfig, http: WSHttp){
+class DelegatedAuthorityConnector @Inject()(servicesConfig: ServicesConfig, http: HttpClient)
+                                           (implicit val ec: ExecutionContext) {
 
   val delegatedAuthorityUrl: String = servicesConfig.baseUrl("third-party-delegated-authority")
 

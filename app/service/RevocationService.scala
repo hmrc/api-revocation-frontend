@@ -23,11 +23,11 @@ import javax.inject.{Inject, Singleton}
 import models.AppAuthorisation
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RevocationService @Inject()(val delegatedAuthorityConnector: DelegatedAuthorityConnector){
+class RevocationService @Inject()(val delegatedAuthorityConnector: DelegatedAuthorityConnector)
+                                 (implicit val ec: ExecutionContext) {
 
   def fetchUntrustedApplicationAuthorities()(implicit hc: HeaderCarrier): Future[Seq[AppAuthorisation]] = {
     delegatedAuthorityConnector.fetchApplicationAuthorities().map { authorities =>

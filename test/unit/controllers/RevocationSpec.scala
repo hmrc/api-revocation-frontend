@@ -19,86 +19,84 @@ package unit.controllers
 import java.util.UUID
 
 import com.kenshoo.play.metrics.PlayModule
-import config.FrontendAuthConnector
 import connectors.AuthorityNotFound
 import controllers.Revocation
 import models.{AppAuthorisation, ThirdPartyApplication}
 import org.joda.time.DateTime
+import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
 import org.mockito.BDDMockito.given
-import org.mockito.Matchers
-import org.mockito.Matchers.any
-import org.scalatest.mock.MockitoSugar
+import org.scalatest.mockito.MockitoSugar
 import play.api.http.Status
+import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.filters.csrf.CSRF.{Token, TokenProvider}
 import service.{RevocationService, TrustedAuthorityRevocationException}
+import uk.gov.hmrc.auth.core.retrieve.EmptyRetrieval
+import uk.gov.hmrc.auth.core.{AuthConnector, InvalidBearerToken}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
-import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds.GovernmentGatewayId
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.{Accounts, Authority, ConfidenceLevel, CredentialStrength}
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import scala.concurrent.Future.{failed, successful}
 
 class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar {
 
-  override def bindModules = Seq(new PlayModule)
+  override def bindModules: Seq[GuiceableModule] = Seq(new PlayModule)
 
-  val appId = UUID.randomUUID()
-  val authority = Authority(s"Test User", Accounts(), None, None, CredentialStrength.Strong, ConfidenceLevel.L50, None, None, None, "legacyOid")
-  val headerCarrier = HeaderCarrier()
+  trait Setup {
+    val appId: UUID = UUID.randomUUID()
+    val authConnector: AuthConnector = mock[AuthConnector]
+    val revocationService: RevocationService = mock[RevocationService]
 
-  lazy val loggedOutRequest = FakeRequest()
-  lazy val loggedInRequest = FakeRequest().withSession(
-    SessionKeys.sessionId -> "SessionId",
-    SessionKeys.token -> "Token",
-    SessionKeys.userId -> "Test User",
-    SessionKeys.authProvider -> GovernmentGatewayId
-  ).copyFakeRequest(tags = Map(
-    Token.NameRequestTag -> "csrfToken",
-    Token.RequestTag -> fakeApplication.injector.instanceOf[TokenProvider].generateToken))
+    val underTest: Revocation = new Revocation(authConnector, revocationService)
 
-  val authConnector = mock[FrontendAuthConnector]
-  val revocationService = mock[RevocationService]
-
-  val underTest = new Revocation(authConnector, revocationService) {
-    implicit val hc = headerCarrier
-
-    given(authConnector.currentAuthority(any(classOf[HeaderCarrier]), any(classOf[ExecutionContext])))
-      .willReturn(successful(Some(authority)))
     given(revocationService.fetchUntrustedApplicationAuthorities()(any(classOf[HeaderCarrier])))
       .willReturn(successful(Seq.empty))
   }
 
-  "Start" should {
-    "return 200" in {
+  trait LoggedInSetup extends Setup {
+    lazy val request = FakeRequest()
+      .withSession(SessionKeys.sessionId -> "SessionId")
+      .copyFakeRequest(tags = Map(
+        Token.NameRequestTag -> "csrfToken",
+        Token.RequestTag -> fakeApplication.injector.instanceOf[TokenProvider].generateToken))
 
-      val result = underTest.start(loggedOutRequest)
+    given(authConnector.authorise(any(), ArgumentMatchers.eq(EmptyRetrieval))(any(), any())).willReturn(successful(()))
+  }
+
+  trait LoggedOutSetup extends Setup {
+    lazy val request = FakeRequest()
+
+    given(authConnector.authorise(any(), ArgumentMatchers.eq(EmptyRetrieval))(any(), any())).willReturn(Future.failed(InvalidBearerToken()))
+  }
+
+  "Start" should {
+    "return 200" in new LoggedOutSetup {
+      val result = underTest.start(request)
 
       status(result) shouldBe Status.OK
     }
   }
 
   "Logged Out" should {
-    "return 200" in {
-
-      val result = underTest.loggedOut(loggedOutRequest)
+    "return 200" in new LoggedOutSetup {
+      val result = underTest.loggedOut(request)
 
       status(result) shouldBe Status.OK
     }
   }
 
   "listAuthorizedApplications" should {
-    "return 200 when the user is logged in" in {
-
-      val result = underTest.listAuthorizedApplications(loggedInRequest)
+    "return 200 when the user is logged in" in new LoggedInSetup {
+      val result = underTest.listAuthorizedApplications(request)
 
       status(result) shouldBe Status.OK
     }
 
-    "redirect to the login page when the user is not logged in" in {
-
-      val result = underTest.listAuthorizedApplications(loggedOutRequest)
+    "redirect to the login page when the user is not logged in" in new LoggedOutSetup {
+      val result = underTest.listAuthorizedApplications(request)
 
       status(result) shouldBe 303
       result.header.headers("Location") shouldEqual "http://localhost:9025/gg/sign-in?continue=http://localhost:9686/applications-manage-authority/applications"
@@ -106,55 +104,51 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
   }
 
   "withdrawPage" should {
-    "return 200" in {
+    "return 200" in new LoggedInSetup {
       val appAuthority = AppAuthorisation(ThirdPartyApplication(appId, "appName", trusted = false), Set(), DateTime.now)
 
-      given(underTest.revocationService.fetchUntrustedApplicationAuthority(Matchers.eq(appId))(any(classOf[HeaderCarrier])))
+      given(underTest.revocationService.fetchUntrustedApplicationAuthority(ArgumentMatchers.eq(appId))(any(classOf[HeaderCarrier])))
         .willReturn(successful(appAuthority))
 
-      val result = underTest.withdrawPage(appId)(loggedInRequest)
+      val result = underTest.withdrawPage(appId)(request)
 
       status(result) shouldBe Status.OK
     }
   }
 
   "withdrawAction" should {
-    "redirect to authorisation withdrawn page" in {
-
-      given(underTest.revocationService.revokeApplicationAuthority(Matchers.eq(appId))(any(classOf[HeaderCarrier])))
+    "redirect to authorisation withdrawn page" in new LoggedInSetup {
+      given(underTest.revocationService.revokeApplicationAuthority(ArgumentMatchers.eq(appId))(any(classOf[HeaderCarrier])))
         .willReturn(successful(()))
 
-      val result = underTest.withdrawAction(appId)(loggedInRequest)
+      val result = underTest.withdrawAction(appId)(request)
 
       status(result) shouldBe 303
       result.header.headers("Location") shouldEqual controllers.routes.Revocation.withdrawConfirmationPage().url
     }
 
-    "return 404 if the authorisation is not found" in {
-
-      given(underTest.revocationService.revokeApplicationAuthority(Matchers.eq(appId))(any(classOf[HeaderCarrier])))
+    "return 404 if the authorisation is not found" in new LoggedInSetup {
+      given(underTest.revocationService.revokeApplicationAuthority(ArgumentMatchers.eq(appId))(any(classOf[HeaderCarrier])))
         .willReturn(failed(new AuthorityNotFound()))
 
-      val result = underTest.withdrawAction(appId)(loggedInRequest)
+      val result = underTest.withdrawAction(appId)(request)
 
       status(result) shouldBe 404
     }
 
-    "return 404 if the authorisation does exist, but it is for a trusted application" in {
-
-      given(underTest.revocationService.revokeApplicationAuthority(Matchers.eq(appId))(any(classOf[HeaderCarrier])))
+    "return 404 if the authorisation does exist, but it is for a trusted application" in new LoggedInSetup {
+      given(underTest.revocationService.revokeApplicationAuthority(ArgumentMatchers.eq(appId))(any(classOf[HeaderCarrier])))
         .willReturn(failed(TrustedAuthorityRevocationException(appId)))
 
-      val result = underTest.withdrawAction(appId)(loggedInRequest)
+      val result = underTest.withdrawAction(appId)(request)
 
       status(result) shouldBe 404
     }
   }
 
   "withdrawConfirmationPage" should {
-    "return 200" in {
-
-      val result = underTest.withdrawConfirmationPage(loggedInRequest)
+    "return 200" in new LoggedInSetup {
+      val result = underTest.withdrawConfirmationPage(request)
 
       status(result) shouldBe Status.OK
     }

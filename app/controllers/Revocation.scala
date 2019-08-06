@@ -18,54 +18,79 @@ package controllers
 
 import java.util.UUID
 
-import config.{FrontendAuthConnector, FrontendGlobal}
+import config.FrontendAppConfig
 import connectors.AuthorityNotFound
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.Action
-import service.{RevocationService, TrustedAuthorityRetrievalException, TrustedAuthorityRevocationException}
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+import play.api.i18n.Messages
+import play.api.i18n.Messages.Implicits._
+import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.twirl.api.Html
+import service.{RevocationService, TrustedAuthorityRetrievalException, TrustedAuthorityRevocationException}
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisationException, AuthorisedFunctions}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class Revocation @Inject()(override val authConnector: FrontendAuthConnector, val revocationService: RevocationService)
-  extends FrontendController with Authentication {
+class Revocation @Inject()(override val authConnector: AuthConnector, val revocationService: RevocationService)
+                          (implicit val ec: ExecutionContext) extends FrontendController with AuthorisedFunctions {
 
-  val start = Action.async { implicit request =>
+  private lazy val loginURL: String = FrontendAppConfig.signInUrl
+  private lazy val loginUrlParameters = Map[String, Seq[String]]()
+
+  private def notFoundTemplate(implicit request: Request[_]): Html = {
+    views.html.error_template(
+      Messages("global.error.pageNotFound404.title"),
+      Messages("global.error.pageNotFound404.heading"),
+      Messages("global.error.pageNotFound404.message"))
+  }
+
+  private def unauthorisedRecovery: PartialFunction[Throwable, Result] = {
+    case _: AuthorisationException => Redirect(loginURL, loginUrlParameters)
+  }
+
+  val start: Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(views.html.revocation.start()))
   }
 
-  val loggedOut = Action.async { implicit request =>
+  val loggedOut: Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(views.html.revocation.loggedOut()))
   }
 
-  val listAuthorizedApplications = authenticated.async { implicit user => implicit request =>
-    revocationService.fetchUntrustedApplicationAuthorities() map {
-      applications => Ok(views.html.revocation.authorizedApplications(applications))
-    }
+  val listAuthorizedApplications: Action[AnyContent] = Action.async { implicit request =>
+    authorised() {
+      revocationService.fetchUntrustedApplicationAuthorities() map {
+        applications => Ok(views.html.revocation.authorizedApplications(applications))
+      }
+    } recover unauthorisedRecovery
   }
 
-  def withdrawPage(id: UUID) = authenticated.async { implicit user => implicit request =>
-    revocationService.fetchUntrustedApplicationAuthority(id) map {
-      authority => Ok(views.html.revocation.withdrawPermission(authority))
-    } recover {
-      case _: AuthorityNotFound => NotFound(FrontendGlobal.notFoundTemplate)
-      case _: TrustedAuthorityRetrievalException => NotFound(FrontendGlobal.notFoundTemplate)
-    }
+  def withdrawPage(id: UUID): Action[AnyContent] = Action.async { implicit request =>
+    authorised() {
+      revocationService.fetchUntrustedApplicationAuthority(id) map {
+        authority => Ok(views.html.revocation.withdrawPermission(authority))
+      } recover {
+        case _: AuthorityNotFound => NotFound(notFoundTemplate)
+        case _: TrustedAuthorityRetrievalException => NotFound(notFoundTemplate)
+      }
+    } recover unauthorisedRecovery
   }
 
-  def withdrawAction(id: UUID) = authenticated.async { implicit user => implicit request =>
-    revocationService.revokeApplicationAuthority(id) map {
-      _ => Redirect(routes.Revocation.withdrawConfirmationPage())
-    } recover {
-      case _: AuthorityNotFound => NotFound(FrontendGlobal.notFoundTemplate)
-      case _: TrustedAuthorityRevocationException => NotFound(FrontendGlobal.notFoundTemplate)
-    }
+  def withdrawAction(id: UUID): Action[AnyContent] = Action.async { implicit request =>
+    authorised() {
+      revocationService.revokeApplicationAuthority(id) map {
+        _ => Redirect(routes.Revocation.withdrawConfirmationPage())
+      } recover {
+        case _: AuthorityNotFound => NotFound(notFoundTemplate)
+        case _: TrustedAuthorityRevocationException => NotFound(notFoundTemplate)
+      }
+    } recover unauthorisedRecovery
   }
 
-  val withdrawConfirmationPage = authenticated.async { implicit user => implicit request =>
-    Future.successful(Ok(views.html.revocation.permissionWithdrawn()))
+  val withdrawConfirmationPage: Action[AnyContent] = Action.async { implicit request =>
+    authorised() {
+      Future.successful(Ok(views.html.revocation.permissionWithdrawn()))
+    } recover unauthorisedRecovery
   }
 }

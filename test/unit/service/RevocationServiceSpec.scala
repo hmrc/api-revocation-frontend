@@ -23,11 +23,12 @@ import models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import org.joda.time.DateTime
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito._
-import org.scalatest.mock.MockitoSugar
+import org.scalatest.mockito.MockitoSugar
 import service.{RevocationService, TrustedAuthorityRetrievalException, TrustedAuthorityRevocationException}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.test.UnitSpec
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future.successful
 
 class RevocationServiceSpec extends UnitSpec with MockitoSugar {
