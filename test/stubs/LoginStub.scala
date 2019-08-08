@@ -20,8 +20,10 @@ import java.net.URLEncoder
 import java.util.UUID
 
 import acceptance.pages.AuthorizedApplicationsPage
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, stubFor, urlEqualTo}
+import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames
+import play.api.http.Status.{OK, SEE_OTHER, UNAUTHORIZED}
 import play.api.libs.Crypto
 import uk.gov.hmrc.crypto.{CompositeSymmetricCrypto, PlainText}
 import uk.gov.hmrc.http.SessionKeys
@@ -31,7 +33,14 @@ object LoginStub extends SessionCookieBaker {
 
   private val sessionId = s"stubbed-${UUID.randomUUID}"
 
-  def stubSuccessfulLogin() = {
+  def stubLoggedOutUser(): StubMapping = {
+    stubFor(post(urlEqualTo("/auth/authorise"))
+      .willReturn(
+        aResponse()
+          .withStatus(UNAUTHORIZED)))
+  }
+
+  def stubSuccessfulLogin(): StubMapping = {
     val data = Map(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.userId -> "/auth/oid/1234567890",
@@ -42,35 +51,24 @@ object LoginStub extends SessionCookieBaker {
     )
     stubFor(get(urlEqualTo(s"/gg/sign-in?continue=${AuthorizedApplicationsPage.url}"))
       .willReturn(aResponse()
-        .withStatus(303)
+        .withStatus(SEE_OTHER)
         .withHeader(HeaderNames.SET_COOKIE, cookieValue(data))
         .withHeader(HeaderNames.LOCATION, AuthorizedApplicationsPage.url)))
 
-    stubFor(get(urlEqualTo("/auth/authority"))
+    stubFor(post(urlEqualTo("/auth/authorise"))
       .willReturn(
         aResponse()
-          .withStatus(200)
+          .withStatus(OK)
           .withBody(
             s"""
-               |{
-               |    "uri": "/auth/oid/1234567890",
-               |    "loggedInAt": "2014-06-09T14:57:09.522Z",
-               |    "previouslyLoggedInAt": "2014-06-09T14:48:24.841Z",
-               |    "accounts": {
-               |    },
-               |    "levelOfAssurance": "2",
-               |    "confidenceLevel" : 50,
-               |    "credentialStrength": "strong",
-               |    "legacyOid":"1234567890"
-               |}
-               |
+               |{}
             """.stripMargin
           )))
   }
 }
 
 trait SessionCookieBaker {
-  def cookieValue(sessionData: Map[String,String]) = {
+  def cookieValue(sessionData: Map[String,String]): String = {
     def encode(data: Map[String, String]): PlainText = {
       val encoded = data.map {
         case (k, v) => URLEncoder.encode(k, "UTF-8") + "=" + URLEncoder.encode(v, "UTF-8")

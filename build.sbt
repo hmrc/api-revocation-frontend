@@ -19,15 +19,16 @@ lazy val appDependencies: Seq[ModuleID] = compile ++ test
 
 lazy val compile = Seq(
   ws,
-  "uk.gov.hmrc" %% "frontend-bootstrap" % "12.7.0",
-  "uk.gov.hmrc" %% "play-partials" % "6.3.0",
+  "uk.gov.hmrc" %% "bootstrap-play-25" % "4.13.0",
+  "uk.gov.hmrc" %% "play-ui" % "7.40.0-play-25",
+  "uk.gov.hmrc" %% "play-partials" % "6.9.0-play-25",
   "uk.gov.hmrc" %% "govuk-template" % "5.26.0-play-25",
   "org.apache.httpcomponents" % "httpclient" % "4.3.3",
   "org.apache.httpcomponents" % "httpcore" % "4.3.3"
 )
 
 lazy val test = Seq(
-  "uk.gov.hmrc" %% "hmrctest" % "3.3.0" % "test",
+  "uk.gov.hmrc" %% "hmrctest" % "3.9.0-play-25" % "test",
   "org.scalatest" %% "scalatest" % "3.0.5" % "test",
   "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.1" % "test",
   "org.pegdown" % "pegdown" % "1.6.0" % "test",
@@ -35,7 +36,7 @@ lazy val test = Seq(
   "com.typesafe.play" %% "play-test" % PlayVersion.current % "test",
   "com.github.tomakehurst" % "wiremock" % "2.11.0" % "test",
   "org.seleniumhq.selenium" % "selenium-java" % "2.53.0" % "test",
-  "org.mockito" % "mockito-all" % "1.9.5" % "test"
+  "org.mockito" % "mockito-core" % "2.12.0" % "test"
 )
 
 lazy val plugins: Seq[Plugins] = Seq.empty

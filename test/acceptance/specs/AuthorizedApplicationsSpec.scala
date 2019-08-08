@@ -30,7 +30,7 @@ class AuthorizedApplicationsSpec extends BaseSpec with NavigationSugar {
   feature("Viewing authorised applications for user") {
 
     scenario("User is redirected to the sign in page when not logged in") {
-
+      LoginStub.stubLoggedOutUser()
       go(AuthorizedApplicationsPage)
       redirectedTo(LoginPage)
     }
