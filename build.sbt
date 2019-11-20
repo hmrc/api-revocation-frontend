@@ -6,10 +6,10 @@ import sbt.Keys._
 import sbt.Tests.{Group, SubProcess}
 import sbt._
 import uk.gov.hmrc.DefaultBuildSettings._
+import uk.gov.hmrc.SbtAutoBuildPlugin
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
 import uk.gov.hmrc.versioning.SbtGitVersioning
-import uk.gov.hmrc.{SbtAutoBuildPlugin, _}
 
 import scala.util.Properties
 
@@ -19,8 +19,8 @@ lazy val appDependencies: Seq[ModuleID] = compile ++ test
 
 lazy val compile = Seq(
   ws,
-  "uk.gov.hmrc" %% "bootstrap-play-25" % "4.13.0",
-  "uk.gov.hmrc" %% "play-ui" % "7.40.0-play-25",
+  "uk.gov.hmrc" %% "bootstrap-play-25" % "5.1.0",
+  "uk.gov.hmrc" %% "play-ui" % "8.3.0-play-25",
   "uk.gov.hmrc" %% "play-partials" % "6.9.0-play-25",
   "uk.gov.hmrc" %% "govuk-template" % "5.26.0-play-25",
   "org.apache.httpcomponents" % "httpclient" % "4.3.3",
