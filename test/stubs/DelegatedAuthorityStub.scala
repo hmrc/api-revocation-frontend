@@ -72,8 +72,7 @@ object DelegatedAuthorityStub {
        |{
        |  "application": {
        |    "id":"${application.application.id}",
-       |    "name":"${application.application.name}",
-       |    "trusted": ${application.application.trusted}
+       |    "name":"${application.application.name}"
        |  },
        |  "scopes": [${application.scopes.map(toScopeJson).mkString(",")}],
        |  "earliestGrantDate":${application.earliestGrantDate.getMillis}

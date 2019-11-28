@@ -26,7 +26,7 @@ import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import service.{RevocationService, TrustedAuthorityRetrievalException, TrustedAuthorityRevocationException}
+import service.RevocationService
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisationException, AuthorisedFunctions}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
@@ -60,7 +60,7 @@ class Revocation @Inject()(override val authConnector: AuthConnector, val revoca
 
   val listAuthorizedApplications: Action[AnyContent] = Action.async { implicit request =>
     authorised() {
-      revocationService.fetchUntrustedApplicationAuthorities() map {
+      revocationService.fetchApplicationAuthorities() map {
         applications => Ok(views.html.revocation.authorizedApplications(applications))
       }
     } recover unauthorisedRecovery
@@ -68,11 +68,10 @@ class Revocation @Inject()(override val authConnector: AuthConnector, val revoca
 
   def withdrawPage(id: UUID): Action[AnyContent] = Action.async { implicit request =>
     authorised() {
-      revocationService.fetchUntrustedApplicationAuthority(id) map {
+      revocationService.fetchdApplicationAuthority(id) map {
         authority => Ok(views.html.revocation.withdrawPermission(authority))
       } recover {
         case _: AuthorityNotFound => NotFound(notFoundTemplate)
-        case _: TrustedAuthorityRetrievalException => NotFound(notFoundTemplate)
       }
     } recover unauthorisedRecovery
   }
@@ -83,7 +82,6 @@ class Revocation @Inject()(override val authConnector: AuthConnector, val revoca
         _ => Redirect(routes.Revocation.withdrawConfirmationPage())
       } recover {
         case _: AuthorityNotFound => NotFound(notFoundTemplate)
-        case _: TrustedAuthorityRevocationException => NotFound(notFoundTemplate)
       }
     } recover unauthorisedRecovery
   }
