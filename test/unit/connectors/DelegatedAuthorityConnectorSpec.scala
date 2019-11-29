@@ -119,7 +119,7 @@ class DelegatedAuthorityConnectorSpec extends UnitSpec
 
   private def anApplicationAuthority() = {
     AppAuthorisation(
-      application = ThirdPartyApplication(UUID.randomUUID(), "My App", trusted = true),
+      application = ThirdPartyApplication(UUID.randomUUID(), "My App"),
       scopes = Set(Scope("read:api-name", "Access personal info", "Access personal info")),
       earliestGrantDate = new DateTime(1460713641258L)
     )

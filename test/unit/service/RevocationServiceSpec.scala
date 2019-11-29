@@ -24,7 +24,7 @@ import org.joda.time.DateTime
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
-import service.{RevocationService, TrustedAuthorityRetrievalException, TrustedAuthorityRevocationException}
+import service.RevocationService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.test.UnitSpec
 
@@ -42,107 +42,46 @@ class RevocationServiceSpec extends UnitSpec with MockitoSugar {
     val underTest = new RevocationService(delegatedAuthorityConnector)
   }
 
-  "fetchUntrustedApplicationAuthorities" should {
-
-    "return only untrusted applications" in new Setup {
-
-      val authority1 = someAppAuthorisation(trusted = false)
-      val authority2 = someAppAuthorisation(trusted = false)
-      val trustedAuthority = someAppAuthorisation(trusted = true)
-
-      given(underTest.delegatedAuthorityConnector.fetchApplicationAuthorities()(hc))
-        .willReturn(successful(Seq(authority1, authority2, trustedAuthority)))
-
-      await(underTest.fetchUntrustedApplicationAuthorities()) shouldBe Seq(authority1, authority2)
-    }
-
-    "return untrusted applications in application name order" in new Setup {
-      val authority1 = untrustedApplicationWithName("Zapplication")
-      val authority2 = untrustedApplicationWithName("Application")
-      val authority3 = untrustedApplicationWithName("4pplication")
-
+  "fetchApplicationAuthorities" should {
+    "return applications in application name order" in new Setup {
+      val authority1 = someAppAuthorisation("Zapplication")
+      val authority2 = someAppAuthorisation("Application")
+      val authority3 = someAppAuthorisation("4pplication")
       given(underTest.delegatedAuthorityConnector.fetchApplicationAuthorities()(hc))
         .willReturn(successful(Seq(authority1, authority2, authority3)))
 
-      await(underTest.fetchUntrustedApplicationAuthorities()) shouldBe Seq(authority3, authority2, authority1)
+      await(underTest.fetchApplicationAuthorities()) shouldBe Seq(authority3, authority2, authority1)
     }
   }
 
-  "fetchUntrustedApplicationAuthority" should {
-
-    "return authority if it is untrusted" in new Setup {
-
-      val authority = someAppAuthorisation(trusted = false)
-
+  "fetchApplicationAuthority" should {
+    "return authority" in new Setup {
+      val authority = someAppAuthorisation()
       given(underTest.delegatedAuthorityConnector.fetchApplicationAuthority(appId)(hc))
         .willReturn(successful(authority))
 
-      await(underTest.fetchUntrustedApplicationAuthority(appId)) shouldBe authority
-
-      verify(underTest.delegatedAuthorityConnector).fetchApplicationAuthority(appId)(hc)
-    }
-
-    "throw exception if authority is trusted" in new Setup {
-
-      val authority = someAppAuthorisation(trusted = true)
-
-      given(underTest.delegatedAuthorityConnector.fetchApplicationAuthority(appId)(hc))
-        .willReturn(successful(authority))
-
-      intercept[TrustedAuthorityRetrievalException] {
-        await(underTest.fetchUntrustedApplicationAuthority(appId))
-      }
+      await(underTest.fetchdApplicationAuthority(appId)) shouldBe authority
 
       verify(underTest.delegatedAuthorityConnector).fetchApplicationAuthority(appId)(hc)
     }
   }
 
   "revokeApplicationAuthority" should {
-
-    "revoke authority if it is untrusted" in new Setup {
-
-      val authority = someAppAuthorisation(trusted = false)
-
-      given(underTest.delegatedAuthorityConnector.fetchApplicationAuthority(appId)(hc))
-        .willReturn(successful(authority))
+    "revoke authority" in new Setup {
       given(underTest.delegatedAuthorityConnector.revokeApplicationAuthority(appId)(hc))
         .willReturn(successful(()))
 
       await(underTest.revokeApplicationAuthority(appId))
 
-      verify(underTest.delegatedAuthorityConnector).fetchApplicationAuthority(appId)(hc)
       verify(underTest.delegatedAuthorityConnector).revokeApplicationAuthority(appId)(hc)
-    }
-
-    "throw exception if authority is trusted" in new Setup {
-
-      val authority = someAppAuthorisation(trusted = true)
-
-      given(underTest.delegatedAuthorityConnector.fetchApplicationAuthority(appId)(hc))
-        .willReturn(successful(authority))
-
-      intercept[TrustedAuthorityRevocationException] {
-        await(underTest.revokeApplicationAuthority(appId))
-      }
-
-      verify(underTest.delegatedAuthorityConnector).fetchApplicationAuthority(appId)(hc)
-      verifyNoMoreInteractions(underTest.delegatedAuthorityConnector)
     }
   }
 
   private val scopes = Set(Scope("read:api-1", "scope name", "Access personal information"), Scope("read:api-3", "scope name", "Access tax information"))
 
-  private def someAppAuthorisation(trusted: Boolean) = {
+  private def someAppAuthorisation(name: String = "First Application") =
     AppAuthorisation(
-      application = ThirdPartyApplication(UUID.randomUUID(), "First Application", trusted = trusted),
-      scopes = scopes,
-      earliestGrantDate = DateTime.now
-    )
-  }
-
-  private def untrustedApplicationWithName(name: String) =
-    AppAuthorisation(
-      application = ThirdPartyApplication(UUID.randomUUID(), name, trusted = false),
+      application = ThirdPartyApplication(UUID.randomUUID(), name),
       scopes = scopes,
       earliestGrantDate = DateTime.now
     )

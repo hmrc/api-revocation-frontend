@@ -38,18 +38,18 @@ class AuthorizedApplicationsSpec extends BaseSpec with NavigationSugar {
     scenario("User sees his authorized applications") {
 
       val app1 = AppAuthorisation(
-        ThirdPartyApplication(UUID.randomUUID(), "Zapplication", trusted = false),
+        ThirdPartyApplication(UUID.randomUUID(), "Zapplication"),
         Set(Scope("read:api-1", "access personal information", "Access personal information description"), Scope("read:api-3", "access tax information", "Access tax information description")),
         DateTime.now)
 
       val app2 = AppAuthorisation(
-        ThirdPartyApplication(UUID.randomUUID(), "Application", trusted = false),
+        ThirdPartyApplication(UUID.randomUUID(), "Application"),
         Set(Scope("read:api-2", "access confidential information", "Access confidential information description")),
         DateTime.now.minusDays(2))
 
 
       val app3 = AppAuthorisation(
-        ThirdPartyApplication(UUID.randomUUID(), "4pplication", trusted = false),
+        ThirdPartyApplication(UUID.randomUUID(), "4pplication"),
         Set.empty,
         DateTime.now.minusMonths(2))
 
@@ -62,33 +62,6 @@ class AuthorizedApplicationsSpec extends BaseSpec with NavigationSugar {
       on(AuthorizedApplicationsPage)
 
       verifyApplicationsDisplayedInOrder(Seq(app3, app2, app1))
-    }
-
-    scenario("User sees only authorized applications, which are not trusted") {
-
-      val trustedApp = AppAuthorisation(ThirdPartyApplication(UUID.randomUUID(), "Third Application", trusted = true), Set(), DateTime.now.minusMonths(2))
-      val otherApp = AppAuthorisation(ThirdPartyApplication(UUID.randomUUID(), "Third Application", trusted = false), Set(), DateTime.now.minusMonths(2))
-
-      LoginStub.stubSuccessfulLogin()
-      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(Seq(trustedApp, otherApp))
-
-      go(AuthorizedApplicationsPage)
-      on(AuthorizedApplicationsPage)
-
-      verifyApplicationsDisplayedInOrder(Seq(otherApp))
-    }
-
-    scenario("User sees 'no authorized applications' message if all of the authorised applications are trusted") {
-
-      val trustedApp = AppAuthorisation(ThirdPartyApplication(UUID.randomUUID(), "Third Application", trusted = true), Set(), DateTime.now.minusMonths(2))
-
-      LoginStub.stubSuccessfulLogin()
-      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(Seq(trustedApp))
-
-      go(AuthorizedApplicationsPage)
-      on(AuthorizedApplicationsPage)
-
-      verifyNoAuthorisedApplicationsMessageDisplayed()
     }
 
     scenario("User sees 'no authorized applications' message if there are no authorized applications") {

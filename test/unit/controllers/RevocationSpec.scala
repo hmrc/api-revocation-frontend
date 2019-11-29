@@ -31,7 +31,7 @@ import play.api.http.Status
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.filters.csrf.CSRF.{Token, TokenProvider}
-import service.{RevocationService, TrustedAuthorityRevocationException}
+import service.RevocationService
 import uk.gov.hmrc.auth.core.retrieve.EmptyRetrieval
 import uk.gov.hmrc.auth.core.{AuthConnector, InvalidBearerToken}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
@@ -52,7 +52,7 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
 
     val underTest: Revocation = new Revocation(authConnector, revocationService)
 
-    given(revocationService.fetchUntrustedApplicationAuthorities()(any(classOf[HeaderCarrier])))
+    given(revocationService.fetchApplicationAuthorities()(any(classOf[HeaderCarrier])))
       .willReturn(successful(Seq.empty))
   }
 
@@ -105,9 +105,9 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
 
   "withdrawPage" should {
     "return 200" in new LoggedInSetup {
-      val appAuthority = AppAuthorisation(ThirdPartyApplication(appId, "appName", trusted = false), Set(), DateTime.now)
+      val appAuthority = AppAuthorisation(ThirdPartyApplication(appId, "appName"), Set(), DateTime.now)
 
-      given(underTest.revocationService.fetchUntrustedApplicationAuthority(ArgumentMatchers.eq(appId))(any(classOf[HeaderCarrier])))
+      given(underTest.revocationService.fetchdApplicationAuthority(ArgumentMatchers.eq(appId))(any(classOf[HeaderCarrier])))
         .willReturn(successful(appAuthority))
 
       val result = underTest.withdrawPage(appId)(request)
@@ -130,15 +130,6 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
     "return 404 if the authorisation is not found" in new LoggedInSetup {
       given(underTest.revocationService.revokeApplicationAuthority(ArgumentMatchers.eq(appId))(any(classOf[HeaderCarrier])))
         .willReturn(failed(new AuthorityNotFound()))
-
-      val result = underTest.withdrawAction(appId)(request)
-
-      status(result) shouldBe 404
-    }
-
-    "return 404 if the authorisation does exist, but it is for a trusted application" in new LoggedInSetup {
-      given(underTest.revocationService.revokeApplicationAuthority(ArgumentMatchers.eq(appId))(any(classOf[HeaderCarrier])))
-        .willReturn(failed(TrustedAuthorityRevocationException(appId)))
 
       val result = underTest.withdrawAction(appId)(request)
 

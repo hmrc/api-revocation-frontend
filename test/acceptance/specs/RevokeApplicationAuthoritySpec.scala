@@ -32,7 +32,7 @@ class RevokeApplicationAuthoritySpec extends BaseSpec with NavigationSugar {
   feature("Revoking application authority") {
 
     scenario("User is able to revoke application authority") {
-      val authority = someAppAuthority(trusted = false)
+      val authority = someAppAuthority()
 
       LoginStub.stubSuccessfulLogin()
       DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(Seq(authority))
@@ -57,7 +57,7 @@ class RevokeApplicationAuthoritySpec extends BaseSpec with NavigationSugar {
     }
 
     scenario("User is able to cancel application authority revocation") {
-      val authority = someAppAuthority(trusted = false)
+      val authority = someAppAuthority()
 
       LoginStub.stubSuccessfulLogin()
       DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(Seq(authority))
@@ -76,22 +76,8 @@ class RevokeApplicationAuthoritySpec extends BaseSpec with NavigationSugar {
       on(AuthorizedApplicationsPage)
     }
 
-    scenario("User is not able to revoke application authority if the application is trusted") {
-      val authorityForTrustedApp = someAppAuthority(trusted = true)
-
-      LoginStub.stubSuccessfulLogin()
-      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(Seq(authorityForTrustedApp))
-      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthority(authorityForTrustedApp)
-
-      go(AuthorizedApplicationsPage)
-
-      go(WithdrawPermissionPage(authorityForTrustedApp.application.id))
-
-      on(NotFoundPage)
-    }
-
     scenario("User is not able to revoke non existent application authority") {
-      val authority = someAppAuthority(trusted = false)
+      val authority = someAppAuthority()
 
       LoginStub.stubSuccessfulLogin()
       DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(Seq(authority))
@@ -105,9 +91,9 @@ class RevokeApplicationAuthoritySpec extends BaseSpec with NavigationSugar {
     }
   }
 
-  private def someAppAuthority(trusted: Boolean) = {
+  private def someAppAuthority() = {
     AppAuthorisation(
-      application = ThirdPartyApplication(UUID.randomUUID(), "First Application", trusted = trusted),
+      application = ThirdPartyApplication(UUID.randomUUID(), "First Application"),
       scopes = Set(Scope("read:api-1", "scope name", "Access personal information"), Scope("read:api-3", "scope name", "Access tax information")),
       earliestGrantDate = DateTime.now
     )

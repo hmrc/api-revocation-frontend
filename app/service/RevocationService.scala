@@ -29,29 +29,15 @@ import scala.concurrent.{ExecutionContext, Future}
 class RevocationService @Inject()(val delegatedAuthorityConnector: DelegatedAuthorityConnector)
                                  (implicit val ec: ExecutionContext) {
 
-  def fetchUntrustedApplicationAuthorities()(implicit hc: HeaderCarrier): Future[Seq[AppAuthorisation]] = {
-    delegatedAuthorityConnector.fetchApplicationAuthorities().map { authorities =>
-      authorities.filter(!_.application.trusted).sorted
-    }
+  def fetchApplicationAuthorities()(implicit hc: HeaderCarrier): Future[Seq[AppAuthorisation]] = {
+    delegatedAuthorityConnector.fetchApplicationAuthorities().map(_.sorted)
   }
 
-  def fetchUntrustedApplicationAuthority(appId: UUID)(implicit hc: HeaderCarrier): Future[AppAuthorisation] = {
-    delegatedAuthorityConnector.fetchApplicationAuthority(appId).map {
-      case authority if authority.application.trusted => throw TrustedAuthorityRetrievalException(appId)
-      case authority => authority
-    }
+  def fetchdApplicationAuthority(appId: UUID)(implicit hc: HeaderCarrier): Future[AppAuthorisation] = {
+    delegatedAuthorityConnector.fetchApplicationAuthority(appId)
   }
 
   def revokeApplicationAuthority(appId: UUID)(implicit hc: HeaderCarrier): Future[Unit] = {
-    delegatedAuthorityConnector.fetchApplicationAuthority(appId).flatMap {
-      case authority if authority.application.trusted => throw TrustedAuthorityRevocationException(appId)
-      case _ => delegatedAuthorityConnector.revokeApplicationAuthority(appId)
-    }
+    delegatedAuthorityConnector.revokeApplicationAuthority(appId)
   }
 }
-
-case class TrustedAuthorityRetrievalException(appId: UUID)
-  extends RuntimeException(s"Authority for application [$appId] was found, but the application is trusted")
-
-case class TrustedAuthorityRevocationException(appId: UUID)
-  extends RuntimeException(s"Authority for application [$appId] cannot be revoked as the application is trusted")
