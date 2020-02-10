@@ -15,6 +15,9 @@
  *@
 
 @import org.joda.time.format.DateTimeFormat
+
+@this(main_template: main_template)
+
 @(applications: Seq[AppAuthorisation])(implicit request: Request[_], messages: Messages)
 
 @body = {

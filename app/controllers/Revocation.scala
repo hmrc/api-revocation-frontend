@@ -22,25 +22,36 @@ import config.FrontendAppConfig
 import connectors.AuthorityNotFound
 import javax.inject.{Inject, Singleton}
 import play.api.Play.current
-import play.api.i18n.Messages
+import play.api.i18n.{Messages, MessagesProvider}
 import play.api.i18n.Messages.Implicits._
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import play.twirl.api.Html
 import service.RevocationService
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisationException, AuthorisedFunctions}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.{FrontendBaseController, FrontendController}
+import views.html.error_template
+import views.html.revocation.{authorizedApplications, loggedOut, permissionWithdrawn, start, withdrawPermission}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class Revocation @Inject()(override val authConnector: AuthConnector, val revocationService: RevocationService)
-                          (implicit val ec: ExecutionContext) extends FrontendController with AuthorisedFunctions {
+class Revocation @Inject()(override val authConnector: AuthConnector,
+                           val revocationService: RevocationService,
+                           mcc: MessagesControllerComponents,
+                           frontendAppConfig: FrontendAppConfig,
+                           error_template: error_template,
+                           startPage: start,
+                           loggedOutPage: loggedOut,
+                           authorizedApplicationsPage: authorizedApplications,
+                           permissionWithdrawnPage: permissionWithdrawn,
+                           withdrawPermissionPage: withdrawPermission)
+                          (implicit val ec: ExecutionContext, messagesProvider: MessagesProvider) extends FrontendController(mcc) with AuthorisedFunctions {
 
-  private lazy val loginURL: String = FrontendAppConfig.signInUrl
+  private lazy val loginURL: String = frontendAppConfig.signInUrl
   private lazy val loginUrlParameters = Map[String, Seq[String]]()
 
   private def notFoundTemplate(implicit request: Request[_]): Html = {
-    views.html.error_template(
+    error_template(
       Messages("global.error.pageNotFound404.title"),
       Messages("global.error.pageNotFound404.heading"),
       Messages("global.error.pageNotFound404.message"))
@@ -51,17 +62,17 @@ class Revocation @Inject()(override val authConnector: AuthConnector, val revoca
   }
 
   val start: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(views.html.revocation.start()))
+    Future.successful(Ok(startPage()))
   }
 
   val loggedOut: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(views.html.revocation.loggedOut()))
+    Future.successful(Ok(loggedOutPage()))
   }
 
   val listAuthorizedApplications: Action[AnyContent] = Action.async { implicit request =>
     authorised() {
       revocationService.fetchApplicationAuthorities() map {
-        applications => Ok(views.html.revocation.authorizedApplications(applications))
+        applications => Ok(authorizedApplicationsPage(applications))
       }
     } recover unauthorisedRecovery
   }
@@ -69,7 +80,7 @@ class Revocation @Inject()(override val authConnector: AuthConnector, val revoca
   def withdrawPage(id: UUID): Action[AnyContent] = Action.async { implicit request =>
     authorised() {
       revocationService.fetchdApplicationAuthority(id) map {
-        authority => Ok(views.html.revocation.withdrawPermission(authority))
+        authority => Ok(withdrawPermissionPage(authority))
       } recover {
         case _: AuthorityNotFound => NotFound(notFoundTemplate)
       }
@@ -88,7 +99,7 @@ class Revocation @Inject()(override val authConnector: AuthConnector, val revoca
 
   val withdrawConfirmationPage: Action[AnyContent] = Action.async { implicit request =>
     authorised() {
-      Future.successful(Ok(views.html.revocation.permissionWithdrawn()))
+      Future.successful(Ok(permissionWithdrawnPage()))
     } recover unauthorisedRecovery
   }
 }

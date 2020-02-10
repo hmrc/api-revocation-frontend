@@ -16,10 +16,10 @@
 
 package config
 
-import play.api.{Configuration, Play}
-import play.api.Mode.Mode
-import play.api.Play.{configuration, current}
-import uk.gov.hmrc.play.config.ServicesConfig
+import javax.inject.{Inject, Singleton}
+import play.api.{Configuration, Environment, Mode, Play}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+
 
 trait AppConfig {
   val analyticsToken: String
@@ -32,16 +32,16 @@ trait AppConfig {
   val signOutUrl: String
 }
 
-object FrontendAppConfig extends AppConfig with ServicesConfig {
+@Singleton
+class FrontendAppConfig @Inject()(val configuration: Configuration,
+                                  val environment: Environment,
+                                  servicesConfig: ServicesConfig) extends AppConfig {
 
-  private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
-
-  override protected def mode: Mode = Play.current.mode
-  override protected def runModeConfiguration: Configuration = Play.current.configuration
+  private def loadConfig(key: String) =  configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
   private val caFrontendHost = configuration.getString("ca-frontend.host").getOrElse("")
   private val contactHost = configuration.getString("contact-frontend.host").getOrElse("")
-  private val loginCallbackBaseUrl = getConfString("auth.login-callback.base-url", "")
+  private val loginCallbackBaseUrl = configuration.getOptional[String]("auth.login-callback.base-url").getOrElse("")
 
   private val contactFormServiceIdentifier = "api-revocation-frontend"
 

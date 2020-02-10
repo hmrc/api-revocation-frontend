@@ -1,7 +1,5 @@
 import play.core.PlayVersion
-import play.routes.compiler.StaticRoutesGenerator
 import play.sbt.PlayImport._
-import play.sbt.routes.RoutesKeys.routesGenerator
 import sbt.Keys._
 import sbt.Tests.{Group, SubProcess}
 import sbt._
@@ -19,13 +17,14 @@ lazy val appDependencies: Seq[ModuleID] = compile ++ test
 
 lazy val compile = Seq(
   ws,
-  "uk.gov.hmrc" %% "bootstrap-play-25" % "5.1.0",
-  "uk.gov.hmrc" %% "play-ui" % "8.3.0-play-25",
-  "uk.gov.hmrc" %% "play-partials" % "6.9.0-play-25",
-  "uk.gov.hmrc" %% "govuk-template" % "5.26.0-play-25",
+  "uk.gov.hmrc" %% "play-partials" % "6.9.0-play-26",
+  "uk.gov.hmrc" %% "bootstrap-play-26" % "1.3.0",
+  "uk.gov.hmrc" %% "play-ui" % "8.7.0-play-26",
+  "uk.gov.hmrc" %% "govuk-template" % "5.48.0-play-26",
   "org.apache.httpcomponents" % "httpclient" % "4.3.3",
   "org.apache.httpcomponents" % "httpcore" % "4.3.3"
 )
+
 
 lazy val test = Seq(
   "uk.gov.hmrc" %% "hmrctest" % "3.9.0-play-25" % "test",
@@ -42,7 +41,7 @@ lazy val test = Seq(
 lazy val plugins: Seq[Plugins] = Seq.empty
 lazy val playSettings: Seq[Setting[_]] = Seq.empty
 lazy val microservice = (project in file("."))
-  .enablePlugins(Seq(_root_.play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory) ++ plugins: _*)
+  .enablePlugins(Seq(_root_.play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory, SbtWeb) ++ plugins: _*)
   .settings(playSettings: _*)
   .settings(scalaSettings: _*)
   .settings(publishingSettings: _*)
@@ -56,8 +55,7 @@ lazy val microservice = (project in file("."))
     parallelExecution in Test := false,
     fork in Test := false,
     retrieveManaged := true,
-    evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
-    routesGenerator := StaticRoutesGenerator
+    evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
   )
   .settings(testOptions in Test := Seq(Tests.Filter(unitFilter)),
     addTestReportOption(Test, "test-reports")

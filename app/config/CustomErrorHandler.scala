@@ -22,10 +22,13 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.Request
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
+import views.html.error_template
 
-class CustomErrorHandler @Inject()(val messagesApi: MessagesApi, val configuration: Configuration) extends FrontendErrorHandler {
+class CustomErrorHandler @Inject()(val messagesApi: MessagesApi,
+                                   val configuration: Configuration,
+                                   error_template: error_template) extends FrontendErrorHandler {
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)
                                     (implicit request: Request[_]): Html = {
-    views.html.error_template(pageTitle, heading, message)
+    error_template(pageTitle, heading, message)
   }
 }
