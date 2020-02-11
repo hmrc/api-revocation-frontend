@@ -16,20 +16,24 @@
 
 package stubs
 
-import java.net.URLEncoder
 import java.util.UUID
 
+import _root_.play.api.http.{HeaderNames, SecretConfiguration}
+import _root_.play.api.libs.crypto.DefaultCookieSigner
+import _root_.play.api.mvc.SessionCookieBaker
+import acceptance.Env._
 import acceptance.pages.AuthorizedApplicationsPage
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.http.HeaderNames
+import org.scalatest.FeatureSpec
 import play.api.http.Status.{OK, SEE_OTHER, UNAUTHORIZED}
-import play.api.libs.Crypto
-import uk.gov.hmrc.crypto.{CompositeSymmetricCrypto, PlainText}
+import uk.gov.hmrc.crypto.PlainText
 import uk.gov.hmrc.http.SessionKeys
+import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCrypto
 import uk.gov.hmrc.time.DateTimeUtils
 
-object LoginStub extends SessionCookieBaker {
+trait LoginStub extends SessionCookieCryptoFilterWrapper {
+
 
   private val sessionId = s"stubbed-${UUID.randomUUID}"
 
@@ -52,7 +56,7 @@ object LoginStub extends SessionCookieBaker {
     stubFor(get(urlEqualTo(s"/gg/sign-in?continue=${AuthorizedApplicationsPage.url}"))
       .willReturn(aResponse()
         .withStatus(SEE_OTHER)
-        .withHeader(HeaderNames.SET_COOKIE, cookieValue(data))
+        .withHeader(HeaderNames.SET_COOKIE, encryptCookie(data))
         .withHeader(HeaderNames.LOCATION, AuthorizedApplicationsPage.url)))
 
     stubFor(post(urlEqualTo("/auth/authorise"))
@@ -67,19 +71,20 @@ object LoginStub extends SessionCookieBaker {
   }
 }
 
-trait SessionCookieBaker {
-  def cookieValue(sessionData: Map[String,String]): String = {
-    def encode(data: Map[String, String]): PlainText = {
-      val encoded = data.map {
-        case (k, v) => URLEncoder.encode(k, "UTF-8") + "=" + URLEncoder.encode(v, "UTF-8")
-      }.mkString("&")
-      val key = "yNhI04vHs9<_HWbC`]20u`37=NGLGYY5:0Tg5?y`W<NoJnXWqmjcgZBec@rOxb^G".getBytes
-      PlainText(Crypto.sign(encoded, key) + "-" + encoded)
-    }
 
-    val encodedCookie = encode(sessionData)
-    val encrypted = CompositeSymmetricCrypto.aesGCM("gvBoGdgzqG1AarzF1LY0zQ==", Seq()).encrypt(encodedCookie).value
 
-    s"""mdtp="$encrypted"; Path=/; HTTPOnly"; Path=/; HTTPOnly"""
+trait SessionCookieCryptoFilterWrapper {
+  val sc = SecretConfiguration("secret")
+  val cs = new DefaultCookieSigner(sc)
+  val mtdpSessionCookie="mdtp"
+  val signSeparator="-"
+
+  val cookieBaker: SessionCookieBaker
+  val sessionCookieCrypto: SessionCookieCrypto
+
+  def encryptCookie(sessionData: Map[String, String]): String = {
+    val encoded = cookieBaker.encode(sessionData)
+    val encrypted: String = sessionCookieCrypto.crypto.encrypt(PlainText(encoded)).value
+    s"""mdtp=$encrypted"""
   }
 }

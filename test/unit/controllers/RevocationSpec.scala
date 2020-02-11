@@ -18,6 +18,7 @@ package unit.controllers
 
 import java.util.UUID
 
+import com.codahale.metrics.SharedMetricRegistries
 import com.kenshoo.play.metrics.PlayModule
 import connectors.AuthorityNotFound
 import controllers.Revocation
@@ -29,9 +30,10 @@ import org.mockito.BDDMockito.given
 import org.scalatest.mockito.MockitoSugar
 import play.api.http.Status
 import play.api.inject.guice.GuiceableModule
-import play.api.test.FakeRequest
+import play.api.test.{FakeRequest, StubMessagesFactory}
 import play.filters.csrf.CSRF.{Token, TokenProvider}
 import service.RevocationService
+import stubs.Stubs
 import uk.gov.hmrc.auth.core.retrieve.EmptyRetrieval
 import uk.gov.hmrc.auth.core.{AuthConnector, InvalidBearerToken}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
@@ -40,9 +42,10 @@ import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.Future.{failed, successful}
+import stubs.FakeRequestCSRFSupport._
 
-class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar {
-
+class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar with Stubs {
+  SharedMetricRegistries.clear()
   override def bindModules: Seq[GuiceableModule] = Seq(new PlayModule)
 
   trait Setup {
@@ -50,7 +53,8 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
     val authConnector: AuthConnector = mock[AuthConnector]
     val revocationService: RevocationService = mock[RevocationService]
 
-    val underTest: Revocation = new Revocation(authConnector, revocationService)
+    val underTest: Revocation = new Revocation(authConnector, revocationService,stubMessagesControllerComponents(), minimalAppConfig, errorTemplate, startPage, loggedOutPage,
+      authorizedApplicationsPage, permissionWithdrawnPage, withdrawPermissionPage)
 
     given(revocationService.fetchApplicationAuthorities()(any(classOf[HeaderCarrier])))
       .willReturn(successful(Seq.empty))
@@ -59,9 +63,7 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
   trait LoggedInSetup extends Setup {
     lazy val request = FakeRequest()
       .withSession(SessionKeys.sessionId -> "SessionId")
-      .copyFakeRequest(tags = Map(
-        Token.NameRequestTag -> "csrfToken",
-        Token.RequestTag -> fakeApplication.injector.instanceOf[TokenProvider].generateToken))
+    .withCSRFToken
 
     given(authConnector.authorise(any(), ArgumentMatchers.eq(EmptyRetrieval))(any(), any())).willReturn(successful(()))
   }
@@ -99,7 +101,7 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
       val result = underTest.listAuthorizedApplications(request)
 
       status(result) shouldBe 303
-      result.header.headers("Location") shouldEqual "http://localhost:9025/gg/sign-in?continue=http://localhost:9686/applications-manage-authority/applications"
+      result.header.headers("Location") shouldEqual "/gg/sign-in?continue=/applications-manage-authority/applications"
     }
   }
 

@@ -18,36 +18,47 @@ package unit.connectors
 
 import java.util.UUID
 
+import com.codahale.metrics.SharedMetricRegistries
 import connectors.{AuthorityNotFound, DelegatedAuthorityConnector}
 import models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import org.joda.time.DateTime
+import org.scalatest.Matchers
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
-import org.scalatest.{BeforeAndAfterEach, Matchers}
-import stubs.DelegatedAuthorityStub
+import play.api.Application
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
+import stubs.{DelegatedAuthorityStub, WireMockSupport}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.audit.DefaultAuditConnector
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class DelegatedAuthorityConnectorSpec extends UnitSpec
   with Matchers
   with ScalaFutures
-  with WiremockSugar
-  with BeforeAndAfterEach
-  with WithFakeApplication
-  with MockitoSugar {
+  with MockitoSugar
+  with DelegatedAuthorityStub
+  with WireMockSupport {
 
   private trait Setup {
+    SharedMetricRegistries.clear()
+
     implicit val hc = HeaderCarrier()
     val serviceConfig = mock[ServicesConfig]
+    val mockDefaultAuditConnector = mock[DefaultAuditConnector]
+    lazy val fakeApplication: Application = new GuiceApplicationBuilder().bindings(bindModules:_*).build()
+
+    def bindModules: Seq[GuiceableModule] = Seq()
     val http = fakeApplication.injector.instanceOf[HttpClient]
 
+
     val connector = new DelegatedAuthorityConnector(serviceConfig, http) {
-      override val delegatedAuthorityUrl: String = wireMockUrl
+      override val delegatedAuthorityUrl: String = mockServerUrl
     }
+
   }
 
   "fetchApplicationAuthorities" should {
@@ -56,7 +67,7 @@ class DelegatedAuthorityConnectorSpec extends UnitSpec
 
       val authorities = Seq(anApplicationAuthority(), anApplicationAuthority())
 
-      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(authorities)
+      stubSuccessfulFetchApplicationAuthorities(authorities)
 
       await(connector.fetchApplicationAuthorities()) shouldBe authorities
     }
@@ -65,7 +76,7 @@ class DelegatedAuthorityConnectorSpec extends UnitSpec
 
       val authorities = Seq.empty
 
-      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(authorities)
+      stubSuccessfulFetchApplicationAuthorities(authorities)
 
       await(connector.fetchApplicationAuthorities()) shouldBe authorities
     }
@@ -77,7 +88,7 @@ class DelegatedAuthorityConnectorSpec extends UnitSpec
 
       val authority = anApplicationAuthority()
 
-      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthority(authority)
+      stubSuccessfulFetchApplicationAuthority(authority)
 
       await(connector.fetchApplicationAuthority(authority.application.id)) shouldBe authority
     }
@@ -86,7 +97,7 @@ class DelegatedAuthorityConnectorSpec extends UnitSpec
 
       val authority = anApplicationAuthority()
 
-      DelegatedAuthorityStub.stubFailedFetchApplicationAuthority(authority, status = 404)
+      stubFailedFetchApplicationAuthority(authority, status = 404)
 
       intercept[AuthorityNotFound] {
         await(connector.fetchApplicationAuthority(authority.application.id))
@@ -100,7 +111,7 @@ class DelegatedAuthorityConnectorSpec extends UnitSpec
 
       val authority = anApplicationAuthority()
 
-      DelegatedAuthorityStub.stubSuccessfulAuthorityRevocation(authority)
+      stubSuccessfulAuthorityRevocation(authority)
 
       await(connector.revokeApplicationAuthority(authority.application.id))
     }
@@ -109,7 +120,7 @@ class DelegatedAuthorityConnectorSpec extends UnitSpec
 
       val authority = anApplicationAuthority()
 
-      DelegatedAuthorityStub.stubFailedAuthorityRevocation(authority, status = 404)
+      stubFailedAuthorityRevocation(authority, status = 404)
 
       intercept[AuthorityNotFound] {
         await(connector.revokeApplicationAuthority(authority.application.id))

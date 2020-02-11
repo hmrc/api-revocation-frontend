@@ -21,6 +21,7 @@ import acceptance.WebPage
 object NotFoundPage extends WebPage {
 
   override val url = ""
+  override val urlMatching  = ""
 
   override def isCurrentPage = find(cssSelector("h1")).exists(_.text == "This page can’t be found")
 }

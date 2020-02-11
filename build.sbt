@@ -25,17 +25,48 @@ lazy val compile = Seq(
   "org.apache.httpcomponents" % "httpcore" % "4.3.3"
 )
 
+lazy val wireMockVersion = "2.21.0"
 
 lazy val test = Seq(
-  "uk.gov.hmrc" %% "hmrctest" % "3.9.0-play-25" % "test",
-  "org.scalatest" %% "scalatest" % "3.0.5" % "test",
-  "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.1" % "test",
+  "uk.gov.hmrc" %% "hmrctest" % "3.9.0-play-26" % "test",
+  "org.scalatest" %% "scalatest" % "3.0.8" % "test",
+  "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test",
+  "com.typesafe.play" %% "play-test"  % PlayVersion.current % "test",
   "org.pegdown" % "pegdown" % "1.6.0" % "test",
-  "org.jsoup" % "jsoup" % "1.7.3" % "test",
-  "com.typesafe.play" %% "play-test" % PlayVersion.current % "test",
-  "com.github.tomakehurst" % "wiremock" % "2.11.0" % "test",
+  "org.jsoup" % "jsoup" % "1.10.2" % "test",
+  "com.github.tomakehurst" %  "wiremock-jre8"  % "2.24.1" % "test",
   "org.seleniumhq.selenium" % "selenium-java" % "2.53.0" % "test",
-  "org.mockito" % "mockito-core" % "2.12.0" % "test"
+  "org.mockito" % "mockito-core" % "2.13.0" % "test"
+)
+
+
+// Transitive dependencies in scalatest/scalatestplusplay drag in a newer version of jetty that is not
+// compatible with wiremock, so we need to pin the jetty stuff to the older version.
+// see https://groups.google.com/forum/#!topic/play-framework/HAIM1ukUCnI
+val jettyVersion = "9.4.26.v20200117"
+lazy val akkaVersion = "2.5.23"
+lazy val akkaHttpVersion = "10.0.15"
+
+val overrides: Set[ModuleID] = Set(
+  "com.typesafe.akka"           %% "akka-stream" % akkaVersion,
+  "com.typesafe.akka"           %% "akka-protobuf" % akkaVersion,
+  "com.typesafe.akka"           %% "akka-slf4j" % akkaVersion,
+  "com.typesafe.akka"           %% "akka-actor" % akkaVersion,
+  "com.typesafe.akka"           %% "akka-http-core" % akkaHttpVersion,
+  "org.eclipse.jetty"           % "jetty-server"       % jettyVersion,
+  "org.eclipse.jetty"           % "jetty-servlet"      % jettyVersion,
+  "org.eclipse.jetty"           % "jetty-security"     % jettyVersion,
+  "org.eclipse.jetty"           % "jetty-servlets"     % jettyVersion,
+  "org.eclipse.jetty"           % "jetty-continuation" % jettyVersion,
+  "org.eclipse.jetty"           % "jetty-webapp"       % jettyVersion,
+  "org.eclipse.jetty"           % "jetty-xml"          % jettyVersion,
+  "org.eclipse.jetty"           % "jetty-client"       % jettyVersion,
+  "org.eclipse.jetty"           % "jetty-http"         % jettyVersion,
+  "org.eclipse.jetty"           % "jetty-io"           % jettyVersion,
+  "org.eclipse.jetty"           % "jetty-util"         % jettyVersion,
+  "org.eclipse.jetty.websocket" % "websocket-api"      % jettyVersion,
+  "org.eclipse.jetty.websocket" % "websocket-common"   % jettyVersion,
+  "org.eclipse.jetty.websocket" % "websocket-client"   % jettyVersion
 )
 
 lazy val plugins: Seq[Plugins] = Seq.empty
@@ -52,6 +83,7 @@ lazy val microservice = (project in file("."))
     targetJvm := "jvm-1.8",
     scalaVersion := "2.11.11",
     libraryDependencies ++= appDependencies,
+    //dependencyOverrides ++= overrides,
     parallelExecution in Test := false,
     fork in Test := false,
     retrieveManaged := true,

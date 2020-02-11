@@ -29,7 +29,7 @@ import scala.util.{Properties, Try}
 trait Env {
 
   val driver: WebDriver = createWebDriver
-  lazy val port = 6001
+  lazy val port = 19001
   lazy val windowSize = new Dimension(1024, 800)
   val stubPort = 6010
   val stubHost = "localhost"

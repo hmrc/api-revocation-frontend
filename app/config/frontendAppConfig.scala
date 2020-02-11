@@ -37,10 +37,10 @@ class FrontendAppConfig @Inject()(val configuration: Configuration,
                                   val environment: Environment,
                                   servicesConfig: ServicesConfig) extends AppConfig {
 
-  private def loadConfig(key: String) =  configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
+  private def loadConfig(key: String) =  configuration.getOptional[String](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
-  private val caFrontendHost = configuration.getString("ca-frontend.host").getOrElse("")
-  private val contactHost = configuration.getString("contact-frontend.host").getOrElse("")
+  private val caFrontendHost = configuration.getOptional[String]("ca-frontend.host").getOrElse("")
+  private val contactHost = configuration.getOptional[String]("contact-frontend.host").getOrElse("")
   private val loginCallbackBaseUrl = configuration.getOptional[String]("auth.login-callback.base-url").getOrElse("")
 
   private val contactFormServiceIdentifier = "api-revocation-frontend"

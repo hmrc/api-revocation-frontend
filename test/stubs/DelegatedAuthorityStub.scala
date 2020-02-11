@@ -19,7 +19,7 @@ package stubs
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.{AppAuthorisation, Scope}
 
-object DelegatedAuthorityStub {
+trait DelegatedAuthorityStub {
 
   def stubSuccessfulFetchApplicationAuthorities(applications: Seq[AppAuthorisation]) = {
     stubFor(get(urlEqualTo(s"/authority/granted-applications")).willReturn(

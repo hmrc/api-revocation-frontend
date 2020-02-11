@@ -18,26 +18,30 @@ package acceptance.specs
 
 import java.util.UUID
 
+import acceptance.NavigationSugar
 import acceptance.pages.AuthorizedApplicationsPage.{applicationNameLink, withdrawPermissionButton}
 import acceptance.pages.PermissionWithdrawnPage.{withdrawnContinueLink, withdrawnMessageText}
 import acceptance.pages.WithdrawPermissionPage.{withdrawCancelButton, withdrawWarningText}
 import acceptance.pages._
-import acceptance.{BaseSpec, NavigationSugar}
+import com.codahale.metrics.SharedMetricRegistries
 import models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import org.joda.time.DateTime
+import org.scalatest.BeforeAndAfterAll
 import stubs.{DelegatedAuthorityStub, LoginStub}
+import utils.AcceptanceTestSupport
 
-class RevokeApplicationAuthoritySpec extends BaseSpec with NavigationSugar {
+class RevokeApplicationAuthoritySpec extends AcceptanceTestSupport with LoginStub  with DelegatedAuthorityStub with NavigationSugar with BeforeAndAfterAll{
+
+  SharedMetricRegistries.clear()
 
   feature("Revoking application authority") {
 
     scenario("User is able to revoke application authority") {
       val authority = someAppAuthority()
-
-      LoginStub.stubSuccessfulLogin()
-      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(Seq(authority))
-      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthority(authority)
-      DelegatedAuthorityStub.stubSuccessfulAuthorityRevocation(authority)
+      stubSuccessfulLogin()
+      stubSuccessfulFetchApplicationAuthorities(Seq(authority))
+      stubSuccessfulFetchApplicationAuthority(authority)
+      stubSuccessfulAuthorityRevocation(authority)
 
       go(AuthorizedApplicationsPage)
 
@@ -59,10 +63,10 @@ class RevokeApplicationAuthoritySpec extends BaseSpec with NavigationSugar {
     scenario("User is able to cancel application authority revocation") {
       val authority = someAppAuthority()
 
-      LoginStub.stubSuccessfulLogin()
-      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(Seq(authority))
-      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthority(authority)
-      DelegatedAuthorityStub.stubSuccessfulAuthorityRevocation(authority)
+      stubSuccessfulLogin()
+      stubSuccessfulFetchApplicationAuthorities(Seq(authority))
+      stubSuccessfulFetchApplicationAuthority(authority)
+      stubSuccessfulAuthorityRevocation(authority)
 
       go(AuthorizedApplicationsPage)
 
@@ -79,9 +83,9 @@ class RevokeApplicationAuthoritySpec extends BaseSpec with NavigationSugar {
     scenario("User is not able to revoke non existent application authority") {
       val authority = someAppAuthority()
 
-      LoginStub.stubSuccessfulLogin()
-      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(Seq(authority))
-      DelegatedAuthorityStub.stubFailedFetchApplicationAuthority(authority, status = 404)
+      stubSuccessfulLogin()
+      stubSuccessfulFetchApplicationAuthorities(Seq(authority))
+      stubFailedFetchApplicationAuthority(authority, status = 404)
 
       go(AuthorizedApplicationsPage)
 

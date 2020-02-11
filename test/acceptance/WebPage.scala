@@ -22,14 +22,17 @@ import org.scalatest.selenium.{Page, WebBrowser}
 
 trait WebLink extends Page with WebBrowser with Matchers {
   implicit val webDriver: WebDriver = Env.driver
-
   override def toString = this.getClass.getSimpleName
+  val urlMatching: String
 }
 
 trait WebPage extends WebLink {
   lazy val port = Env.port
+  lazy val stubPort = Env.stubPort
 
   def isCurrentPage: Boolean
+
+
 
   def heading = tagName("h1").element.text
 

@@ -20,17 +20,17 @@ import java.util.UUID
 
 import acceptance.pages.AuthorizedApplicationsPage._
 import acceptance.pages.{AuthorizedApplicationsPage, LoginPage}
-import acceptance.{BaseSpec, NavigationSugar}
 import models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import org.joda.time.DateTime
 import stubs.{DelegatedAuthorityStub, LoginStub}
+import utils.AcceptanceTestSupport
 
-class AuthorizedApplicationsSpec extends BaseSpec with NavigationSugar {
 
-  feature("Viewing authorised applications for user") {
+class AuthorizedApplicationsSpec extends AcceptanceTestSupport with LoginStub with DelegatedAuthorityStub {
+
 
     scenario("User is redirected to the sign in page when not logged in") {
-      LoginStub.stubLoggedOutUser()
+      stubLoggedOutUser()
       go(AuthorizedApplicationsPage)
       redirectedTo(LoginPage)
     }
@@ -55,8 +55,8 @@ class AuthorizedApplicationsSpec extends BaseSpec with NavigationSugar {
 
       val applications = Seq(app1, app2, app3)
 
-      LoginStub.stubSuccessfulLogin()
-      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(applications)
+      stubSuccessfulLogin()
+      stubSuccessfulFetchApplicationAuthorities(applications)
 
       go(AuthorizedApplicationsPage)
       on(AuthorizedApplicationsPage)
@@ -65,15 +65,15 @@ class AuthorizedApplicationsSpec extends BaseSpec with NavigationSugar {
     }
 
     scenario("User sees 'no authorized applications' message if there are no authorized applications") {
-      LoginStub.stubSuccessfulLogin()
-      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(Seq.empty)
+      stubSuccessfulLogin()
+      stubSuccessfulFetchApplicationAuthorities(Seq.empty)
 
       go(AuthorizedApplicationsPage)
       on(AuthorizedApplicationsPage)
 
       verifyNoAuthorisedApplicationsMessageDisplayed()
     }
-  }
+
 
   private def verifyNoAuthorisedApplicationsMessageDisplayed() = {
     verifyText(applicationsMessageText, "You currently have no authorised software applications.")

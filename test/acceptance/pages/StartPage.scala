@@ -21,7 +21,8 @@ import org.openqa.selenium.By
 
 object StartPage extends WebPage {
 
-  override val url: String = s"http://localhost:$port/applications-manage-authority/"
+  override val urlMatching: String = "/applications-manage-authority/"
+  override val url: String = s"http://localhost:$port$urlMatching"
 
   override def isCurrentPage: Boolean =
     find(cssSelector("h1"))

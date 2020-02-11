@@ -23,7 +23,9 @@ import org.openqa.selenium.By
 
 object AuthorizedApplicationsPage extends WebPage {
 
-  override val url: String = s"http://localhost:$port/applications-manage-authority/applications"
+  override val urlMatching = "/applications-manage-authority/applications"
+
+  override val url: String = s"http://localhost:$port$urlMatching"
 
   override def isCurrentPage: Boolean = find(cssSelector("h1")).exists(_.text == "Authorised software applications")
 

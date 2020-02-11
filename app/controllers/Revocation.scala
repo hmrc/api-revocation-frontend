@@ -21,16 +21,14 @@ import java.util.UUID
 import config.FrontendAppConfig
 import connectors.AuthorityNotFound
 import javax.inject.{Inject, Singleton}
-import play.api.Play.current
-import play.api.i18n.{Messages, MessagesProvider}
-import play.api.i18n.Messages.Implicits._
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
+import play.api.i18n.Messages
+import play.api.mvc._
 import play.twirl.api.Html
 import service.RevocationService
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisationException, AuthorisedFunctions}
-import uk.gov.hmrc.play.bootstrap.controller.{FrontendBaseController, FrontendController}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.error_template
-import views.html.revocation.{authorizedApplications, loggedOut, permissionWithdrawn, start, withdrawPermission}
+import views.html.revocation._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -45,7 +43,7 @@ class Revocation @Inject()(override val authConnector: AuthConnector,
                            authorizedApplicationsPage: authorizedApplications,
                            permissionWithdrawnPage: permissionWithdrawn,
                            withdrawPermissionPage: withdrawPermission)
-                          (implicit val ec: ExecutionContext, messagesProvider: MessagesProvider) extends FrontendController(mcc) with AuthorisedFunctions {
+                          (implicit val ec: ExecutionContext) extends FrontendController(mcc) with AuthorisedFunctions with play.api.i18n.I18nSupport {
 
   private lazy val loginURL: String = frontendAppConfig.signInUrl
   private lazy val loginUrlParameters = Map[String, Seq[String]]()
