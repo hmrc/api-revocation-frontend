@@ -82,7 +82,7 @@ lazy val microservice = (project in file("."))
     name := appName,
     majorVersion := 0,
     targetJvm := "jvm-1.8",
-    scalaVersion := "2.11.11",
+    scalaVersion := "2.12.10",
     libraryDependencies ++= appDependencies,
     //dependencyOverrides ++= overrides,
     parallelExecution in Test := false,
@@ -112,7 +112,7 @@ def acceptanceFilter(name: String): Boolean = name startsWith "acceptance"
 def oneForkedJvmPerTest(tests: Seq[TestDefinition]) =
   tests map {
     test => Group(test.name, Seq(test),
-      SubProcess(ForkOptions(runJVMOptions = Seq(s"-Dtest.name=${test.name}", s"-Dtest_driver=${Properties.propOrElse("test_driver", "chrome")}"))))
+      SubProcess(ForkOptions().withRunJVMOptions(Vector(s"-Dtest.name=${test.name}", s"-Dtest_driver=${Properties.propOrElse("test_driver", "chrome")}"))))
   }
 
 // Coverage configuration
