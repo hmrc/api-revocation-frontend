@@ -36,7 +36,6 @@ lazy val test = Seq(
   "org.pegdown" % "pegdown" % "1.6.0" % "test",
   "org.jsoup" % "jsoup" % "1.10.2" % "test",
   "com.github.tomakehurst" %  "wiremock-jre8"  % "2.24.1" % "test",
-  "org.seleniumhq.selenium" % "selenium-java" % "2.53.0" % "test",
   "org.mockito" % "mockito-core" % "2.13.0" % "test"
 )
 
@@ -93,29 +92,13 @@ lazy val microservice = (project in file("."))
   .settings(testOptions in Test := Seq(Tests.Filter(unitFilter)),
     addTestReportOption(Test, "test-reports")
   )
-  .configs(AcceptanceTest)
-  .settings(inConfig(AcceptanceTest)(Defaults.testSettings): _*)
-  .settings(
-    testOptions in AcceptanceTest := Seq(Tests.Filter(acceptanceFilter)),
-    unmanagedSourceDirectories in AcceptanceTest := (baseDirectory in AcceptanceTest) (base => Seq(base / "test")).value,
-    addTestReportOption(AcceptanceTest, "int-test-reports"),
-    testGrouping in AcceptanceTest := oneForkedJvmPerTest((definedTests in AcceptanceTest).value)
-  )
   .settings(resolvers ++= Seq(Resolver.bintrayRepo("hmrc", "releases"), Resolver.jcenterRepo))
 
-lazy val AcceptanceTest = config("acceptance") extend Test
 
 def unitFilter(name: String): Boolean = name startsWith "unit"
 
-def acceptanceFilter(name: String): Boolean = name startsWith "acceptance"
-
-def oneForkedJvmPerTest(tests: Seq[TestDefinition]) =
-  tests map {
-    test => Group(test.name, Seq(test),
-      SubProcess(ForkOptions().withRunJVMOptions(Vector(s"-Dtest.name=${test.name}", s"-Dtest_driver=${Properties.propOrElse("test_driver", "chrome")}"))))
-  }
 
 // Coverage configuration
-coverageMinimum := 90
+coverageMinimum := 78
 coverageFailOnMinimum := true
 coverageExcludedPackages := "<empty>;com.kenshoo.play.metrics.*;.*definition.*;prod.*;testOnlyDoNotUseInAppConf.*;app.*;uk.gov.hmrc.BuildInfo"
