@@ -35,7 +35,6 @@ import views.html.{error_template, govuk_wrapper, main_template}
 
 import scala.concurrent.ExecutionContext
 
-
 trait Stubs extends StubMessagesFactory {
 
   val stubbedMessagesApi: MessagesApi = stubMessagesApi(Map(

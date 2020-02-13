@@ -35,7 +35,6 @@ object ThirdPartyApplication {
   implicit val format = Json.format[ThirdPartyApplication]
 }
 
-
 case class AppAuthorisation(application: ThirdPartyApplication,
                             scopes: Set[Scope],
                             earliestGrantDate: DateTime)

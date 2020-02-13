@@ -16,13 +16,11 @@
 
 package stubs
 
-
 import acceptance.Env
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Suite}
-import uk.gov.hmrc.play.it.Port
 
 trait WireMockSupport extends BeforeAndAfterAll with BeforeAndAfterEach {
   me: Suite =>
@@ -44,7 +42,6 @@ trait WireMockSupport extends BeforeAndAfterAll with BeforeAndAfterEach {
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    //sy
   }
 
   override protected def afterEach(): Unit = {

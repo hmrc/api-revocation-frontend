@@ -32,8 +32,6 @@ trait WebPage extends WebLink {
 
   def isCurrentPage: Boolean
 
-
-
   def heading = tagName("h1").element.text
 
   def bodyText = tagName("body").element.text

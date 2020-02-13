@@ -21,11 +21,9 @@ import java.util.UUID
 import _root_.play.api.http.{HeaderNames, SecretConfiguration}
 import _root_.play.api.libs.crypto.DefaultCookieSigner
 import _root_.play.api.mvc.SessionCookieBaker
-import acceptance.Env._
 import acceptance.pages.AuthorizedApplicationsPage
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import org.scalatest.FeatureSpec
 import play.api.http.Status.{OK, SEE_OTHER, UNAUTHORIZED}
 import uk.gov.hmrc.crypto.PlainText
 import uk.gov.hmrc.http.SessionKeys
@@ -70,8 +68,6 @@ trait LoginStub extends SessionCookieCryptoFilterWrapper {
           )))
   }
 }
-
-
 
 trait SessionCookieCryptoFilterWrapper {
   val sc = SecretConfiguration("secret")

@@ -69,7 +69,6 @@ trait NavigationSugar extends WebBrowser with Eventually with Assertions with Mu
     assertResult(page.urlMatching)(webDriver.getCurrentUrl)
   }
 
-
   def on(page: WebPage)(implicit webDriver: WebDriver) = {
     eventually {
       webDriver.findElement(By.tagName("body"))
