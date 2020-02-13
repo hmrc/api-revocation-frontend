@@ -16,61 +16,15 @@
 
 package acceptance
 
-
-import java.net.URL
-import org.openqa.selenium.Dimension
-import org.openqa.selenium.chrome.ChromeDriver
-import org.openqa.selenium.remote.{DesiredCapabilities, RemoteWebDriver}
-import org.openqa.selenium.{HasCapabilities, WebDriver}
-import org.openqa.selenium.firefox.{FirefoxDriver, FirefoxProfile}
-
-import scala.util.{Properties, Try}
-
 trait Env {
 
-  val driver: WebDriver = createWebDriver
+
   lazy val port = 19001
-  lazy val windowSize = new Dimension(1024, 800)
+
   val stubPort = 6010
   val stubHost = "localhost"
   val stubUrl = s"http://${Env.stubHost}:${Env.stubPort}"
 
-  lazy val createWebDriver: WebDriver = {
-    Properties.propOrElse("test_driver", "chrome") match {
-      case "chrome" => createChromeDriver()
-      case "firefox" => createFirefoxDriver()
-      case "remote-chrome" => createRemoteChromeDriver()
-      case "remote-firefox" => createRemoteFirefoxDriver()
-      case other => throw new IllegalArgumentException(s"target browser $other not recognised")
-    }
-  }
-
-  def createRemoteChromeDriver() = {
-    val driver = new RemoteWebDriver(new URL(s"http://localhost:4444/wd/hub"), DesiredCapabilities.chrome)
-    driver.manage().window().setSize(windowSize)
-    driver
-  }
-
-  def createRemoteFirefoxDriver() = {
-    new RemoteWebDriver(new URL(s"http://localhost:4444/wd/hub"), DesiredCapabilities.firefox)
-  }
-
-  def createChromeDriver(): WebDriver = {
-    val driver = new ChromeDriver()
-    driver.manage().deleteAllCookies()
-    driver.manage().window().setSize(windowSize)
-    driver
-  }
-
-  def createFirefoxDriver(): WebDriver = {
-    val profile = new FirefoxProfile
-    profile.setAcceptUntrustedCertificates(true)
-    new FirefoxDriver(profile)
-  }
-
-  sys addShutdownHook {
-    Try(driver.quit())
-  }
 }
 
 object Env extends Env
