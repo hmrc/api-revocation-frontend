@@ -18,16 +18,17 @@ package acceptance
 
 import org.openqa.selenium.WebDriver
 import org.scalatest._
-import org.scalatest.selenium.{Page, WebBrowser}
+import org.scalatestplus.selenium.{WebBrowser, Page}
 
 trait WebLink extends Page with WebBrowser with Matchers {
   implicit val webDriver: WebDriver = Env.driver
-
   override def toString = this.getClass.getSimpleName
+  val urlMatching: String
 }
 
 trait WebPage extends WebLink {
   lazy val port = Env.port
+  lazy val stubPort = Env.stubPort
 
   def isCurrentPage: Boolean
 

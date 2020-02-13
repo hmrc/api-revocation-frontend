@@ -21,8 +21,8 @@ import org.openqa.selenium.By
 
 object PermissionWithdrawnPage extends WebPage {
 
-  override val url = s"http://localhost:$port/applications-manage-authority/application/authority-removed"
-
+  override val urlMatching: String = "/applications-manage-authority/application/authority-removed"
+  override val url = s"http://localhost:$port$urlMatching"
   override def isCurrentPage = find(cssSelector("h1")).exists(_.text == "Authority removed")
 
   val withdrawnContinueLink: By = By.cssSelector("[data-applications-link]")

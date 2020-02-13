@@ -19,12 +19,13 @@ package acceptance
 import org.openqa.selenium.support.ui.{ExpectedCondition, WebDriverWait}
 import org.openqa.selenium.{By, WebDriver, WebElement}
 import org.scalatest.concurrent.Eventually
-import org.scalatest.selenium.WebBrowser
-import org.scalatest.selenium.WebBrowser.{go => goo}
-import org.scalatest.{Assertions, Matchers}
+import org.scalatestplus.selenium.WebBrowser
+import org.scalatestplus.selenium.WebBrowser.{go => goo}
+import org.scalatest.{Assertions, MustMatchers}
+
 import scala.collection.convert.decorateAsScala._
 
-trait NavigationSugar extends WebBrowser with Eventually with Assertions with Matchers {
+trait NavigationSugar extends WebBrowser with Eventually with Assertions with MustMatchers {
 
   def goOn(page: WebPage)(implicit webDriver: WebDriver) = {
     go(page)
@@ -48,15 +49,15 @@ trait NavigationSugar extends WebBrowser with Eventually with Assertions with Ma
   }
 
   def verifyListSize(selectorId: String, expectedSize: Int)(implicit webDriver: WebDriver) = {
-    webDriver.findElements(By.cssSelector(s"[$selectorId] > li")).size() shouldBe expectedSize
+    webDriver.findElements(By.cssSelector(s"[$selectorId] > li")).size() must be (expectedSize)
   }
 
   def verifyText(selectorId: String, expected: String)(implicit webDriver: WebDriver) = {
-    webDriver.findElement(By.cssSelector(s"[$selectorId]")).getText should include (expected)
+    webDriver.findElement(By.cssSelector(s"[$selectorId]")).getText must include (expected)
   }
 
   def verifyText(locator: By, expected: String)(implicit webDriver: WebDriver) = {
-    webDriver.findElement(locator).getText should include (expected)
+    webDriver.findElement(locator).getText must include (expected)
   }
 
   def verifyOrderByText(locator: String, expected: Seq[String])(implicit webDriver: WebDriver) = {
@@ -65,7 +66,7 @@ trait NavigationSugar extends WebBrowser with Eventually with Assertions with Ma
   }
 
   def redirectedTo(page: WebLink)(implicit webDriver: WebDriver) = {
-    assertResult(page.url)(webDriver.getCurrentUrl)
+    assertResult(page.urlMatching)(webDriver.getCurrentUrl)
   }
 
   def on(page: WebPage)(implicit webDriver: WebDriver) = {

@@ -19,12 +19,19 @@ package acceptance.specs
 import java.util.UUID
 
 import acceptance.pages.{AuthorizedApplicationsPage, StartPage}
-import acceptance.{BaseSpec, NavigationSugar}
+import acceptance.utils.AcceptanceTestSupport
+import acceptance.{Env, NavigationSugar}
+import com.codahale.metrics.SharedMetricRegistries
 import models.{AppAuthorisation, ThirdPartyApplication}
 import org.joda.time.DateTime
+import org.openqa.selenium.WebDriver
 import stubs.{DelegatedAuthorityStub, LoginStub}
 
-class StartSpec extends BaseSpec with NavigationSugar {
+
+class StartSpec extends AcceptanceTestSupport with LoginStub with DelegatedAuthorityStub with NavigationSugar {
+
+  SharedMetricRegistries.clear()
+
 
   feature("Present the user with a Start page") {
 
@@ -35,8 +42,8 @@ class StartSpec extends BaseSpec with NavigationSugar {
       go(StartPage)
       on(StartPage)
 
-      LoginStub.stubSuccessfulLogin()
-      DelegatedAuthorityStub.stubSuccessfulFetchApplicationAuthorities(Seq(app))
+      stubSuccessfulLogin()
+      stubSuccessfulFetchApplicationAuthorities(Seq(app))
 
       clickOnElement(StartPage.startButton)
       on(AuthorizedApplicationsPage)

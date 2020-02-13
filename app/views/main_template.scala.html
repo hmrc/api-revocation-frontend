@@ -14,11 +14,14 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html.layouts
-@import config.FrontendAppConfig
+@import uk.gov.hmrc.play.views.html.layouts._
+
+
+@this(govuk_wrapper: govuk_wrapper,  sidebarPage: Sidebar)
+
 
 @(title: String,
-headerNavLinks: Option[Html] = Some(logout_link()),
+headerNavLinks: Option[Html] = None,
 sidebarLinks: Option[Html] = None,
 contentHeader: Option[Html] = None,
 bodyClasses: Option[String] = None,
@@ -27,18 +30,17 @@ scriptElem: Option[Html] = None)(mainContent: Html)(implicit request : Request[_
 
 @serviceInfoContent = {}
 
-@sidebar = {
+@sidebarHtml = {
     @if(sidebarLinks.isDefined) {
-        @layouts.sidebar(sidebarLinks.get, Some("sidebar"))
+        sidebarPage(sidebarLinks.get, Some("sidebar"))
     }
 }
 
 
-@govuk_wrapper(appConfig = FrontendAppConfig,
-               title = title,
+@govuk_wrapper(title = title,
                mainClass = mainClass,
                bodyClasses = bodyClasses,
-               sidebar = sidebar,
+               sidebar = sidebarHtml,
                contentHeader = contentHeader,
                mainContent = mainContent,
                serviceInfoContent = serviceInfoContent,
