@@ -23,12 +23,12 @@ import acceptance.pages.AuthorizedApplicationsPage.{applicationNameLink, withdra
 import acceptance.pages.PermissionWithdrawnPage.{withdrawnContinueLink, withdrawnMessageText}
 import acceptance.pages.WithdrawPermissionPage.{withdrawCancelButton, withdrawWarningText}
 import acceptance.pages._
+import acceptance.utils.AcceptanceTestSupport
 import com.codahale.metrics.SharedMetricRegistries
 import models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import org.joda.time.DateTime
 import org.scalatest.BeforeAndAfterAll
 import stubs.{DelegatedAuthorityStub, LoginStub}
-import utils.AcceptanceTestSupport
 
 class RevokeApplicationAuthoritySpec extends AcceptanceTestSupport with LoginStub  with DelegatedAuthorityStub with NavigationSugar with BeforeAndAfterAll{
 

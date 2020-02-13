@@ -19,9 +19,9 @@ package acceptance
 import org.openqa.selenium.support.ui.{ExpectedCondition, WebDriverWait}
 import org.openqa.selenium.{By, WebDriver, WebElement}
 import org.scalatest.concurrent.Eventually
-import org.scalatest.selenium.WebBrowser
-import org.scalatest.selenium.WebBrowser.{go => goo}
-import org.scalatest.{Assertions, Matchers, MustMatchers}
+import org.scalatestplus.selenium.WebBrowser
+import org.scalatestplus.selenium.WebBrowser.{go => goo}
+import org.scalatest.{Assertions, MustMatchers}
 
 import scala.collection.convert.decorateAsScala._
 

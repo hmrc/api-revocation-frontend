@@ -19,13 +19,14 @@ package acceptance.specs
 import java.util.UUID
 
 import acceptance.pages.{AuthorizedApplicationsPage, StartPage}
+import acceptance.utils.AcceptanceTestSupport
 import acceptance.{Env, NavigationSugar}
 import com.codahale.metrics.SharedMetricRegistries
 import models.{AppAuthorisation, ThirdPartyApplication}
 import org.joda.time.DateTime
 import org.openqa.selenium.WebDriver
 import stubs.{DelegatedAuthorityStub, LoginStub}
-import utils.{AcceptanceTestSupport}
+
 
 class StartSpec extends AcceptanceTestSupport with LoginStub with DelegatedAuthorityStub with NavigationSugar {
 

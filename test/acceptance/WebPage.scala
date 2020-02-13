@@ -18,7 +18,7 @@ package acceptance
 
 import org.openqa.selenium.WebDriver
 import org.scalatest._
-import org.scalatest.selenium.{Page, WebBrowser}
+import org.scalatestplus.selenium.{WebBrowser, Page}
 
 trait WebLink extends Page with WebBrowser with Matchers {
   implicit val webDriver: WebDriver = Env.driver

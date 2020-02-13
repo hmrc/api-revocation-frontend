@@ -20,10 +20,11 @@ import java.util.UUID
 
 import acceptance.pages.AuthorizedApplicationsPage._
 import acceptance.pages.{AuthorizedApplicationsPage, LoginPage}
+import acceptance.utils.AcceptanceTestSupport
 import models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import org.joda.time.DateTime
 import stubs.{DelegatedAuthorityStub, LoginStub}
-import utils.AcceptanceTestSupport
+
 
 
 class AuthorizedApplicationsSpec extends AcceptanceTestSupport with LoginStub with DelegatedAuthorityStub {

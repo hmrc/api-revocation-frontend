@@ -22,7 +22,8 @@ lazy val compile = Seq(
   "uk.gov.hmrc" %% "play-ui" % "8.7.0-play-26",
   "uk.gov.hmrc" %% "govuk-template" % "5.48.0-play-26",
   "org.apache.httpcomponents" % "httpclient" % "4.3.3",
-  "org.apache.httpcomponents" % "httpcore" % "4.3.3"
+  "org.apache.httpcomponents" % "httpcore" % "4.3.3",
+  "com.typesafe.play"  %% "play-json-joda"  % "2.6.10"
 )
 
 lazy val wireMockVersion = "2.21.0"
@@ -96,7 +97,7 @@ lazy val microservice = (project in file("."))
   .settings(inConfig(AcceptanceTest)(Defaults.testSettings): _*)
   .settings(
     testOptions in AcceptanceTest := Seq(Tests.Filter(acceptanceFilter)),
-    unmanagedSourceDirectories in AcceptanceTest <<= (baseDirectory in AcceptanceTest) (base => Seq(base / "test")),
+    unmanagedSourceDirectories in AcceptanceTest := (baseDirectory in AcceptanceTest) (base => Seq(base / "test")).value,
     addTestReportOption(AcceptanceTest, "int-test-reports"),
     testGrouping in AcceptanceTest := oneForkedJvmPerTest((definedTests in AcceptanceTest).value)
   )

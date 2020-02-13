@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package utils
+package acceptance.utils
 
 import acceptance.{Env, NavigationSugar}
 import com.github.tomakehurst.wiremock.client.WireMock
 import org.openqa.selenium.WebDriver
-import org.scalatest.{BeforeAndAfterEach, FeatureSpec, Matchers}
+import org.scalatest.{BeforeAndAfterEach, FeatureSpec}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.SessionCookieBaker
-import play.api.{Configuration, Environment}
 import stubs.{WireMockHelper, WireMockSupport}
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCrypto
-import uk.gov.hmrc.play.test.WithFakeApplication
 
 
 trait AcceptanceTestSupport extends FeatureSpec

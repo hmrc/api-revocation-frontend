@@ -27,12 +27,12 @@ import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.BDDMockito.given
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status
 import play.api.inject.guice.GuiceableModule
-import play.api.test.{FakeRequest, StubMessagesFactory}
-import play.filters.csrf.CSRF.{Token, TokenProvider}
+import play.api.test.FakeRequest
 import service.RevocationService
+import stubs.FakeRequestCSRFSupport._
 import stubs.Stubs
 import uk.gov.hmrc.auth.core.retrieve.EmptyRetrieval
 import uk.gov.hmrc.auth.core.{AuthConnector, InvalidBearerToken}
@@ -42,7 +42,6 @@ import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.Future.{failed, successful}
-import stubs.FakeRequestCSRFSupport._
 
 class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar with Stubs {
   SharedMetricRegistries.clear()
