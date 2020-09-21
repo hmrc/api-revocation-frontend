@@ -26,7 +26,7 @@ import play.api.test.Helpers.{stubBodyParser, stubPlayBodyParsers}
 import play.api.test.{CSRFTokenHelper, FakeRequest, NoMaterializer, StubMessagesFactory}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
-import uk.gov.hmrc.play.config.{AssetsConfig, GTMConfig, OptimizelyConfig}
+import uk.gov.hmrc.play.config.{AssetsConfig, GTMConfig, OptimizelyConfig, AccessibilityStatementConfig}
 import uk.gov.hmrc.play.views.html.helpers.ReportAProblemLink
 import uk.gov.hmrc.play.views.html.layouts.{BetaBanner, Footer, FooterLinks, GTMSnippet, Head, HeaderNav, MainContent, MainContentHeader, OptimizelySnippet, ServiceInfo, Sidebar}
 import views.html.layouts.GovUkTemplate
@@ -94,6 +94,8 @@ trait Stubs extends StubMessagesFactory {
 
   private val footer: Footer = new Footer(new AssetsConfig(minimalConfiguration))
 
+  private def accessibilityStatementConfig = new AccessibilityStatementConfig(minimalConfiguration)
+
   val govUkWrapper: govuk_wrapper = new  govuk_wrapper (minimalAppConfig,
                                                       new BetaBanner(),
                                                       new GovUkTemplate(),
@@ -104,7 +106,7 @@ trait Stubs extends StubMessagesFactory {
                                                       new MainContentHeader(),
                                                       new MainContent(),
                                                       new ReportAProblemLink(),
-                                                      new FooterLinks())
+                                                      new FooterLinks(accessibilityStatementConfig))
 
   val errorTemplate: error_template = new error_template(minimalAppConfig, govUkWrapper)
   val sideBar : Sidebar = new Sidebar()

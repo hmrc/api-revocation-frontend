@@ -19,7 +19,7 @@ lazy val compile = Seq(
   ws,
   "uk.gov.hmrc" %% "play-partials" % "6.9.0-play-26",
   "uk.gov.hmrc" %% "bootstrap-play-26" % "1.3.0",
-  "uk.gov.hmrc" %% "play-ui" % "8.7.0-play-26",
+  "uk.gov.hmrc" %% "play-ui" % "8.12.0-play-26",
   "uk.gov.hmrc" %% "govuk-template" % "5.48.0-play-26",
   "org.apache.httpcomponents" % "httpclient" % "4.3.3",
   "org.apache.httpcomponents" % "httpcore" % "4.3.3",
