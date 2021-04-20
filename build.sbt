@@ -92,7 +92,6 @@ lazy val microservice = (project in file("."))
   .settings(testOptions in Test := Seq(Tests.Filter(unitFilter)),
     addTestReportOption(Test, "test-reports")
   )
-  .settings(resolvers ++= Seq(Resolver.bintrayRepo("hmrc", "releases"), Resolver.jcenterRepo))
 
 
 def unitFilter(name: String): Boolean = name startsWith "unit"
