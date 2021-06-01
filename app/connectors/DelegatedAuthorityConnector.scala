@@ -23,8 +23,9 @@ import models.AppAuthorisation
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future._
 
 @Singleton
 class DelegatedAuthorityConnector @Inject()(servicesConfig: ServicesConfig, http: HttpClient)
@@ -37,15 +38,15 @@ class DelegatedAuthorityConnector @Inject()(servicesConfig: ServicesConfig, http
   }
 
   def fetchApplicationAuthority(applicationId: UUID)(implicit hc: HeaderCarrier): Future[AppAuthorisation] = {
-    http.GET[AppAuthorisation](s"$delegatedAuthorityUrl/authority/granted-application/$applicationId") recover recovery
+    http.GET[Option[AppAuthorisation]](s"$delegatedAuthorityUrl/authority/granted-application/$applicationId") flatMap(handleNotFound)
   }
 
   def revokeApplicationAuthority(applicationId: UUID)(implicit hc: HeaderCarrier): Future[Unit] = {
-    http.DELETE(s"$delegatedAuthorityUrl/authority/granted-application/$applicationId") map (_ => ()) recover recovery
+    http.DELETE[Option[Unit]](s"$delegatedAuthorityUrl/authority/granted-application/$applicationId") flatMap(handleNotFound _)
   }
 
-  private def recovery: PartialFunction[Throwable, Nothing] = {
-    case _: NotFoundException => throw new AuthorityNotFound
+  def handleNotFound[T](o: Option[T]): Future[T] = {
+     o.fold[Future[T]](failed(new AuthorityNotFound))(t => successful(t))
   }
 }
 
