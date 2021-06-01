@@ -22,26 +22,17 @@ import com.codahale.metrics.SharedMetricRegistries
 import connectors.{AuthorityNotFound, DelegatedAuthorityConnector}
 import models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import org.joda.time.DateTime
-import org.scalatest.Matchers
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
-import play.api.Application
-import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
-import stubs.{DelegatedAuthorityStub, WireMockSupport}
+import utils._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.audit.DefaultAuditConnector
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import stubs.DelegatedAuthorityStub
 
-class DelegatedAuthorityConnectorSpec extends UnitSpec
-  with Matchers
-  with ScalaFutures
-  with MockitoSugar
-  with DelegatedAuthorityStub
-  with WireMockSupport {
+class DelegatedAuthorityConnectorSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with DelegatedAuthorityStub with WireMockSupport {
 
   private trait Setup {
     SharedMetricRegistries.clear()
@@ -49,10 +40,7 @@ class DelegatedAuthorityConnectorSpec extends UnitSpec
     implicit val hc = HeaderCarrier()
     val serviceConfig = mock[ServicesConfig]
     val mockDefaultAuditConnector = mock[DefaultAuditConnector]
-    lazy val fakeApplication: Application = new GuiceApplicationBuilder().bindings(bindModules:_*).build()
-
-    def bindModules: Seq[GuiceableModule] = Seq()
-    val http = fakeApplication.injector.instanceOf[HttpClient]
+    val http = app.injector.instanceOf[HttpClient]
 
 
     val connector = new DelegatedAuthorityConnector(serviceConfig, http) {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package stubs
+package utils
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder

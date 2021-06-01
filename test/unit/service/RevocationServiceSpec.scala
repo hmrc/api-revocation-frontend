@@ -22,16 +22,14 @@ import connectors.DelegatedAuthorityConnector
 import models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import org.joda.time.DateTime
 import org.mockito.BDDMockito.given
-import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
 import service.RevocationService
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.test.UnitSpec
+import utils._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future.successful
 
-class RevocationServiceSpec extends UnitSpec with MockitoSugar {
+class RevocationServiceSpec extends AsyncHmrcSpec {
 
   private trait Setup {
 

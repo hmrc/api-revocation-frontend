@@ -22,6 +22,6 @@ object AppDependencies {
     "org.pegdown"             %  "pegdown"                    % "1.6.0" % "test",
     "org.jsoup"               %  "jsoup"                      % "1.10.2" % "test",
     "com.github.tomakehurst"  %  "wiremock-jre8-standalone"   % "2.24.1" % "test",
-    "org.mockito"             %  "mockito-core"               % "2.13.0" % "test"
+    "org.mockito"             %% "mockito-scala-scalatest"    % "1.7.1",
   )
 }
