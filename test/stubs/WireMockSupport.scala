@@ -16,42 +16,38 @@
 
 package stubs
 
-import acceptance.Env
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
-import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Suite}
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration._
+import org.scalatest.{BeforeAndAfterEach, Suite}
+import org.scalatest.BeforeAndAfterAll
 
-trait WireMockSupport extends BeforeAndAfterAll with BeforeAndAfterEach {
-  me: Suite =>
+trait WireMockSupport extends BeforeAndAfterEach with BeforeAndAfterAll with WireMockExtensions {
+  this: Suite =>
+  val stubPort = sys.env.getOrElse("WIREMOCK", "22222").toInt
+  val stubHost = "localhost"
+  val wireMockUrl = s"http://$stubHost:$stubPort"
 
-  lazy val stubPort = Env.stubPort
-  lazy val stubHost = Env.stubHost
+  private val wireMockConfiguration: WireMockConfiguration =
+    wireMockConfig().port(stubPort)
 
-  val mockServerHost: String = "localhost"
-  val mockServerPort: Int = stubPort
-  val mockServerUrl = s"http://$mockServerHost:$mockServerPort"
+  val wireMockServer = new WireMockServer(wireMockConfiguration)
 
-  val mockServer = new WireMockServer(wireMockConfig().port(mockServerPort))
-
-  override protected def beforeAll(): Unit = {
+  override def beforeAll() = {
     super.beforeAll()
-    WireMock.configureFor("localhost", mockServerPort)
-    mockServer.start()
+    wireMockServer.start()
+    WireMock.configureFor(stubHost, stubPort)
   }
 
-  override protected def beforeEach(): Unit = {
-    super.beforeEach()
-  }
-
-  override protected def afterEach(): Unit = {
-    WireMock.reset()
-    super.afterEach()
-  }
-
-  override protected def afterAll(): Unit = {
-    mockServer.stop()
+  override protected def afterAll() {
+    wireMockServer.stop()
     super.afterAll()
   }
-
+  
+  override def afterEach() {
+    wireMockServer.resetMappings()
+    super.afterEach()
+  }
 }
+

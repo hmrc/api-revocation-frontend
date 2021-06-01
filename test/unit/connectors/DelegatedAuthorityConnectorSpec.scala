@@ -56,7 +56,7 @@ class DelegatedAuthorityConnectorSpec extends UnitSpec
 
 
     val connector = new DelegatedAuthorityConnector(serviceConfig, http) {
-      override val delegatedAuthorityUrl: String = mockServerUrl
+      override val delegatedAuthorityUrl: String = wireMockUrl
     }
 
   }
