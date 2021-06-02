@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package acceptance
+package utils
 
-trait Env {
+import org.scalatest.{Matchers, OptionValues, WordSpec}
+import org.scalatestplus.play.WsScalaTestClient
+import play.api.test.{DefaultAwaitTimeout, FutureAwaits}
+import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 
+abstract class HmrcSpec extends WordSpec with Matchers with OptionValues with WsScalaTestClient with MockitoSugar with ArgumentMatchersSugar
 
-  lazy val port = 19001
-
-  val stubPort = 6010
-  val stubHost = "localhost"
-  val stubUrl = s"http://${Env.stubHost}:${Env.stubPort}"
-
-}
-
-object Env extends Env
+abstract class AsyncHmrcSpec extends HmrcSpec with DefaultAwaitTimeout with FutureAwaits {}

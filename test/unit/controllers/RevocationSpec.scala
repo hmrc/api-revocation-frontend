@@ -19,33 +19,28 @@ package unit.controllers
 import java.util.UUID
 
 import com.codahale.metrics.SharedMetricRegistries
-import com.kenshoo.play.metrics.PlayModule
 import connectors.AuthorityNotFound
 import controllers.Revocation
 import models.{AppAuthorisation, ThirdPartyApplication}
 import org.joda.time.DateTime
-import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.any
-import org.mockito.BDDMockito.given
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status
-import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import service.RevocationService
 import stubs.FakeRequestCSRFSupport._
 import stubs.Stubs
 import uk.gov.hmrc.auth.core.retrieve.EmptyRetrieval
 import uk.gov.hmrc.auth.core.{AuthConnector, InvalidBearerToken}
-import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.Future.{failed, successful}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.test.Helpers._
+import utils._
+import uk.gov.hmrc.http.SessionKeys
 
-class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar with Stubs {
+class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs {
   SharedMetricRegistries.clear()
-  override def bindModules: Seq[GuiceableModule] = Seq(new PlayModule)
 
   trait Setup {
     val appId: UUID = UUID.randomUUID()
@@ -55,8 +50,8 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
     val underTest: Revocation = new Revocation(authConnector, revocationService,stubMessagesControllerComponents(), minimalAppConfig, errorTemplate, startPage, loggedOutPage,
       authorizedApplicationsPage, permissionWithdrawnPage, withdrawPermissionPage)
 
-    given(revocationService.fetchApplicationAuthorities()(any(classOf[HeaderCarrier])))
-      .willReturn(successful(Seq.empty))
+    when(revocationService.fetchApplicationAuthorities()(*))
+      .thenReturn(successful(Seq.empty))
   }
 
   trait LoggedInSetup extends Setup {
@@ -64,13 +59,13 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
       .withSession(SessionKeys.sessionId -> "SessionId")
     .withCSRFToken
 
-    given(authConnector.authorise(any(), ArgumentMatchers.eq(EmptyRetrieval))(any(), any())).willReturn(successful(()))
+    when(authConnector.authorise(*, eqTo(EmptyRetrieval))(*, *)).thenReturn(successful(()))
   }
 
   trait LoggedOutSetup extends Setup {
     lazy val request = FakeRequest()
 
-    given(authConnector.authorise(any(), ArgumentMatchers.eq(EmptyRetrieval))(any(), any())).willReturn(Future.failed(InvalidBearerToken()))
+    when(authConnector.authorise(*, eqTo(EmptyRetrieval))(*, *)).thenReturn(Future.failed(InvalidBearerToken()))
   }
 
   "Start" should {
@@ -100,7 +95,7 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
       val result = underTest.listAuthorizedApplications(request)
 
       status(result) shouldBe 303
-      result.header.headers("Location") shouldEqual "/gg/sign-in?continue=/applications-manage-authority/applications"
+      header("Location",result) shouldBe Some("/gg/sign-in?continue=/applications-manage-authority/applications")
     }
   }
 
@@ -108,8 +103,8 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
     "return 200" in new LoggedInSetup {
       val appAuthority = AppAuthorisation(ThirdPartyApplication(appId, "appName"), Set(), DateTime.now)
 
-      given(underTest.revocationService.fetchdApplicationAuthority(ArgumentMatchers.eq(appId))(any(classOf[HeaderCarrier])))
-        .willReturn(successful(appAuthority))
+      when(underTest.revocationService.fetchdApplicationAuthority(eqTo(appId))(*))
+        .thenReturn(successful(appAuthority))
 
       val result = underTest.withdrawPage(appId)(request)
 
@@ -119,18 +114,18 @@ class RevocationSpec extends UnitSpec with WithFakeApplication with MockitoSugar
 
   "withdrawAction" should {
     "redirect to authorisation withdrawn page" in new LoggedInSetup {
-      given(underTest.revocationService.revokeApplicationAuthority(ArgumentMatchers.eq(appId))(any(classOf[HeaderCarrier])))
-        .willReturn(successful(()))
+      when(underTest.revocationService.revokeApplicationAuthority(eqTo(appId))(*))
+        .thenReturn(successful(()))
 
       val result = underTest.withdrawAction(appId)(request)
 
       status(result) shouldBe 303
-      result.header.headers("Location") shouldEqual controllers.routes.Revocation.withdrawConfirmationPage().url
+      header("Location",result) shouldBe Some(controllers.routes.Revocation.withdrawConfirmationPage().url)
     }
 
     "return 404 if the authorisation is not found" in new LoggedInSetup {
-      given(underTest.revocationService.revokeApplicationAuthority(ArgumentMatchers.eq(appId))(any(classOf[HeaderCarrier])))
-        .willReturn(failed(new AuthorityNotFound()))
+      when(underTest.revocationService.revokeApplicationAuthority(eqTo(appId))(*))
+        .thenReturn(failed(new AuthorityNotFound()))
 
       val result = underTest.withdrawAction(appId)(request)
 

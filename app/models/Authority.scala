@@ -19,7 +19,7 @@ package models
 import java.util.UUID
 
 import org.joda.time.DateTime
-import play.api.libs.json.{Format, JodaReads, JodaWrites, Json, Reads, Writes}
+import play.api.libs.json.{Format, JodaReads, JodaWrites, Json}
 
 
 

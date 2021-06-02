@@ -14,29 +14,40 @@
  * limitations under the License.
  */
 
-package unit.connectors
+package utils
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration._
 import org.scalatest.{BeforeAndAfterEach, Suite}
+import org.scalatest.BeforeAndAfterAll
 
-trait WiremockSugar extends BeforeAndAfterEach {
+trait WireMockSupport extends BeforeAndAfterEach with BeforeAndAfterAll with WireMockExtensions {
   this: Suite =>
-
-  val stubPort = sys.env.getOrElse("WIREMOCK", "6010").toInt
+  val stubPort = sys.env.getOrElse("WIREMOCK", "22222").toInt
   val stubHost = "localhost"
   val wireMockUrl = s"http://$stubHost:$stubPort"
-  val wireMockServer = new WireMockServer(wireMockConfig().port(stubPort))
 
-  override def beforeEach() = {
+  private val wireMockConfiguration: WireMockConfiguration =
+    wireMockConfig().port(stubPort)
+
+  val wireMockServer = new WireMockServer(wireMockConfiguration)
+
+  override def beforeAll() = {
+    super.beforeAll()
     wireMockServer.start()
     WireMock.configureFor(stubHost, stubPort)
   }
 
-  override def afterEach() {
+  override protected def afterAll() {
     wireMockServer.stop()
-    wireMockServer.resetMappings()
+    super.afterAll()
   }
-
+  
+  override def afterEach() {
+    wireMockServer.resetMappings()
+    super.afterEach()
+  }
 }
+
