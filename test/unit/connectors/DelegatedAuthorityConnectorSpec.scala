@@ -24,9 +24,8 @@ import models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import org.joda.time.DateTime
 import utils._
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.audit.DefaultAuditConnector
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpClient
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -39,9 +38,7 @@ class DelegatedAuthorityConnectorSpec extends AsyncHmrcSpec with GuiceOneAppPerS
 
     implicit val hc = HeaderCarrier()
     val serviceConfig = mock[ServicesConfig]
-    val mockDefaultAuditConnector = mock[DefaultAuditConnector]
     val http = app.injector.instanceOf[HttpClient]
-
 
     val connector = new DelegatedAuthorityConnector(serviceConfig, http) {
       override val delegatedAuthorityUrl: String = wireMockUrl
