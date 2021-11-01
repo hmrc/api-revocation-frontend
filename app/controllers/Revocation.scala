@@ -26,7 +26,7 @@ import play.api.mvc._
 import play.twirl.api.Html
 import service.RevocationService
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisationException, AuthorisedFunctions}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.error_template
 import views.html.revocation._
 

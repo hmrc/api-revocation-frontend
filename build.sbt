@@ -11,20 +11,6 @@ import bloop.integrations.sbt.BloopDefaults
 
 lazy val appName = "api-revocation-frontend"
 
-// Transitive dependencies in scalatest/scalatestplusplay drag in a newer version of jetty that is not
-// compatible with wiremock, so we need to pin the jetty stuff to the older version.
-// see https://groups.google.com/forum/#!topic/play-framework/HAIM1ukUCnI
-lazy val akkaVersion = "2.5.23"
-lazy val akkaHttpVersion = "10.0.15"
-
-val overrides: Seq[ModuleID] = Seq(
-  "com.typesafe.akka"           %% "akka-stream"        % akkaVersion,
-  "com.typesafe.akka"           %% "akka-protobuf"      % akkaVersion,
-  "com.typesafe.akka"           %% "akka-slf4j"         % akkaVersion,
-  "com.typesafe.akka"           %% "akka-actor"         % akkaVersion,
-  "com.typesafe.akka"           %% "akka-http-core"     % akkaHttpVersion
-)
-
 lazy val playSettings: Seq[Setting[_]] = Seq.empty
 lazy val microservice = (project in file("."))
   .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin, SbtWeb)
@@ -40,7 +26,6 @@ lazy val microservice = (project in file("."))
     targetJvm := "jvm-1.8",
     scalaVersion := "2.12.12",
     libraryDependencies ++= AppDependencies(),
-    // dependencyOverrides ++= overrides,
     retrieveManaged := true,
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
   )
