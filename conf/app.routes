@@ -1,4 +1,5 @@
 # microservice specific routes
+->         /hmrc-frontend                               hmrcfrontend.Routes
 
 GET        /                                           @controllers.Revocation.start
 GET        /applications                               @controllers.Revocation.listAuthorizedApplications

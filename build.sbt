@@ -30,10 +30,12 @@ lazy val microservice = (project in file("."))
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
   )
   .settings(
-    TwirlKeys.templateImports ++= Seq(
-      "play.twirl.api.HtmlFormat",
+  TwirlKeys.templateImports ++= Seq(
+      "views.html.helper.CSPNonce",
+      "config.FrontendAppConfig",
       "uk.gov.hmrc.govukfrontend.views.html.components._",
-      "uk.gov.hmrc.govukfrontend.views.html.helpers._"
+      "uk.gov.hmrc.hmrcfrontend.views.html.components._",
+      "uk.gov.hmrc.hmrcfrontend.views.html.helpers._"
     )
   )
   .settings(
