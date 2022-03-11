@@ -9,6 +9,7 @@ object AppDependencies {
     "uk.gov.hmrc"               %% "play-partials"              % "8.2.0-play-28",
     "uk.gov.hmrc"               %% "play-ui"                    % "9.7.0-play-28",
     "uk.gov.hmrc"               %% "govuk-template"             % "5.72.0-play-28",
+    "uk.gov.hmrc"               %% "play-frontend-govuk"        % "0.65.0-play-28",
     "org.apache.httpcomponents" %  "httpclient"                 % "4.3.3",
     "org.apache.httpcomponents" %  "httpcore"                   % "4.3.3",
     "com.typesafe.play"         %% "play-json-joda"             % "2.8.1"
