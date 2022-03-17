@@ -22,19 +22,13 @@
 
 @this(govukLayout: GovukLayout,
         hmrcHeader: HmrcHeader,
-        hmrcStandardHeader: HmrcStandardHeader,
         hmrcFooter: HmrcFooter,
         hmrcHead: HmrcHead)
 
- @(title: Option[String] = None, sidebarLinks: Option[Html] = None)(contentBlock: Html)(implicit request : Request[_], messages: Messages)
+ @(title: Option[String] = None)(contentBlock: Html)(implicit request : Request[_], messages: Messages)
 
 @serviceInfoContent = {}
 
-@sidebarHtml = {
-    @if(sidebarLinks.isDefined) {
-        sidebarPage(sidebarLinks.get, Some("sidebar"))
-    }
-}
 
 @scriptElem = {
     <script src='@routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>

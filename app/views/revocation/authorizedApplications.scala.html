@@ -22,7 +22,7 @@
 
 @body = {
 
-  <h1 class="govuk-heading-l">Authorised software applications</h1>
+  <h1 id="page-heading" class="govuk-heading-l">Authorised software applications</h1>
 
   @if(applications.isEmpty) {
     <div data-info-message>
@@ -34,28 +34,28 @@
 
     @defining(DateTimeFormat.forPattern("dd MMMM yyyy")) { dateFormatter =>
       <ul class="govuk-list" data-applications>
-        @for(app <- applications) {
+        @for(app <- applications.zipWithIndex) {
           <li>
-            <details class="govuk-details" data-module="govuk-details" data-@{app.application.id}>
-              <summary class="govuk-details__summary" data-name-for="@{app.application.id}">
-                @{app.application.name}
+            <details class="govuk-details" data-module="govuk-details" data-@{app._1.application.id}>
+              <summary id="app-summary-@app._2" class="govuk-details__summary" data-name-for="@{app._1.application.id}">
+                @{app._1.application.name}
               </summary>
               <div class="govuk-details__text">
                 <p class="govuk-body govuk-!-font-weight-bold">
                   This application has been authorised by you to do the following:
                 </p>
                 <ul class="govuk-list govuk-list--bullet">
-                  @for(scope <- app.scopes) {
-                    <li data-scope-@{app.application.id}='@{scope.key}'>
+                  @for(scope <- app._1.scopes) {
+                    <li data-scope-@{app._1.application.id}='@{scope.key}'>
                       @{scope.name}
                     </li>
                   }
                 </ul>
-                <p class="govuk-body" data-grant-date-@{app.application.id}>
-                  <span class="govuk-body govuk-!-font-weight-bold">Authority granted on:</span> @{dateFormatter.print(app.earliestGrantDate)}
+                <p class="govuk-body" data-grant-date-@{app._1.application.id}>
+                  <span class="govuk-body govuk-!-font-weight-bold">Authority granted on:</span> @{dateFormatter.print(app._1.earliestGrantDate)}
                 </p>
 
-                <a data-withdraw-permission-@{app.application.id} href="@routes.Revocation.withdrawPage(app.application.id)" class="govuk-button">Remove authority</a>
+                <a data-withdraw-permission-@{app._1.application.id} href="@routes.Revocation.withdrawPage(app._1.application.id)" class="govuk-button">Remove authority</a>
               </div>
             </details>
           </li>

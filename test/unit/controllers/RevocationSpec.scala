@@ -16,28 +16,29 @@
 
 package unit.controllers
 
-import java.util.UUID
-
 import com.codahale.metrics.SharedMetricRegistries
 import connectors.AuthorityNotFound
 import controllers.Revocation
 import models.{AppAuthorisation, ThirdPartyApplication}
 import org.joda.time.DateTime
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
 import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import service.RevocationService
 import stubs.FakeRequestCSRFSupport._
 import stubs.Stubs
 import uk.gov.hmrc.auth.core.retrieve.EmptyRetrieval
 import uk.gov.hmrc.auth.core.{AuthConnector, InvalidBearerToken}
+import uk.gov.hmrc.http.SessionKeys
+import utils._
+import views.html.error_template
+import views.html.revocation._
 
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.Future.{failed, successful}
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.test.Helpers._
-import utils._
-import uk.gov.hmrc.http.SessionKeys
 
 class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs {
   SharedMetricRegistries.clear()
@@ -46,6 +47,12 @@ class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs {
     val appId: UUID = UUID.randomUUID()
     val authConnector: AuthConnector = mock[AuthConnector]
     val revocationService: RevocationService = mock[RevocationService]
+    val errorTemplate = app.injector.instanceOf[error_template]
+    val startPage = app.injector.instanceOf[start]
+    val loggedOutPage = app.injector.instanceOf[loggedOut]
+    val authorizedApplicationsPage = app.injector.instanceOf[authorizedApplications]
+    val permissionWithdrawnPage = app.injector.instanceOf[permissionWithdrawn]
+    val withdrawPermissionPage = app.injector.instanceOf[withdrawPermission]
 
     val underTest: Revocation = new Revocation(authConnector, revocationService,stubMessagesControllerComponents(), minimalAppConfig, errorTemplate, startPage, loggedOutPage,
       authorizedApplicationsPage, permissionWithdrawnPage, withdrawPermissionPage)
