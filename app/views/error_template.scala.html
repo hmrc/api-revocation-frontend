@@ -21,11 +21,11 @@
 @(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages)
 
 @contentHeader = {
-  <h1>@heading</h1>
+  <h1 class="govuk-heading-l">@heading</h1>
 }
 
 @mainContent = {
-  <p>@message</p>
+  <p class="govuk-body">@message</p>
 }
 
 @main(title = Some(pageTitle))(mainContent)
