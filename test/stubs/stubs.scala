@@ -16,6 +16,7 @@
 
 package stubs
 
+import akka.stream.testkit.NoMaterializer
 import com.typesafe.config.{Config, ConfigFactory}
 import config.FrontendAppConfig
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypes, FileMimeTypesConfiguration}
@@ -25,15 +26,8 @@ import play.api.test.Helpers.{stubBodyParser, stubPlayBodyParsers}
 import play.api.test.{CSRFTokenHelper, FakeRequest, StubMessagesFactory}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import uk.gov.hmrc.play.config.{AssetsConfig, GTMConfig, OptimizelyConfig, AccessibilityStatementConfig}
-import uk.gov.hmrc.play.views.html.helpers.ReportAProblemLink
-import uk.gov.hmrc.play.views.html.layouts.{BetaBanner, Footer, FooterLinks, GTMSnippet, Head, HeaderNav, MainContent, MainContentHeader, ServiceInfo, Sidebar}
-import views.html.layouts.GovUkTemplate
-import views.html.revocation.{authorizedApplications, loggedOut, permissionWithdrawn, start, withdrawPermission}
-import views.html.{error_template, govuk_wrapper, main_template}
 
 import scala.concurrent.ExecutionContext
-import akka.stream.testkit.NoMaterializer
 
 trait Stubs extends StubMessagesFactory {
 
@@ -84,36 +78,6 @@ trait Stubs extends StubMessagesFactory {
   private def appConfig(conf: Configuration) = new FrontendAppConfig(conf, environment, servicesConfig(conf))
 
   val minimalAppConfig: FrontendAppConfig = appConfig(minimalConfiguration)
-
-  private val head: Head = new Head(
-    new AssetsConfig(minimalConfiguration),
-    new GTMSnippet(new GTMConfig(minimalConfiguration))
-  )
-
-  private val footer: Footer = new Footer(new AssetsConfig(minimalConfiguration))
-
-  private def accessibilityStatementConfig = new AccessibilityStatementConfig(minimalConfiguration)
-
-  val govUkWrapper: govuk_wrapper = new  govuk_wrapper (minimalAppConfig,
-                                                      new BetaBanner(),
-                                                      new GovUkTemplate(),
-                                                      head,
-                                                      new HeaderNav(),
-                                                      footer,
-                                                      new ServiceInfo(),
-                                                      new MainContentHeader(),
-                                                      new MainContent(),
-                                                      new ReportAProblemLink(),
-                                                      new FooterLinks(accessibilityStatementConfig))
-
-  val errorTemplate: error_template = new error_template(minimalAppConfig, govUkWrapper)
-  val sideBar : Sidebar = new Sidebar()
-  val main: main_template = new main_template(govUkWrapper, sideBar)
-  val startPage: start = new start(main)
-  val loggedOutPage: loggedOut = new loggedOut(main)
-  val authorizedApplicationsPage: authorizedApplications = new authorizedApplications(main)
-  val permissionWithdrawnPage: permissionWithdrawn = new permissionWithdrawn(main)
-  val withdrawPermissionPage: withdrawPermission = new withdrawPermission(main)
 
 }
 

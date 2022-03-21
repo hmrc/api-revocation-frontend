@@ -19,23 +19,17 @@
 @()(implicit request: Request[_], messages: Messages)
 
 @body = {
+  <h1 id="page-heading" class="govuk-heading-l">Manage the authority you have granted to software applications</h1>
+  <p class="govuk-body">You may have granted authority to one or more software applications to interact with HMRC.</p>
+  <p class="govuk-body">You can use this service to:</p>
+  <ul class="govuk-list govuk-list--bullet">
+    <li>see the applications you have granted authority to</li>
+    <li>remove the authority from those applications</li>
+  </ul>
 
-    <div class="content__body">
-
-        <header>
-            <h1>Manage the authority you have granted to software applications</h1>
-        </header>
-        <p>You may have granted authority to one or more software applications to interact with HMRC.</p>
-        <p>You can use this service to:</p>
-        <ul class="bullets">
-            <li>see the applications you have granted authority to</li>
-            <li>remove the authority from those applications</li>
-        </ul>
-
-        <a data-start-button href="@routes.Revocation.listAuthorizedApplications" class="button button--get-started">Start now</a>
-    </div>
+  <a href="@routes.Revocation.listAuthorizedApplications" class="govuk-button">Start now</a>
 }
 
-@main_template(title = "Manage the authority you have granted to software applications", headerNavLinks = None) {
-    @body
+@main_template(title = Some("Manage the authority you have granted to software applications")) {
+  @body
 }

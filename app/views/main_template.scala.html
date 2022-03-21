@@ -15,36 +15,65 @@
  *@
 
 @import uk.gov.hmrc.play.views.html.layouts._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcHeader
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.Header
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.En
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.footer.Footer
 
+@this(govukLayout: GovukLayout,
+        hmrcHeader: HmrcHeader,
+        hmrcFooter: HmrcFooter,
+        hmrcHead: HmrcHead)
 
-@this(govuk_wrapper: govuk_wrapper,  sidebarPage: Sidebar)
-
-
-@(title: String,
-headerNavLinks: Option[Html] = None,
-sidebarLinks: Option[Html] = None,
-contentHeader: Option[Html] = None,
-bodyClasses: Option[String] = None,
-mainClass: Option[String] = None,
-scriptElem: Option[Html] = None)(mainContent: Html)(implicit request : Request[_], messages: Messages)
+ @(title: Option[String] = None)(contentBlock: Html)(implicit request : Request[_], messages: Messages)
 
 @serviceInfoContent = {}
 
-@sidebarHtml = {
-    @if(sidebarLinks.isDefined) {
-        sidebarPage(sidebarLinks.get, Some("sidebar"))
-    }
+
+@scriptElem = {
+    <script src='@routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
+    <script>window.GOVUKFrontend.initAll();</script>
+}
+
+@beforeContent = {
+  <div>
+    <!-- Feedback banner -->
+    <div class="govuk-phase-banner">
+      <p class="govuk-phase-banner__content">
+        <strong class="govuk-tag govuk-phase-banner__content__tag">
+          beta
+        </strong>
+        <span class="govuk-phase-banner__text">
+          This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+        </span>
+      </p>
+    </div>
+    <!-- HMRC banner -->
+    <div class="hmrc-banner">
+      <div class="hmrc-organisation-logo">
+        <p class="govuk-body-s"> HM Revenue &amp; Customs</p>
+      </div>
+    </div>
+  </div>
 }
 
 
-@govuk_wrapper(title = title,
-               mainClass = mainClass,
-               bodyClasses = bodyClasses,
-               sidebar = sidebarHtml,
-               contentHeader = contentHeader,
-               mainContent = mainContent,
-               serviceInfoContent = serviceInfoContent,
-               scriptElem = scriptElem,
-               headerNavLinks = headerNavLinks
-)
-
+@govukLayout(
+    pageTitle = title,
+    headBlock = Some(hmrcHead()),
+    headerBlock = Some(hmrcHeader(Header(
+        homepageUrl ="https://www.gov.uk",
+        serviceName = Some(messages("service.name")),
+        navigation = None,
+        serviceUrl = "",
+        displayHmrcBanner = false,
+        containerClasses = "govuk-width-container",
+        signOutHref = None,
+        language = En
+    ))),
+    beforeContentBlock = Some(beforeContent),
+    scriptsBlock = Some(scriptElem),
+    footerBlock = Some(hmrcFooter(new Footer(meta = None, language = En))),
+    assetPath = None,
+    cspNonce = None
+)(contentBlock)

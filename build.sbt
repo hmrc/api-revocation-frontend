@@ -29,6 +29,22 @@ lazy val microservice = (project in file("."))
     retrieveManaged := true,
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
   )
+  .settings(
+  TwirlKeys.templateImports ++= Seq(
+      "views.html.helper.CSPNonce",
+      "config.FrontendAppConfig",
+      "uk.gov.hmrc.govukfrontend.views.html.components._",
+      "uk.gov.hmrc.hmrcfrontend.views.html.components._",
+      "uk.gov.hmrc.hmrcfrontend.views.html.helpers._"
+    )
+  )
+  .settings(
+    Concat.groups := Seq(
+      "javascripts/apis-app.js" -> group(
+        (baseDirectory.value / "app" / "assets" / "javascripts") ** "*.js"
+      )
+    )
+  )
   .settings(inConfig(Test)(Defaults.testSettings))
   .settings(inConfig(Test)(BloopDefaults.configSettings))
   .settings(

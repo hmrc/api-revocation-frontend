@@ -19,25 +19,18 @@
 @()(implicit request: Request[_], messages: Messages)
 
 @body = {
+  <h1 class="govuk-heading-l">You’re signed out</h1>
 
-    <div class="content__body">
-
-        <header>
-            <h1>You’re signed out</h1>
-        </header>
-        <ul class="action-list">
-            <ul>
-                <li>
-                    <a href="@controllers.routes.Revocation.listAuthorizedApplications" target="_self" data-sso="false">Sign in to your account</a>
-                </li>
-                <li>
-                    <a href="https://www.gov.uk" target="_blank" data-sso="false" rel="external">Explore GOV.UK<span class="visuallyhidden">link opens in a new window</span></a>
-                </li>
-            </ul>
-        </ul>
-    </div>
+  <ul class="govuk-list">
+    <li>
+      <a href="@controllers.routes.Revocation.listAuthorizedApplications" target="_self" class="govuk-link" data-sso="false">Sign in to your account</a>
+    </li>
+    <li>
+      <a href="https://www.gov.uk" target="_blank" data-sso="false" class="govuk-link" rel="noreferrer noopener">Explore GOV.UK (opens in new tab)</a>
+    </li>
+  </ul>
 }
 
-@main_template(title = "Signed Out", headerNavLinks = None) {
-    @body
+@main_template(title = Some("Signed Out")) {
+  @body
 }

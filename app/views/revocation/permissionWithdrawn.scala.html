@@ -19,23 +19,19 @@
 @()(implicit request: Request[_], messages: Messages)
 
 @body = {
-    <div class="content__body">
-        <header>
-            <h1>Authority removed</h1>
-        </header>
+  <h1 class="govuk-heading-l">Authority removed</h1>
 
-        <p data-withdrawn-message>This application no longer has authority to interact with HMRC on your behalf.</p>
+  <p class="govuk-body" data-withdrawn-message>This application no longer has authority to interact with HMRC on your behalf.</p>
 
-        <p>You can grant authority again in the application itself.</p>
+  <p class="govuk-body">You can grant authority again in the application itself.</p>
 
-        <p>
-            <a data-applications-link href="@controllers.routes.Revocation.listAuthorizedApplications">
-                Continue to your authorised software applications.
-            </a>
-        </p>
-    </div>
+  <p class="govuk-body">
+    <a class="govuk-link" data-applications-link href="@controllers.routes.Revocation.listAuthorizedApplications">
+      Continue to your authorised software applications.
+    </a>
+  </p>
 }
 
-@main_template(title = "Authority removed") {
-    @body
+@main_template(title = Some("Authority removed")) {
+  @body
 }

@@ -22,56 +22,49 @@
 
 @body = {
 
-    <div class="content__body">
+  <h1 id="page-heading" class="govuk-heading-l">Authorised software applications</h1>
 
-        <header>
-            <h1>Authorised software applications</h1>
-        </header>
-
-        @if(applications.isEmpty) {
-            <div data-info-message>
-                <p>You currently have no authorised software applications.</p>
-                <p>If you want to grant authority to an application you must do it in the application itself.</p>
-            </div>
-
-        } else {
-            <p data-info-message>You have granted authority to the following software applications. You can remove this authority below.</p>
-
-            @defining(DateTimeFormat.forPattern("dd MMMM yyyy")) { dateFormatter =>
-                <ul data-applications>
-                    @for(app <- applications) {
-                        <li>
-                            <details data-@{app.application.id}>
-                                <summary data-name-for="@{app.application.id}">
-                                    @{app.application.name}
-                                </summary>
-                                <div class="panel-indent">
-                                    <p>
-                                        <strong>This application has been authorised by you to do the following:</strong>
-                                    </p>
-                                    <ul class="bullets">
-                                    @for(scope <- app.scopes) {
-                                        <li data-scope-@{app.application.id}='@{scope.key}'>
-                                            @{scope.name}
-                                        </li>
-                                    }
-                                    </ul>
-                                    <p data-grant-date-@{app.application.id}>
-                                        <strong>Authority granted on:</strong> @{dateFormatter.print(app.earliestGrantDate)}
-                                    </p>
-
-                                    <a data-withdraw-permission-@{app.application.id} href="@routes.Revocation.withdrawPage(app.application.id)" class="button">Remove authority</a>
-                                </div>
-                            </details>
-                        </li>
-                    }
-                </ul>
-            }
-
-        }
+  @if(applications.isEmpty) {
+    <div data-info-message>
+      <p class="govuk-body">You currently have no authorised software applications.</p>
+      <p class="govuk-body">If you want to grant authority to an application you must do it in the application itself.</p>
     </div>
+  } else {
+    <p class="govuk-body" data-info-message>You have granted authority to the following software applications. You can remove this authority below.</p>
+
+    @defining(DateTimeFormat.forPattern("dd MMMM yyyy")) { dateFormatter =>
+      <ul class="govuk-list" data-applications>
+        @for(app <- applications.zipWithIndex) {
+          <li>
+            <details class="govuk-details" data-module="govuk-details" data-@{app._1.application.id}>
+              <summary id="app-summary-@app._2" class="govuk-details__summary" data-name-for="@{app._1.application.id}">
+                @{app._1.application.name}
+              </summary>
+              <div class="govuk-details__text">
+                <p class="govuk-body govuk-!-font-weight-bold">
+                  This application has been authorised by you to do the following:
+                </p>
+                <ul class="govuk-list govuk-list--bullet">
+                  @for(scope <- app._1.scopes) {
+                    <li data-scope-@{app._1.application.id}='@{scope.key}'>
+                      @{scope.name}
+                    </li>
+                  }
+                </ul>
+                <p class="govuk-body" data-grant-date-@{app._1.application.id}>
+                  <span class="govuk-body govuk-!-font-weight-bold">Authority granted on:</span> @{dateFormatter.print(app._1.earliestGrantDate)}
+                </p>
+
+                <a data-withdraw-permission-@{app._1.application.id} href="@routes.Revocation.withdrawPage(app._1.application.id)" class="govuk-button">Remove authority</a>
+              </div>
+            </details>
+          </li>
+        }
+      </ul>
+    }
+  }
 }
 
-@main_template(title = "Authorised software applications") {
-    @body
+@main_template(title = Some("Authorised software applications")) {
+  @body
 }
