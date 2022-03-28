@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.Header
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.En
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.footer.Footer
+@import uk.gov.hmrc.play.views.html.helpers.ReportAProblemLink
 
 @this(govukLayout: GovukLayout,
         hmrcHeader: HmrcHeader,
@@ -57,6 +58,15 @@
   </div>
 }
 
+@mainContentDefault = {
+  @contentBlock
+  <br />
+  <br />
+  <a href="#" class="govuk-link govuk-link--no-visited-state">
+    Is this page not working properly?
+  </a>
+}
+
 
 @govukLayout(
     pageTitle = title,
@@ -76,4 +86,4 @@
     footerBlock = Some(hmrcFooter(new Footer(meta = None, language = En))),
     assetPath = None,
     cspNonce = None
-)(contentBlock)
+)(mainContentDefault)
