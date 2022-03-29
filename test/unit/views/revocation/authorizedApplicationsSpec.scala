@@ -29,7 +29,7 @@ class authorizedApplicationsSpec extends CommonViewSpec {
 
   "render page correctly" in new Setup {
 
-   val page : Html =    authorizedApplicationsPage.render(apps, FakeRequest(), messagesProvider.messages)
+   val page : Html =    authorizedApplicationsPage.render(apps, FakeRequest(), messagesProvider.messages, appConfig)
    val document: Document = Jsoup.parse(page.body)
    document.getElementById("page-heading").text() shouldBe "Authorised software applications"
    document.getElementById("app-summary-0").text() shouldBe "app1"
