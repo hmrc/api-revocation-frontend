@@ -36,14 +36,13 @@ import scala.concurrent.{ExecutionContext, Future}
 class Revocation @Inject()(override val authConnector: AuthConnector,
                            val revocationService: RevocationService,
                            mcc: MessagesControllerComponents,
-                           frontendAppConfig: FrontendAppConfig,
                            error_template: error_template,
                            startPage: start,
                            loggedOutPage: loggedOut,
                            authorizedApplicationsPage: authorizedApplications,
                            permissionWithdrawnPage: permissionWithdrawn,
                            withdrawPermissionPage: withdrawPermission)
-                          (implicit val ec: ExecutionContext) extends FrontendController(mcc) with AuthorisedFunctions with play.api.i18n.I18nSupport {
+                          (implicit val ec: ExecutionContext, frontendAppConfig: FrontendAppConfig) extends FrontendController(mcc) with AuthorisedFunctions with play.api.i18n.I18nSupport {
 
   private lazy val loginURL: String = frontendAppConfig.signInUrl
   private lazy val loginUrlParameters = Map[String, Seq[String]]()
