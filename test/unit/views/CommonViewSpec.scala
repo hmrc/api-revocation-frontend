@@ -16,7 +16,7 @@
 
 package unit.views
 
-import config.AppConfig
+import config.{AppConfig, FrontendAppConfig}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.i18n.{Lang, MessagesImpl, MessagesProvider}
@@ -29,7 +29,7 @@ trait CommonViewSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite  {
   val mcc = app.injector.instanceOf[MessagesControllerComponents]
   val messagesApi = mcc.messagesApi
   implicit val messagesProvider: MessagesProvider = MessagesImpl(Lang(Locale.ENGLISH), messagesApi)
-  implicit val appConfig: AppConfig = mock[AppConfig]
+  implicit val appConfig = mock[FrontendAppConfig]
 
 
   override def fakeApplication(): Application =

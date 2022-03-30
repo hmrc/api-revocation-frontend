@@ -19,13 +19,16 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.Header
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.En
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.footer.Footer
+@import uk.gov.hmrc.play.views.html.helpers.ReportAProblemLink
+@import config.FrontendAppConfig
 
 @this(govukLayout: GovukLayout,
         hmrcHeader: HmrcHeader,
         hmrcFooter: HmrcFooter,
-        hmrcHead: HmrcHead)
+        hmrcHead: HmrcHead,
+        reportAProblemLink: ReportAProblemLink)
 
- @(title: Option[String] = None)(contentBlock: Html)(implicit request : Request[_], messages: Messages)
+ @(title: Option[String] = None)(contentBlock: Html)(implicit request : Request[_], messages: Messages, appConfig : FrontendAppConfig)
 
 @serviceInfoContent = {}
 
@@ -57,6 +60,15 @@
   </div>
 }
 
+@mainContentDefault = {
+  @contentBlock
+  <br />
+  <br />
+  <a href="@{appConfig.reportProblemHost}/contact/problem_reports_nonjs?newTab=false&service=api-revocation?referrerUrl=@{helper.urlEncode(request.uri)}" class="govuk-link govuk-link--no-visited-state">
+    Is this page not working properly?
+  </a>
+}
+
 
 @govukLayout(
     pageTitle = title,
@@ -76,4 +88,4 @@
     footerBlock = Some(hmrcFooter(new Footer(meta = None, language = En))),
     assetPath = None,
     cspNonce = None
-)(contentBlock)
+)(mainContentDefault)

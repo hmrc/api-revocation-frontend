@@ -30,6 +30,7 @@ trait AppConfig {
   val reportAProblemNonJSUrl: String
   val signInUrl: String
   val signOutUrl: String
+  val reportProblemHost: String
 }
 
 @Singleton
@@ -51,6 +52,7 @@ class FrontendAppConfig @Inject()(val configuration: Configuration,
   override lazy val betaFeedbackUnauthenticatedUrl: String = s"$contactHost/contact/beta-feedback-unauthenticated"
   override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+  override lazy val reportProblemHost: String = configuration.getOptional[String]("report-a-problem.base.url").getOrElse("") + configuration.getOptional[String]("urls.report-a-problem.problem").getOrElse("")
   override lazy val signInUrl = s"$caFrontendHost/gg/sign-in?continue=$loginCallbackBaseUrl/applications-manage-authority/applications"
   override lazy val signOutUrl = s"$caFrontendHost/gg/sign-out?continue=$loginCallbackBaseUrl/applications-manage-authority/loggedout"
 }

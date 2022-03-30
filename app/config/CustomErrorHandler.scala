@@ -26,7 +26,7 @@ import views.html.error_template
 
 class CustomErrorHandler @Inject()(val messagesApi: MessagesApi,
                                    val configuration: Configuration,
-                                   error_template: error_template) extends FrontendErrorHandler {
+                                   error_template: error_template)(implicit frontendAppConfig: FrontendAppConfig) extends FrontendErrorHandler {
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)
                                     (implicit request: Request[_]): Html = {
     error_template(pageTitle, heading, message)
