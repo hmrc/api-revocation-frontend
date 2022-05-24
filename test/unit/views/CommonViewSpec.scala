@@ -16,7 +16,7 @@
 
 package unit.views
 
-import config.{AppConfig, FrontendAppConfig}
+import config.FrontendAppConfig
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.i18n.{Lang, MessagesImpl, MessagesProvider}
