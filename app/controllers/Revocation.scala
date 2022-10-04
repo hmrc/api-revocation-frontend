@@ -33,25 +33,29 @@ import views.html.revocation._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class Revocation @Inject()(override val authConnector: AuthConnector,
-                           val revocationService: RevocationService,
-                           mcc: MessagesControllerComponents,
-                           error_template: error_template,
-                           startPage: start,
-                           loggedOutPage: loggedOut,
-                           authorizedApplicationsPage: authorizedApplications,
-                           permissionWithdrawnPage: permissionWithdrawn,
-                           withdrawPermissionPage: withdrawPermission)
-                          (implicit val ec: ExecutionContext, frontendAppConfig: FrontendAppConfig) extends FrontendController(mcc) with AuthorisedFunctions with play.api.i18n.I18nSupport {
+class Revocation @Inject() (
+    override val authConnector: AuthConnector,
+    val revocationService: RevocationService,
+    mcc: MessagesControllerComponents,
+    error_template: error_template,
+    startPage: start,
+    loggedOutPage: loggedOut,
+    authorizedApplicationsPage: authorizedApplications,
+    permissionWithdrawnPage: permissionWithdrawn,
+    withdrawPermissionPage: withdrawPermission
+  )(implicit val ec: ExecutionContext,
+    frontendAppConfig: FrontendAppConfig
+  ) extends FrontendController(mcc) with AuthorisedFunctions with play.api.i18n.I18nSupport {
 
-  private lazy val loginURL: String = frontendAppConfig.signInUrl
+  private lazy val loginURL: String   = frontendAppConfig.signInUrl
   private lazy val loginUrlParameters = Map[String, Seq[String]]()
 
   private def notFoundTemplate(implicit request: Request[_]): Html = {
     error_template(
       Messages("global.error.pageNotFound404.title"),
       Messages("global.error.pageNotFound404.heading"),
-      Messages("global.error.pageNotFound404.message"))
+      Messages("global.error.pageNotFound404.message")
+    )
   }
 
   private def unauthorisedRecovery: PartialFunction[Throwable, Result] = {

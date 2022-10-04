@@ -28,8 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.Future._
 
 @Singleton
-class DelegatedAuthorityConnector @Inject()(servicesConfig: ServicesConfig, http: HttpClient)
-                                           (implicit val ec: ExecutionContext) {
+class DelegatedAuthorityConnector @Inject() (servicesConfig: ServicesConfig, http: HttpClient)(implicit val ec: ExecutionContext) {
 
   val delegatedAuthorityUrl: String = servicesConfig.baseUrl("third-party-delegated-authority")
 
@@ -38,15 +37,15 @@ class DelegatedAuthorityConnector @Inject()(servicesConfig: ServicesConfig, http
   }
 
   def fetchApplicationAuthority(applicationId: UUID)(implicit hc: HeaderCarrier): Future[AppAuthorisation] = {
-    http.GET[Option[AppAuthorisation]](s"$delegatedAuthorityUrl/authority/granted-application/$applicationId") flatMap(handleNotFound)
+    http.GET[Option[AppAuthorisation]](s"$delegatedAuthorityUrl/authority/granted-application/$applicationId") flatMap (handleNotFound)
   }
 
   def revokeApplicationAuthority(applicationId: UUID)(implicit hc: HeaderCarrier): Future[Unit] = {
-    http.DELETE[Option[Unit]](s"$delegatedAuthorityUrl/authority/granted-application/$applicationId") flatMap(handleNotFound _)
+    http.DELETE[Option[Unit]](s"$delegatedAuthorityUrl/authority/granted-application/$applicationId") flatMap (handleNotFound _)
   }
 
   def handleNotFound[T](o: Option[T]): Future[T] = {
-     o.fold[Future[T]](failed(new AuthorityNotFound))(t => successful(t))
+    o.fold[Future[T]](failed(new AuthorityNotFound))(t => successful(t))
   }
 }
 

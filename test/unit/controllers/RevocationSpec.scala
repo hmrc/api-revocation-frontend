@@ -44,27 +44,38 @@ class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs {
   SharedMetricRegistries.clear()
 
   trait Setup {
-    val appId: UUID = UUID.randomUUID()
-    val authConnector: AuthConnector = mock[AuthConnector]
+    val appId: UUID                          = UUID.randomUUID()
+    val authConnector: AuthConnector         = mock[AuthConnector]
     val revocationService: RevocationService = mock[RevocationService]
-    val errorTemplate = app.injector.instanceOf[error_template]
-    val startPage = app.injector.instanceOf[start]
-    val loggedOutPage = app.injector.instanceOf[loggedOut]
-    val authorizedApplicationsPage = app.injector.instanceOf[authorizedApplications]
-    val permissionWithdrawnPage = app.injector.instanceOf[permissionWithdrawn]
-    val withdrawPermissionPage = app.injector.instanceOf[withdrawPermission]
-  implicit val appconfig = minimalAppConfig
-    val underTest: Revocation = new Revocation(authConnector, revocationService,stubMessagesControllerComponents(), errorTemplate, startPage, loggedOutPage,
-      authorizedApplicationsPage, permissionWithdrawnPage, withdrawPermissionPage)
+    val errorTemplate                        = app.injector.instanceOf[error_template]
+    val startPage                            = app.injector.instanceOf[start]
+    val loggedOutPage                        = app.injector.instanceOf[loggedOut]
+    val authorizedApplicationsPage           = app.injector.instanceOf[authorizedApplications]
+    val permissionWithdrawnPage              = app.injector.instanceOf[permissionWithdrawn]
+    val withdrawPermissionPage               = app.injector.instanceOf[withdrawPermission]
+    implicit val appconfig                   = minimalAppConfig
+
+    val underTest: Revocation                = new Revocation(
+      authConnector,
+      revocationService,
+      stubMessagesControllerComponents(),
+      errorTemplate,
+      startPage,
+      loggedOutPage,
+      authorizedApplicationsPage,
+      permissionWithdrawnPage,
+      withdrawPermissionPage
+    )
 
     when(revocationService.fetchApplicationAuthorities()(*))
       .thenReturn(successful(Seq.empty))
   }
 
   trait LoggedInSetup extends Setup {
+
     lazy val request = FakeRequest()
       .withSession(SessionKeys.sessionId -> "SessionId")
-    .withCSRFToken
+      .withCSRFToken
 
     when(authConnector.authorise(*, eqTo(EmptyRetrieval))(*, *)).thenReturn(successful(()))
   }
@@ -102,7 +113,7 @@ class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs {
       val result = underTest.listAuthorizedApplications(request)
 
       status(result) shouldBe 303
-      header("Location",result) shouldBe Some("/gg/sign-in?continue=/applications-manage-authority/applications")
+      header("Location", result) shouldBe Some("/gg/sign-in?continue=/applications-manage-authority/applications")
     }
   }
 
@@ -127,7 +138,7 @@ class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs {
       val result = underTest.withdrawAction(appId)(request)
 
       status(result) shouldBe 303
-      header("Location",result) shouldBe Some(controllers.routes.Revocation.withdrawConfirmationPage().url)
+      header("Location", result) shouldBe Some(controllers.routes.Revocation.withdrawConfirmationPage().url)
     }
 
     "return 404 if the authorisation is not found" in new LoggedInSetup {

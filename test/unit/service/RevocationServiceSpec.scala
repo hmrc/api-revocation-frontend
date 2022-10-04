@@ -34,10 +34,10 @@ class RevocationServiceSpec extends AsyncHmrcSpec {
   private trait Setup {
 
     implicit val hc = HeaderCarrier()
-    val appId = UUID.randomUUID()
+    val appId       = UUID.randomUUID()
 
     val delegatedAuthorityConnector = mock[DelegatedAuthorityConnector]
-    val underTest = new RevocationService(delegatedAuthorityConnector)
+    val underTest                   = new RevocationService(delegatedAuthorityConnector)
   }
 
   "fetchApplicationAuthorities" should {

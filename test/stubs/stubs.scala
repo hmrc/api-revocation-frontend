@@ -33,20 +33,20 @@ trait Stubs extends StubMessagesFactory {
 
   val stubbedMessagesApi: MessagesApi = stubMessagesApi(Map(
     "en" -> Map(
-      "global.error.InternalServerError500.title"      -> "We’re experiencing technical difficulties",
+      "global.error.InternalServerError500.title"   -> "We’re experiencing technical difficulties",
       "global.error.InternalServerError500.heading" -> "We’re experiencing technical difficulties",
-      "global.error.InternalServerError500.message"       -> "Please try again in a few minutes."
+      "global.error.InternalServerError500.message" -> "Please try again in a few minutes."
     )
   ))
 
   def stubMessagesControllerComponents(
-                                        bodyParser: BodyParser[AnyContent] = stubBodyParser(AnyContentAsEmpty),
-                                        playBodyParsers: PlayBodyParsers = stubPlayBodyParsers(NoMaterializer),
-                                        messagesApi: MessagesApi = stubbedMessagesApi,
-                                        langs: Langs = stubLangs(),
-                                        fileMimeTypes: FileMimeTypes = new DefaultFileMimeTypes(FileMimeTypesConfiguration()),
-                                        executionContext: ExecutionContext = ExecutionContext.global
-                                      ): MessagesControllerComponents =
+      bodyParser: BodyParser[AnyContent] = stubBodyParser(AnyContentAsEmpty),
+      playBodyParsers: PlayBodyParsers = stubPlayBodyParsers(NoMaterializer),
+      messagesApi: MessagesApi = stubbedMessagesApi,
+      langs: Langs = stubLangs(),
+      fileMimeTypes: FileMimeTypes = new DefaultFileMimeTypes(FileMimeTypesConfiguration()),
+      executionContext: ExecutionContext = ExecutionContext.global
+    ): MessagesControllerComponents =
     DefaultMessagesControllerComponents(
       new DefaultMessagesActionBuilderImpl(bodyParser, messagesApi)(executionContext),
       DefaultActionBuilder(bodyParser)(executionContext),
@@ -72,10 +72,10 @@ trait Stubs extends StubMessagesFactory {
                                                                   |metrics.logback=false""".stripMargin)
 
   val minimalConfiguration: Configuration = Configuration(minimalConfig)
-  private val environment = Environment.simple()
+  private val environment                 = Environment.simple()
 
   private def servicesConfig(conf: Configuration) = new ServicesConfig(conf)
-  private def appConfig(conf: Configuration) = new FrontendAppConfig(conf, environment, servicesConfig(conf))
+  private def appConfig(conf: Configuration)      = new FrontendAppConfig(conf, environment, servicesConfig(conf))
 
   val minimalAppConfig: FrontendAppConfig = appConfig(minimalConfiguration)
 

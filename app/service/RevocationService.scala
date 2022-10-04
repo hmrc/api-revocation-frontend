@@ -26,8 +26,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RevocationService @Inject()(val delegatedAuthorityConnector: DelegatedAuthorityConnector)
-                                 (implicit val ec: ExecutionContext) {
+class RevocationService @Inject() (val delegatedAuthorityConnector: DelegatedAuthorityConnector)(implicit val ec: ExecutionContext) {
 
   def fetchApplicationAuthorities()(implicit hc: HeaderCarrier): Future[Seq[AppAuthorisation]] = {
     delegatedAuthorityConnector.fetchApplicationAuthorities().map(_.sorted)
