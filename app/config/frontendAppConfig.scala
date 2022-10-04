@@ -20,7 +20,6 @@ import javax.inject.{Inject, Singleton}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-
 trait AppConfig {
   val analyticsToken: String
   val analyticsHost: String
@@ -34,25 +33,25 @@ trait AppConfig {
 }
 
 @Singleton
-class FrontendAppConfig @Inject()(val configuration: Configuration,
-                                  val environment: Environment,
-                                  servicesConfig: ServicesConfig) extends AppConfig {
+class FrontendAppConfig @Inject() (val configuration: Configuration, val environment: Environment, servicesConfig: ServicesConfig) extends AppConfig {
 
-  private def loadConfig(key: String) =  configuration.getOptional[String](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
+  private def loadConfig(key: String) = configuration.getOptional[String](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
-  private val caFrontendHost = configuration.getOptional[String]("ca-frontend.host").getOrElse("")
-  private val contactHost = configuration.getOptional[String]("contact-frontend.host").getOrElse("")
+  private val caFrontendHost       = configuration.getOptional[String]("ca-frontend.host").getOrElse("")
+  private val contactHost          = configuration.getOptional[String]("contact-frontend.host").getOrElse("")
   private val loginCallbackBaseUrl = configuration.getOptional[String]("auth.login-callback.base-url").getOrElse("")
 
   private val contactFormServiceIdentifier = "api-revocation-frontend"
 
-  override lazy val analyticsToken = loadConfig(s"google-analytics.token")
-  override lazy val analyticsHost = loadConfig(s"google-analytics.host")
-  override lazy val betaFeedbackUrl: String = s"$contactHost/contact/beta-feedback"
+  override lazy val analyticsToken                         = loadConfig(s"google-analytics.token")
+  override lazy val analyticsHost                          = loadConfig(s"google-analytics.host")
+  override lazy val betaFeedbackUrl: String                = s"$contactHost/contact/beta-feedback"
   override lazy val betaFeedbackUnauthenticatedUrl: String = s"$contactHost/contact/beta-feedback-unauthenticated"
-  override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
-  override lazy val reportProblemHost: String = configuration.getOptional[String]("report-a-problem.base.url").getOrElse("") + configuration.getOptional[String]("urls.report-a-problem.problem").getOrElse("")
-  override lazy val signInUrl = s"$caFrontendHost/gg/sign-in?continue=$loginCallbackBaseUrl/applications-manage-authority/applications"
-  override lazy val signOutUrl = s"$caFrontendHost/gg/sign-out?continue=$loginCallbackBaseUrl/applications-manage-authority/loggedout"
+  override lazy val reportAProblemPartialUrl               = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
+  override lazy val reportAProblemNonJSUrl                 = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+
+  override lazy val reportProblemHost: String              =
+    configuration.getOptional[String]("report-a-problem.base.url").getOrElse("") + configuration.getOptional[String]("urls.report-a-problem.problem").getOrElse("")
+  override lazy val signInUrl                              = s"$caFrontendHost/gg/sign-in?continue=$loginCallbackBaseUrl/applications-manage-authority/applications"
+  override lazy val signOutUrl                             = s"$caFrontendHost/gg/sign-out?continue=$loginCallbackBaseUrl/applications-manage-authority/loggedout"
 }

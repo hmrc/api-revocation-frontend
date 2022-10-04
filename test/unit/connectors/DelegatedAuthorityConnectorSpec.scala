@@ -36,9 +36,9 @@ class DelegatedAuthorityConnectorSpec extends AsyncHmrcSpec with GuiceOneAppPerS
   private trait Setup {
     SharedMetricRegistries.clear()
 
-    implicit val hc = HeaderCarrier()
+    implicit val hc   = HeaderCarrier()
     val serviceConfig = mock[ServicesConfig]
-    val http = app.injector.instanceOf[HttpClient]
+    val http          = app.injector.instanceOf[HttpClient]
 
     val connector = new DelegatedAuthorityConnector(serviceConfig, http) {
       override val delegatedAuthorityUrl: String = wireMockUrl
