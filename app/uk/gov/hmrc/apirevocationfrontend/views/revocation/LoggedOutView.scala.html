@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.apirevocationfrontend.views.html.MainView
+
 @this(main: MainView)
 
 @()(implicit request: Request[_], messages: Messages, appConfig : FrontendAppConfig, footerConfig: FooterConfig)
@@ -23,7 +25,7 @@
 
   <ul class="govuk-list">
     <li>
-      <a href="@controllers.routes.Revocation.listAuthorizedApplications" target="_self" class="govuk-link" data-sso="false">Sign in to your account</a>
+      <a href="@uk.gov.hmrc.apirevocationfrontend.controllers.routes.Revocation.listAuthorizedApplications" target="_self" class="govuk-link" data-sso="false">Sign in to your account</a>
     </li>
     <li>
       <a href="https://www.gov.uk" target="_blank" data-sso="false" class="govuk-link" rel="noreferrer noopener">Explore GOV.UK (opens in new tab)</a>

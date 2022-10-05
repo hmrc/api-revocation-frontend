@@ -16,7 +16,7 @@
 
 package unit.views
 
-import config.{FooterConfig, FrontendAppConfig}
+import uk.gov.hmrc.apirevocationfrontend.config.{FooterConfig, FrontendAppConfig}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.i18n.{Lang, MessagesImpl, MessagesProvider}

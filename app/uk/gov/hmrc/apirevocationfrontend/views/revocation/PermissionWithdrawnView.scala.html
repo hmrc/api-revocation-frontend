@@ -14,22 +14,26 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.apirevocationfrontend.views.html.MainView
+
 @this(main: MainView)
 
 @()(implicit request: Request[_], messages: Messages, appConfig : FrontendAppConfig, footerConfig: FooterConfig)
 
 @body = {
-  <h1 id="page-heading" class="govuk-heading-l">Manage the authority you have granted to software applications</h1>
-  <p class="govuk-body">You may have granted authority to one or more software applications to interact with HMRC.</p>
-  <p class="govuk-body">You can use this service to:</p>
-  <ul class="govuk-list govuk-list--bullet">
-    <li>see the applications you have granted authority to</li>
-    <li>remove the authority from those applications</li>
-  </ul>
+  <h1 class="govuk-heading-l">Authority removed</h1>
 
-  <a href="@routes.Revocation.listAuthorizedApplications" class="govuk-button">Start now</a>
+  <p class="govuk-body" data-withdrawn-message>This application no longer has authority to interact with HMRC on your behalf.</p>
+
+  <p class="govuk-body">You can grant authority again in the application itself.</p>
+
+  <p class="govuk-body">
+    <a class="govuk-link" data-applications-link href="@uk.gov.hmrc.apirevocationfrontend.controllers.routes.Revocation.listAuthorizedApplications">
+      Continue to your authorised software applications.
+    </a>
+  </p>
 }
 
-@main(title = Some("Manage the authority you have granted to software applications")) {
+@main(title = Some("Authority removed")) {
   @body
 }

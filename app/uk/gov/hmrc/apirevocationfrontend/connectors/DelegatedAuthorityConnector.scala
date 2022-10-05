@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package connectors
+package uk.gov.hmrc.apirevocationfrontend.connectors
 
 import java.util.UUID
 
 import javax.inject.{Inject, Singleton}
-import models.AppAuthorisation
+import uk.gov.hmrc.apirevocationfrontend.models.AppAuthorisation
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.http.HttpClient

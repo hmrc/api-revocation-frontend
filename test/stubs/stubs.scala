@@ -17,7 +17,7 @@
 package stubs
 
 import akka.stream.testkit.NoMaterializer
-import config.{FooterConfig, FrontendAppConfig}
+import uk.gov.hmrc.apirevocationfrontend.config.{FooterConfig, FrontendAppConfig}
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypes, FileMimeTypesConfiguration}
 import play.api.i18n.{Langs, MessagesApi}
 import play.api.mvc._

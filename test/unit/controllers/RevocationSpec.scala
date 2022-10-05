@@ -17,23 +17,23 @@
 package unit.controllers
 
 import com.codahale.metrics.SharedMetricRegistries
-import connectors.AuthorityNotFound
-import controllers.Revocation
-import models.{AppAuthorisation, ThirdPartyApplication}
+import uk.gov.hmrc.apirevocationfrontend.connectors.AuthorityNotFound
+import uk.gov.hmrc.apirevocationfrontend.controllers.Revocation
+import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, ThirdPartyApplication}
+import uk.gov.hmrc.apirevocationfrontend.service.RevocationService
+import uk.gov.hmrc.apirevocationfrontend.views.html.ErrorView
+import uk.gov.hmrc.apirevocationfrontend.views.html.revocation._
 import org.joda.time.DateTime
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import service.RevocationService
 import stubs.FakeRequestCSRFSupport._
 import stubs.Stubs
 import uk.gov.hmrc.auth.core.retrieve.EmptyRetrieval
 import uk.gov.hmrc.auth.core.{AuthConnector, InvalidBearerToken}
 import uk.gov.hmrc.http.SessionKeys
 import utils._
-import views.html.ErrorView
-import views.html.revocation._
 
 import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -139,7 +139,7 @@ class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs {
       val result = underTest.withdrawAction(appId)(request)
 
       status(result) shouldBe 303
-      header("Location", result) shouldBe Some(controllers.routes.Revocation.withdrawConfirmationPage().url)
+      header("Location", result) shouldBe Some(uk.gov.hmrc.apirevocationfrontend.controllers.routes.Revocation.withdrawConfirmationPage().url)
     }
 
     "return 404 if the authorisation is not found" in new LoggedInSetup {

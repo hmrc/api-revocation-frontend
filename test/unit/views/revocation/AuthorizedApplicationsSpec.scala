@@ -1,13 +1,14 @@
 package unit.views.revocation
 
-import models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import org.joda.time.DateTime
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import unit.views.CommonViewSpec
-import views.html.revocation.AuthorizedApplicationsView
+
+import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, Scope, ThirdPartyApplication}
+import uk.gov.hmrc.apirevocationfrontend.views.html.revocation.AuthorizedApplicationsView
 
 import java.util.UUID
 

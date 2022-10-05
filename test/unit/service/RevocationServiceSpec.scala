@@ -18,11 +18,11 @@ package unit.service
 
 import java.util.UUID
 
-import connectors.DelegatedAuthorityConnector
-import models.{AppAuthorisation, Scope, ThirdPartyApplication}
+import uk.gov.hmrc.apirevocationfrontend.connectors.DelegatedAuthorityConnector
+import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, Scope, ThirdPartyApplication}
+import uk.gov.hmrc.apirevocationfrontend.service.RevocationService
 import org.joda.time.DateTime
 import org.mockito.BDDMockito.given
-import service.RevocationService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils._
 

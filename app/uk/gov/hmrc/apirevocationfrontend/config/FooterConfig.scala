@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package config
+package uk.gov.hmrc.apirevocationfrontend.config
 
 import javax.inject.{Inject, Provider, Singleton}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig

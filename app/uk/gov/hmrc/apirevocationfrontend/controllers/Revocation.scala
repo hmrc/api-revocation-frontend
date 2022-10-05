@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package controllers
+package uk.gov.hmrc.apirevocationfrontend.controllers
 
 import java.util.UUID
 
-import config.{FooterConfig, FrontendAppConfig}
-import connectors.AuthorityNotFound
+import uk.gov.hmrc.apirevocationfrontend.config.{FooterConfig, FrontendAppConfig}
+import uk.gov.hmrc.apirevocationfrontend.connectors.AuthorityNotFound
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.Messages
 import play.api.mvc._
 import play.twirl.api.Html
-import service.RevocationService
+import uk.gov.hmrc.apirevocationfrontend.service.RevocationService
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisationException, AuthorisedFunctions}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.ErrorView
-import views.html.revocation._
+import uk.gov.hmrc.apirevocationfrontend.views.html.ErrorView
+import uk.gov.hmrc.apirevocationfrontend.views.html.revocation._
 
 import scala.concurrent.{ExecutionContext, Future}
 

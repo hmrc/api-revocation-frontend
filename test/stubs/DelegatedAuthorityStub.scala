@@ -17,7 +17,7 @@
 package stubs
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.{AppAuthorisation, Scope}
+import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, Scope}
 
 trait DelegatedAuthorityStub {
 

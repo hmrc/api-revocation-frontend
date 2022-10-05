@@ -16,6 +16,9 @@
 
 @import org.joda.time.format.DateTimeFormat
 
+@import uk.gov.hmrc.apirevocationfrontend.models.AppAuthorisation
+@import uk.gov.hmrc.apirevocationfrontend.views.html.MainView
+
 @this(main: MainView)
 
 @(applications: Seq[AppAuthorisation])(implicit request: Request[_], messages: Messages, appConfig : FrontendAppConfig, footerConfig: FooterConfig)
@@ -55,7 +58,7 @@
                   <span class="govuk-body govuk-!-font-weight-bold">Authority granted on:</span> @{dateFormatter.print(app._1.earliestGrantDate)}
                 </p>
 
-                <a data-withdraw-permission-@{app._1.application.id} href="@routes.Revocation.withdrawPage(app._1.application.id)" class="govuk-button">Remove authority</a>
+                <a data-withdraw-permission-@{app._1.application.id} href="@uk.gov.hmrc.apirevocationfrontend.controllers.routes.Revocation.withdrawPage(app._1.application.id)" class="govuk-button">Remove authority</a>
               </div>
             </details>
           </li>

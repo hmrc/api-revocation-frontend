@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models
+package uk.gov.hmrc.apirevocationfrontend.models
 
 import java.util.UUID
 

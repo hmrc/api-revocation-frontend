@@ -19,8 +19,8 @@ package unit.connectors
 import java.util.UUID
 
 import com.codahale.metrics.SharedMetricRegistries
-import connectors.{AuthorityNotFound, DelegatedAuthorityConnector}
-import models.{AppAuthorisation, Scope, ThirdPartyApplication}
+import uk.gov.hmrc.apirevocationfrontend.connectors.{AuthorityNotFound, DelegatedAuthorityConnector}
+import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import org.joda.time.DateTime
 import utils._
 import uk.gov.hmrc.http.HeaderCarrier

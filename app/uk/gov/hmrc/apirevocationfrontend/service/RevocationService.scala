@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package service
+package uk.gov.hmrc.apirevocationfrontend.service
 
 import java.util.UUID
 
-import connectors.DelegatedAuthorityConnector
+import uk.gov.hmrc.apirevocationfrontend.connectors.DelegatedAuthorityConnector
 import javax.inject.{Inject, Singleton}
-import models.AppAuthorisation
+import uk.gov.hmrc.apirevocationfrontend.models.AppAuthorisation
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}

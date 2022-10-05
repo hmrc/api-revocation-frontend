@@ -32,8 +32,8 @@ lazy val microservice = (project in file("."))
   .settings(
   TwirlKeys.templateImports ++= Seq(
       "views.html.helper.CSPNonce",
-      "config.FrontendAppConfig",
-      "config.FooterConfig",
+      "uk.gov.hmrc.apirevocationfrontend.config.FrontendAppConfig",
+      "uk.gov.hmrc.apirevocationfrontend.config.FooterConfig",
       "uk.gov.hmrc.hmrcfrontend.views.html.components._",
       "uk.gov.hmrc.hmrcfrontend.views.html.helpers._"
     )
