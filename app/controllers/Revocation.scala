@@ -18,7 +18,7 @@ package controllers
 
 import java.util.UUID
 
-import config.FrontendAppConfig
+import config.{FooterConfig, FrontendAppConfig}
 import connectors.AuthorityNotFound
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.Messages
@@ -44,7 +44,8 @@ class Revocation @Inject() (
     permissionWithdrawnPage: permissionWithdrawn,
     withdrawPermissionPage: withdrawPermission
   )(implicit val ec: ExecutionContext,
-    frontendAppConfig: FrontendAppConfig
+    frontendAppConfig: FrontendAppConfig,
+    footerConfig: FooterConfig
   ) extends FrontendController(mcc) with AuthorisedFunctions with play.api.i18n.I18nSupport {
 
   private lazy val loginURL: String   = frontendAppConfig.signInUrl

@@ -54,6 +54,7 @@ class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs {
     val permissionWithdrawnPage              = app.injector.instanceOf[permissionWithdrawn]
     val withdrawPermissionPage               = app.injector.instanceOf[withdrawPermission]
     implicit val appconfig                   = minimalAppConfig
+    implicit val footerConfig                = minimalFooterConfig
 
     val underTest: Revocation                = new Revocation(
       authConnector,

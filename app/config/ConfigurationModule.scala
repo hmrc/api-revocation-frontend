@@ -1,5 +1,5 @@
-@*
- * Copyright 2021 HM Revenue & Customs
+/*
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,20 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.{FooterConfig, FrontendAppConfig}
+package config
 
-@this(appConfig: FrontendAppConfig, main: main_template)
+import com.google.inject.AbstractModule
 
-@(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages, appConfig : FrontendAppConfig, footerConfig: FooterConfig)
-
-@contentHeader = {
-  <h1 class="govuk-heading-l">@heading</h1>
+class ConfigurationModule extends AbstractModule {
+  override def configure() = {
+    bind(classOf[FrontendAppConfig]).toProvider(classOf[FrontendAppConfigProvider])
+    bind(classOf[FooterConfig]).toProvider(classOf[FooterConfigProvider])
+  }
 }
-
-@mainContent = {
-  <p class="govuk-body">@message</p>
-}
-
-@main(title = Some(pageTitle))(mainContent)

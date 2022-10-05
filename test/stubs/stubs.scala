@@ -17,20 +17,16 @@
 package stubs
 
 import akka.stream.testkit.NoMaterializer
-import com.typesafe.config.{Config, ConfigFactory}
-import config.FrontendAppConfig
+import config.{FooterConfig, FrontendAppConfig}
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypes, FileMimeTypesConfiguration}
 import play.api.i18n.{Langs, MessagesApi}
 import play.api.mvc._
 import play.api.test.Helpers.{stubBodyParser, stubPlayBodyParsers}
 import play.api.test.{CSRFTokenHelper, FakeRequest, StubMessagesFactory}
-import play.api.{Configuration, Environment}
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.ExecutionContext
 
 trait Stubs extends StubMessagesFactory {
-
   val stubbedMessagesApi: MessagesApi = stubMessagesApi(Map(
     "en" -> Map(
       "global.error.InternalServerError500.title"   -> "We’re experiencing technical difficulties",
@@ -40,49 +36,43 @@ trait Stubs extends StubMessagesFactory {
   ))
 
   def stubMessagesControllerComponents(
-      bodyParser: BodyParser[AnyContent] = stubBodyParser(AnyContentAsEmpty),
-      playBodyParsers: PlayBodyParsers = stubPlayBodyParsers(NoMaterializer),
-      messagesApi: MessagesApi = stubbedMessagesApi,
-      langs: Langs = stubLangs(),
-      fileMimeTypes: FileMimeTypes = new DefaultFileMimeTypes(FileMimeTypesConfiguration()),
-      executionContext: ExecutionContext = ExecutionContext.global
-    ): MessagesControllerComponents =
-    DefaultMessagesControllerComponents(
-      new DefaultMessagesActionBuilderImpl(bodyParser, messagesApi)(executionContext),
-      DefaultActionBuilder(bodyParser)(executionContext),
-      playBodyParsers,
-      messagesApi,
-      langs,
-      fileMimeTypes,
-      executionContext
-    )
+    bodyParser: BodyParser[AnyContent] = stubBodyParser(AnyContentAsEmpty),
+    playBodyParsers: PlayBodyParsers = stubPlayBodyParsers(NoMaterializer),
+    messagesApi: MessagesApi = stubbedMessagesApi,
+    langs: Langs = stubLangs(),
+    fileMimeTypes: FileMimeTypes = new DefaultFileMimeTypes(FileMimeTypesConfiguration()),
+    executionContext: ExecutionContext = ExecutionContext.global
+  ): MessagesControllerComponents =
+  DefaultMessagesControllerComponents(
+    new DefaultMessagesActionBuilderImpl(bodyParser, messagesApi)(executionContext),
+    DefaultActionBuilder(bodyParser)(executionContext),
+    playBodyParsers,
+    messagesApi,
+    langs,
+    fileMimeTypes,
+    executionContext
+  )
 
-  private val minimalConfig: Config = ConfigFactory.parseString("""
-                                                                  |auditing.enabled=false
-                                                                  |auditing.traceRequests=false
-                                                                  |assets.url="localhost"
-                                                                  |assets.version="version"
-                                                                  |google-analytics.token=N/A
-                                                                  |google-analytics.host=localhostGoogle
-                                                                  |metrics.name=""
-                                                                  |metrics.rateUnit="SECONDS"
-                                                                  |metrics.durationUnit="SECONDS"
-                                                                  |metrics.showSamples=false
-                                                                  |metrics.jvm=false
-                                                                  |metrics.logback=false""".stripMargin)
+  val minimalAppConfig: FrontendAppConfig = new FrontendAppConfig(
+    analyticsToken = "",
+    analyticsHost = "",
+    betaFeedbackUrl = "",
+    betaFeedbackUnauthenticatedUrl = "",
+    reportAProblemPartialUrl = "",
+    reportAProblemNonJSUrl = "",
+    reportProblemHost = "",
+    signInUrl = "/gg/sign-in?continue=/applications-manage-authority/applications",
+    signOutUrl = ""
+  )
 
-  val minimalConfiguration: Configuration = Configuration(minimalConfig)
-  private val environment                 = Environment.simple()
-
-  private def servicesConfig(conf: Configuration) = new ServicesConfig(conf)
-  private def appConfig(conf: Configuration)      = new FrontendAppConfig(conf, environment, servicesConfig(conf))
-
-  val minimalAppConfig: FrontendAppConfig = appConfig(minimalConfiguration)
-
+  val minimalFooterConfig: FooterConfig = FooterConfig(
+    apiDocumentationFrontendUrl = "",
+    platformFrontendHost = "",
+    thirdPartyDeveloperFrontendUrl = ""
+  )
 }
 
 object FakeRequestCSRFSupport {
-
   implicit class CSRFFakeRequest[A](request: FakeRequest[A]) {
     def withCSRFToken: Request[A] = CSRFTokenHelper.addCSRFToken(request)
   }

@@ -17,8 +17,9 @@ class startSpec extends CommonViewSpec {
   "start page" should {
 
     "render correctly" in new Setup {
-      val page: Html         = start.render(FakeRequest(), messagesProvider.messages, appConfig)
+      val page: Html         = start.render(FakeRequest(), messagesProvider.messages, appConfig, footerConfig)
       val document: Document = Jsoup.parse(page.body)
+      
       document.getElementById("page-heading").text() shouldBe "Manage the authority you have granted to software applications"
     }
   }

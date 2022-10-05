@@ -10,7 +10,6 @@ object AppDependencies {
   lazy val compile = Seq(
     "uk.gov.hmrc"               %% "bootstrap-frontend-play-28" % bootstrapVersion,
     "uk.gov.hmrc"               %% "play-partials"              % "8.2.0-play-28",
-    "uk.gov.hmrc"               %% "play-ui"                    % "9.7.0-play-28",
     "uk.gov.hmrc"               %% "play-frontend-hmrc"         % "1.26.0-play-28",
     "com.typesafe.play"         %% "play-json-joda"             % "2.8.1"
   )
