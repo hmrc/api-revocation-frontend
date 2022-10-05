@@ -6,12 +6,12 @@ import play.api.test.FakeRequest
 import play.twirl.api.Html
 import unit.views.CommonViewSpec
 
-import views.html.revocation.Start
+import views.html.revocation.StartView
 
-class startSpec extends CommonViewSpec {
+class StartSpec extends CommonViewSpec {
 
   trait Setup {
-    val start = app.injector.instanceOf[Start]
+    val start = app.injector.instanceOf[StartView]
   }
 
   "start page" should {

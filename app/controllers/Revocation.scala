@@ -27,7 +27,7 @@ import play.twirl.api.Html
 import service.RevocationService
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisationException, AuthorisedFunctions}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.error_template
+import views.html.ErrorView
 import views.html.revocation._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,12 +37,12 @@ class Revocation @Inject() (
     override val authConnector: AuthConnector,
     val revocationService: RevocationService,
     mcc: MessagesControllerComponents,
-    error_template: error_template,
-    startPage: Start,
-    loggedOutPage: LoggedOut,
-    authorizedApplicationsPage: AuthorizedApplications,
-    permissionWithdrawnPage: PermissionWithdrawn,
-    withdrawPermissionPage: WithdrawPermission
+    error: ErrorView,
+    startPage: StartView,
+    loggedOutPage: LoggedOutView,
+    authorizedApplicationsPage: AuthorizedApplicationsView,
+    permissionWithdrawnPage: PermissionWithdrawnView,
+    withdrawPermissionPage: WithdrawPermissionView
   )(implicit val ec: ExecutionContext,
     frontendAppConfig: FrontendAppConfig,
     footerConfig: FooterConfig
@@ -52,7 +52,7 @@ class Revocation @Inject() (
   private lazy val loginUrlParameters = Map[String, Seq[String]]()
 
   private def notFoundTemplate(implicit request: Request[_]): Html = {
-    error_template(
+    error(
       Messages("global.error.pageNotFound404.title"),
       Messages("global.error.pageNotFound404.heading"),
       Messages("global.error.pageNotFound404.message")

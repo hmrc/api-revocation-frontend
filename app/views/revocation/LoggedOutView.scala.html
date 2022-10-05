@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@this(main_template: main_template)
+@this(main: MainView)
 
 @()(implicit request: Request[_], messages: Messages, appConfig : FrontendAppConfig, footerConfig: FooterConfig)
 
@@ -31,6 +31,6 @@
   </ul>
 }
 
-@main_template(title = Some("Signed Out")) {
+@main(title = Some("Signed Out")) {
   @body
 }

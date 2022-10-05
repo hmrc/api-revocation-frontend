@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@this(main_template: main_template)
+@this(main: MainView)
 
 @()(implicit request: Request[_], messages: Messages, appConfig : FrontendAppConfig, footerConfig: FooterConfig)
 
@@ -32,6 +32,6 @@
   </p>
 }
 
-@main_template(title = Some("Authority removed")) {
+@main(title = Some("Authority removed")) {
   @body
 }

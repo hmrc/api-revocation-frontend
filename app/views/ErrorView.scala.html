@@ -16,7 +16,7 @@
 
 @import config.{FooterConfig, FrontendAppConfig}
 
-@this(appConfig: FrontendAppConfig, main: main_template)
+@this(appConfig: FrontendAppConfig, main: MainView)
 
 @(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages, appConfig : FrontendAppConfig, footerConfig: FooterConfig)
 

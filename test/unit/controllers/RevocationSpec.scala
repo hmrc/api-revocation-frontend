@@ -32,7 +32,7 @@ import uk.gov.hmrc.auth.core.retrieve.EmptyRetrieval
 import uk.gov.hmrc.auth.core.{AuthConnector, InvalidBearerToken}
 import uk.gov.hmrc.http.SessionKeys
 import utils._
-import views.html.error_template
+import views.html.ErrorView
 import views.html.revocation._
 
 import java.util.UUID
@@ -47,12 +47,12 @@ class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs {
     val appId: UUID                          = UUID.randomUUID()
     val authConnector: AuthConnector         = mock[AuthConnector]
     val revocationService: RevocationService = mock[RevocationService]
-    val errorTemplate                        = app.injector.instanceOf[error_template]
-    val startPage                            = app.injector.instanceOf[Start]
-    val loggedOutPage                        = app.injector.instanceOf[LoggedOut]
-    val authorizedApplicationsPage           = app.injector.instanceOf[AuthorizedApplications]
-    val permissionWithdrawnPage              = app.injector.instanceOf[PermissionWithdrawn]
-    val withdrawPermissionPage               = app.injector.instanceOf[WithdrawPermission]
+    val errorPage                            = app.injector.instanceOf[ErrorView]
+    val startPage                            = app.injector.instanceOf[StartView]
+    val loggedOutPage                        = app.injector.instanceOf[LoggedOutView]
+    val authorizedApplicationsPage           = app.injector.instanceOf[AuthorizedApplicationsView]
+    val permissionWithdrawnPage              = app.injector.instanceOf[PermissionWithdrawnView]
+    val withdrawPermissionPage               = app.injector.instanceOf[WithdrawPermissionView]
     implicit val appconfig                   = minimalAppConfig
     implicit val footerConfig                = minimalFooterConfig
 
@@ -60,7 +60,7 @@ class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs {
       authConnector,
       revocationService,
       stubMessagesControllerComponents(),
-      errorTemplate,
+      errorPage,
       startPage,
       loggedOutPage,
       authorizedApplicationsPage,
