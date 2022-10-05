@@ -38,11 +38,11 @@ class Revocation @Inject() (
     val revocationService: RevocationService,
     mcc: MessagesControllerComponents,
     error_template: error_template,
-    startPage: start,
-    loggedOutPage: loggedOut,
-    authorizedApplicationsPage: authorizedApplications,
-    permissionWithdrawnPage: permissionWithdrawn,
-    withdrawPermissionPage: withdrawPermission
+    startPage: Start,
+    loggedOutPage: LoggedOut,
+    authorizedApplicationsPage: AuthorizedApplications,
+    permissionWithdrawnPage: PermissionWithdrawn,
+    withdrawPermissionPage: WithdrawPermission
   )(implicit val ec: ExecutionContext,
     frontendAppConfig: FrontendAppConfig,
     footerConfig: FooterConfig

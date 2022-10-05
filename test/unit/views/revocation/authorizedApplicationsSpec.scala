@@ -7,14 +7,14 @@ import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import unit.views.CommonViewSpec
-import views.html.revocation.authorizedApplications
+import views.html.revocation.AuthorizedApplications
 
 import java.util.UUID
 
 class authorizedApplicationsSpec extends CommonViewSpec {
 
   trait Setup {
-    val authorizedApplicationsPage = app.injector.instanceOf[authorizedApplications]
+    val authorizedApplicationsPage = app.injector.instanceOf[AuthorizedApplications]
     private val scopes             = Set(Scope("read:api-1", "scope name", "Access personal information"), Scope("read:api-3", "scope name", "Access tax information"))
 
     val auth1 = AppAuthorisation(ThirdPartyApplication(UUID.randomUUID(), "app1"), scopes, DateTime.now)
