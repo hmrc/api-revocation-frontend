@@ -19,6 +19,7 @@ package uk.gov.hmrc.apirevocationfrontend.config
 import com.google.inject.AbstractModule
 
 class ConfigurationModule extends AbstractModule {
+
   override def configure() = {
     bind(classOf[FrontendAppConfig]).toProvider(classOf[FrontendAppConfigProvider])
     bind(classOf[FooterConfig]).toProvider(classOf[FooterConfigProvider])

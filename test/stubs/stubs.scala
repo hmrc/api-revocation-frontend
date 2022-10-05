@@ -27,6 +27,7 @@ import play.api.test.{CSRFTokenHelper, FakeRequest, StubMessagesFactory}
 import scala.concurrent.ExecutionContext
 
 trait Stubs extends StubMessagesFactory {
+
   val stubbedMessagesApi: MessagesApi = stubMessagesApi(Map(
     "en" -> Map(
       "global.error.InternalServerError500.title"   -> "We’re experiencing technical difficulties",
@@ -36,22 +37,22 @@ trait Stubs extends StubMessagesFactory {
   ))
 
   def stubMessagesControllerComponents(
-    bodyParser: BodyParser[AnyContent] = stubBodyParser(AnyContentAsEmpty),
-    playBodyParsers: PlayBodyParsers = stubPlayBodyParsers(NoMaterializer),
-    messagesApi: MessagesApi = stubbedMessagesApi,
-    langs: Langs = stubLangs(),
-    fileMimeTypes: FileMimeTypes = new DefaultFileMimeTypes(FileMimeTypesConfiguration()),
-    executionContext: ExecutionContext = ExecutionContext.global
-  ): MessagesControllerComponents =
-  DefaultMessagesControllerComponents(
-    new DefaultMessagesActionBuilderImpl(bodyParser, messagesApi)(executionContext),
-    DefaultActionBuilder(bodyParser)(executionContext),
-    playBodyParsers,
-    messagesApi,
-    langs,
-    fileMimeTypes,
-    executionContext
-  )
+      bodyParser: BodyParser[AnyContent] = stubBodyParser(AnyContentAsEmpty),
+      playBodyParsers: PlayBodyParsers = stubPlayBodyParsers(NoMaterializer),
+      messagesApi: MessagesApi = stubbedMessagesApi,
+      langs: Langs = stubLangs(),
+      fileMimeTypes: FileMimeTypes = new DefaultFileMimeTypes(FileMimeTypesConfiguration()),
+      executionContext: ExecutionContext = ExecutionContext.global
+    ): MessagesControllerComponents =
+    DefaultMessagesControllerComponents(
+      new DefaultMessagesActionBuilderImpl(bodyParser, messagesApi)(executionContext),
+      DefaultActionBuilder(bodyParser)(executionContext),
+      playBodyParsers,
+      messagesApi,
+      langs,
+      fileMimeTypes,
+      executionContext
+    )
 
   val minimalAppConfig: FrontendAppConfig = new FrontendAppConfig(
     analyticsToken = "",
@@ -73,6 +74,7 @@ trait Stubs extends StubMessagesFactory {
 }
 
 object FakeRequestCSRFSupport {
+
   implicit class CSRFFakeRequest[A](request: FakeRequest[A]) {
     def withCSRFToken: Request[A] = CSRFTokenHelper.addCSRFToken(request)
   }

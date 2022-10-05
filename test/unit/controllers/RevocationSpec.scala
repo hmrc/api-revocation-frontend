@@ -56,7 +56,7 @@ class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs {
     implicit val appconfig                   = minimalAppConfig
     implicit val footerConfig                = minimalFooterConfig
 
-    val underTest: Revocation                = new Revocation(
+    val underTest: Revocation = new Revocation(
       authConnector,
       revocationService,
       stubMessagesControllerComponents(),

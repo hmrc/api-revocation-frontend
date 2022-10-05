@@ -22,18 +22,19 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 case class FooterConfig(apiDocumentationFrontendUrl: String, platformFrontendHost: String, thirdPartyDeveloperFrontendUrl: String)
 
 @Singleton
-class FooterConfigProvider @Inject()(config: ServicesConfig) extends Provider[FooterConfig] {
+class FooterConfigProvider @Inject() (config: ServicesConfig) extends Provider[FooterConfig] {
+
   def buildUrl(key: String) = {
     val protocol = config.getString(s"$key.protocol")
-    val host = config.getString(s"$key.host")
-    val port = config.getString(s"$key.port")
+    val host     = config.getString(s"$key.host")
+    val port     = config.getString(s"$key.port")
 
     s"$protocol://$host:$port"
   }
 
   override def get(): FooterConfig = {
-    lazy val apiDocumentationFrontendUrl = config.baseUrl("api-documentation-frontend")
-    lazy val platformFrontendHost = buildUrl("platform.frontend")
+    lazy val apiDocumentationFrontendUrl    = config.baseUrl("api-documentation-frontend")
+    lazy val platformFrontendHost           = buildUrl("platform.frontend")
     lazy val thirdPartyDeveloperFrontendUrl = config.baseUrl("third-party-developer-frontend")
 
     FooterConfig(
