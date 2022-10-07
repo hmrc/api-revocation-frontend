@@ -1,11 +1,11 @@
 # microservice specific routes
 ->         /hmrc-frontend                               hmrcfrontend.Routes
 
-GET        /                                           @controllers.Revocation.start
-GET        /applications                               @controllers.Revocation.listAuthorizedApplications
-GET        /application/:id/remove-authority           @controllers.Revocation.withdrawPage(id: java.util.UUID)
-POST       /application/:id/remove-authority           @controllers.Revocation.withdrawAction(id: java.util.UUID)
-GET        /application/authority-removed              @controllers.Revocation.withdrawConfirmationPage
-GET        /loggedout                                  @controllers.Revocation.loggedOut
+GET        /                                            uk.gov.hmrc.apirevocationfrontend.controllers.Revocation.start
+GET        /applications                                uk.gov.hmrc.apirevocationfrontend.controllers.Revocation.listAuthorizedApplications
+GET        /application/:id/remove-authority            uk.gov.hmrc.apirevocationfrontend.controllers.Revocation.withdrawPage(id: java.util.UUID)
+POST       /application/:id/remove-authority            uk.gov.hmrc.apirevocationfrontend.controllers.Revocation.withdrawAction(id: java.util.UUID)
+GET        /application/authority-removed               uk.gov.hmrc.apirevocationfrontend.controllers.Revocation.withdrawConfirmationPage
+GET        /loggedout                                   uk.gov.hmrc.apirevocationfrontend.controllers.Revocation.loggedOut
 
-GET        /assets/*file                               controllers.Assets.versioned(path = "/public", file: Asset)
+GET        /assets/*file                                controllers.Assets.versioned(path = "/public", file: Asset)

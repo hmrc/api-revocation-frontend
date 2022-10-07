@@ -14,9 +14,11 @@
  * limitations under the License.
  *@
 
-@this(main_template: main_template)
+@import uk.gov.hmrc.apirevocationfrontend.views.html.MainView
 
-@()(implicit request: Request[_], messages: Messages, appConfig : FrontendAppConfig)
+@this(main: MainView)
+
+@()(implicit request: Request[_], messages: Messages, appConfig : FrontendAppConfig, footerConfig: FooterConfig)
 
 @body = {
   <h1 id="page-heading" class="govuk-heading-l">Manage the authority you have granted to software applications</h1>
@@ -27,9 +29,9 @@
     <li>remove the authority from those applications</li>
   </ul>
 
-  <a href="@routes.Revocation.listAuthorizedApplications" class="govuk-button">Start now</a>
+  <a href="@uk.gov.hmrc.apirevocationfrontend.controllers.routes.Revocation.listAuthorizedApplications" class="govuk-button">Start now</a>
 }
 
-@main_template(title = Some("Manage the authority you have granted to software applications")) {
+@main(title = Some("Manage the authority you have granted to software applications")) {
   @body
 }

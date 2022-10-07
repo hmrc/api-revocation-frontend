@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package controllers
+package uk.gov.hmrc.apirevocationfrontend.controllers
 
 import java.util.UUID
 
-import config.FrontendAppConfig
-import connectors.AuthorityNotFound
+import uk.gov.hmrc.apirevocationfrontend.config.{FooterConfig, FrontendAppConfig}
+import uk.gov.hmrc.apirevocationfrontend.connectors.AuthorityNotFound
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.Messages
 import play.api.mvc._
 import play.twirl.api.Html
-import service.RevocationService
+import uk.gov.hmrc.apirevocationfrontend.service.RevocationService
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisationException, AuthorisedFunctions}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.error_template
-import views.html.revocation._
+import uk.gov.hmrc.apirevocationfrontend.views.html.ErrorView
+import uk.gov.hmrc.apirevocationfrontend.views.html.revocation._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,21 +37,22 @@ class Revocation @Inject() (
     override val authConnector: AuthConnector,
     val revocationService: RevocationService,
     mcc: MessagesControllerComponents,
-    error_template: error_template,
-    startPage: start,
-    loggedOutPage: loggedOut,
-    authorizedApplicationsPage: authorizedApplications,
-    permissionWithdrawnPage: permissionWithdrawn,
-    withdrawPermissionPage: withdrawPermission
+    error: ErrorView,
+    startPage: StartView,
+    loggedOutPage: LoggedOutView,
+    authorizedApplicationsPage: AuthorizedApplicationsView,
+    permissionWithdrawnPage: PermissionWithdrawnView,
+    withdrawPermissionPage: WithdrawPermissionView
   )(implicit val ec: ExecutionContext,
-    frontendAppConfig: FrontendAppConfig
+    frontendAppConfig: FrontendAppConfig,
+    footerConfig: FooterConfig
   ) extends FrontendController(mcc) with AuthorisedFunctions with play.api.i18n.I18nSupport {
 
   private lazy val loginURL: String   = frontendAppConfig.signInUrl
   private lazy val loginUrlParameters = Map[String, Seq[String]]()
 
   private def notFoundTemplate(implicit request: Request[_]): Html = {
-    error_template(
+    error(
       Messages("global.error.pageNotFound404.title"),
       Messages("global.error.pageNotFound404.heading"),
       Messages("global.error.pageNotFound404.message")

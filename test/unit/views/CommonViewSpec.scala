@@ -16,7 +16,7 @@
 
 package unit.views
 
-import config.FrontendAppConfig
+import uk.gov.hmrc.apirevocationfrontend.config.{FooterConfig, FrontendAppConfig}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.i18n.{Lang, MessagesImpl, MessagesProvider}
@@ -30,6 +30,7 @@ trait CommonViewSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite {
   val messagesApi                                 = mcc.messagesApi
   implicit val messagesProvider: MessagesProvider = MessagesImpl(Lang(Locale.ENGLISH), messagesApi)
   implicit val appConfig                          = mock[FrontendAppConfig]
+  implicit val footerConfig                       = mock[FooterConfig]
 
   override def fakeApplication(): Application =
     GuiceApplicationBuilder()
