@@ -23,18 +23,9 @@ case class FooterConfig(apiDocumentationFrontendUrl: String, platformFrontendHos
 
 @Singleton
 class FooterConfigProvider @Inject() (config: ServicesConfig) extends Provider[FooterConfig] {
-
-  def buildUrl(key: String) = {
-    val protocol = config.getString(s"$key.protocol")
-    val host     = config.getString(s"$key.host")
-    val port     = config.getString(s"$key.port")
-
-    s"$protocol://$host:$port"
-  }
-
   override def get(): FooterConfig = {
     lazy val apiDocumentationFrontendUrl    = config.baseUrl("api-documentation-frontend")
-    lazy val platformFrontendHost           = buildUrl("platform.frontend")
+    lazy val platformFrontendHost           = config.getString("platform.frontend.host")
     lazy val thirdPartyDeveloperFrontendUrl = config.baseUrl("third-party-developer-frontend")
 
     FooterConfig(
