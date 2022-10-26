@@ -58,7 +58,7 @@
                   <span class="govuk-body govuk-!-font-weight-bold">Authority granted on:</span> @{dateFormatter.print(app._1.earliestGrantDate)}
                 </p>
 
-                <a data-withdraw-permission-@{app._1.application.id} href="@uk.gov.hmrc.apirevocationfrontend.controllers.routes.Revocation.withdrawPage(app._1.application.id)" class="govuk-button">Remove authority</a>
+                <a data-withdraw-permission-@{app._1.application.id} href="@uk.gov.hmrc.apirevocationfrontend.controllers.routes.Revocation.withdrawPage(app._1.application.id)" class="govuk-button">Remove authority<span class=“govuk-visually-hidden”>for @{app._1.application.name} to read and submit tax information to HMRC</span></a>
               </div>
             </details>
           </li>
