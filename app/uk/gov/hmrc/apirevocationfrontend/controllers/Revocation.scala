@@ -92,7 +92,7 @@ class Revocation @Inject() (
   def withdrawAction(id: UUID): Action[AnyContent] = Action.async { implicit request =>
     authorised() {
       revocationService.revokeApplicationAuthority(id) map {
-        _ => Redirect(routes.Revocation.withdrawConfirmationPage())
+        _ => Redirect(routes.Revocation.withdrawConfirmationPage)
       } recover {
         case _: AuthorityNotFound => NotFound(notFoundTemplate)
       }

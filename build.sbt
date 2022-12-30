@@ -12,7 +12,7 @@ import bloop.integrations.sbt.BloopDefaults
 lazy val appName = "api-revocation-frontend"
 
 lazy val playSettings: Seq[Setting[_]] = Seq.empty
-lazy val microservice = (project in file("."))
+lazy val microservice = Project(appName, file("."))
   .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin, SbtWeb)
   .settings(playSettings: _*)
   .settings(scalaSettings: _*)
@@ -27,7 +27,7 @@ lazy val microservice = (project in file("."))
     scalaVersion := "2.12.12",
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,
-    evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
+    update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
   )
   .settings(
   TwirlKeys.templateImports ++= Seq(

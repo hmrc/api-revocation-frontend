@@ -139,7 +139,7 @@ class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs {
       val result = underTest.withdrawAction(appId)(request)
 
       status(result) shouldBe 303
-      header("Location", result) shouldBe Some(uk.gov.hmrc.apirevocationfrontend.controllers.routes.Revocation.withdrawConfirmationPage().url)
+      header("Location", result) shouldBe Some(uk.gov.hmrc.apirevocationfrontend.controllers.routes.Revocation.withdrawConfirmationPage.url)
     }
 
     "return 404 if the authorisation is not found" in new LoggedInSetup {
