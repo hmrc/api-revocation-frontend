@@ -3,13 +3,13 @@ import sbt._
 
 object AppDependencies {
 
-  lazy val bootstrapVersion = "7.7.0"
+  lazy val bootstrapVersion = "7.12.0"
 
   def apply(): Seq[ModuleID] = compile ++ test
 
   lazy val compile = Seq(
     "uk.gov.hmrc"               %% "bootstrap-frontend-play-28" % bootstrapVersion,
-    "uk.gov.hmrc"               %% "play-frontend-hmrc"         % "3.31.0-play-28",
+    "uk.gov.hmrc"               %% "play-frontend-hmrc"         % "5.3.0-play-28",
     "com.typesafe.play"         %% "play-json-joda"             % "2.8.1"
   )
 
