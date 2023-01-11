@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sbt clean compile coverage test coverageReport
+sbt clean compile coverage scalafmtAll scalafixAll test coverageReport
