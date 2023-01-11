@@ -19,6 +19,7 @@ package uk.gov.hmrc.apirevocationfrontend.models
 import java.util.UUID
 
 import org.joda.time.DateTime
+
 import play.api.libs.json.{Format, JodaReads, JodaWrites, Json}
 
 case class Scope(key: String, name: String, description: String)

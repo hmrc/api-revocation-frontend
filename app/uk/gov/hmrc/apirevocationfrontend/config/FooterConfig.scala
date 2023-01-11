@@ -17,6 +17,7 @@
 package uk.gov.hmrc.apirevocationfrontend.config
 
 import javax.inject.{Inject, Provider, Singleton}
+
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 case class FooterConfig(apiDocumentationFrontendUrl: String, platformFrontendHost: String, thirdPartyDeveloperFrontendUrl: String)

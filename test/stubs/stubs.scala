@@ -16,15 +16,16 @@
 
 package stubs
 
+import scala.concurrent.ExecutionContext
+
 import akka.stream.testkit.NoMaterializer
-import uk.gov.hmrc.apirevocationfrontend.config.{FooterConfig, FrontendAppConfig}
+
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypes, FileMimeTypesConfiguration}
 import play.api.i18n.{Langs, MessagesApi}
 import play.api.mvc._
 import play.api.test.Helpers.{stubBodyParser, stubPlayBodyParsers}
 import play.api.test.{CSRFTokenHelper, FakeRequest, StubMessagesFactory}
-
-import scala.concurrent.ExecutionContext
+import uk.gov.hmrc.apirevocationfrontend.config.{FooterConfig, FrontendAppConfig}
 
 trait Stubs extends StubMessagesFactory {
 

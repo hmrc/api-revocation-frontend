@@ -17,19 +17,18 @@
 package unit.connectors
 
 import java.util.UUID
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import com.codahale.metrics.SharedMetricRegistries
-import uk.gov.hmrc.apirevocationfrontend.connectors.{AuthorityNotFound, DelegatedAuthorityConnector}
-import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import org.joda.time.DateTime
-import utils._
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import uk.gov.hmrc.http.HttpClient
-
-import scala.concurrent.ExecutionContext.Implicits.global
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import stubs.DelegatedAuthorityStub
+import utils._
+
+import uk.gov.hmrc.apirevocationfrontend.connectors.{AuthorityNotFound, DelegatedAuthorityConnector}
+import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, Scope, ThirdPartyApplication}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 class DelegatedAuthorityConnectorSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with DelegatedAuthorityStub with WireMockSupport {
 

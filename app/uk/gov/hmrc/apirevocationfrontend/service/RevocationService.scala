@@ -17,13 +17,12 @@
 package uk.gov.hmrc.apirevocationfrontend.service
 
 import java.util.UUID
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 import uk.gov.hmrc.apirevocationfrontend.connectors.DelegatedAuthorityConnector
-import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.apirevocationfrontend.models.AppAuthorisation
 import uk.gov.hmrc.http.HeaderCarrier
-
-import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RevocationService @Inject() (val delegatedAuthorityConnector: DelegatedAuthorityConnector)(implicit val ec: ExecutionContext) {
