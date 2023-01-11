@@ -11,6 +11,16 @@ import bloop.integrations.sbt.BloopDefaults
 
 lazy val appName = "api-revocation-frontend"
 
+ThisBuild / scalafixDependencies += "com.github.liancheng" %% "organize-imports" % "0.6.0"
+
+inThisBuild(
+  List(
+    scalaVersion := "2.12.15",
+    semanticdbEnabled := true,
+    semanticdbVersion := scalafixSemanticdb.revision
+  )
+)
+
 lazy val playSettings: Seq[Setting[_]] = Seq.empty
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin, SbtWeb)
