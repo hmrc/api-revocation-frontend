@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,19 @@
 package uk.gov.hmrc.apirevocationfrontend.controllers
 
 import java.util.UUID
-
-import uk.gov.hmrc.apirevocationfrontend.config.{FooterConfig, FrontendAppConfig}
-import uk.gov.hmrc.apirevocationfrontend.connectors.AuthorityNotFound
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
+
 import play.api.i18n.Messages
 import play.api.mvc._
 import play.twirl.api.Html
+import uk.gov.hmrc.apirevocationfrontend.config.{FooterConfig, FrontendAppConfig}
+import uk.gov.hmrc.apirevocationfrontend.connectors.AuthorityNotFound
 import uk.gov.hmrc.apirevocationfrontend.service.RevocationService
-import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisationException, AuthorisedFunctions}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import uk.gov.hmrc.apirevocationfrontend.views.html.ErrorView
 import uk.gov.hmrc.apirevocationfrontend.views.html.revocation._
-
-import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisationException, AuthorisedFunctions}
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 @Singleton
 class Revocation @Inject() (

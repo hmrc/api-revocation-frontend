@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,17 @@
 package unit.service
 
 import java.util.UUID
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future.successful
+
+import org.joda.time.DateTime
+import org.mockito.BDDMockito.given
+import utils._
 
 import uk.gov.hmrc.apirevocationfrontend.connectors.DelegatedAuthorityConnector
 import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import uk.gov.hmrc.apirevocationfrontend.service.RevocationService
-import org.joda.time.DateTime
-import org.mockito.BDDMockito.given
 import uk.gov.hmrc.http.HeaderCarrier
-import utils._
-
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future.successful
 
 class RevocationServiceSpec extends AsyncHmrcSpec {
 

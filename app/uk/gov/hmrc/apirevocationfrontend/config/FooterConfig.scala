@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,14 @@
 package uk.gov.hmrc.apirevocationfrontend.config
 
 import javax.inject.{Inject, Provider, Singleton}
+
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 case class FooterConfig(apiDocumentationFrontendUrl: String, platformFrontendHost: String, thirdPartyDeveloperFrontendUrl: String)
 
 @Singleton
 class FooterConfigProvider @Inject() (config: ServicesConfig) extends Provider[FooterConfig] {
+
   override def get(): FooterConfig = {
     lazy val apiDocumentationFrontendUrl    = config.baseUrl("api-documentation-frontend")
     lazy val platformFrontendHost           = config.getString("platform.frontend.host")

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,14 @@
 package uk.gov.hmrc.apirevocationfrontend.connectors
 
 import java.util.UUID
-
 import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.apirevocationfrontend.models.AppAuthorisation
-import uk.gov.hmrc.http._
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import uk.gov.hmrc.http.HttpClient
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.Future._
+import scala.concurrent.{ExecutionContext, Future}
+
+import uk.gov.hmrc.apirevocationfrontend.models.AppAuthorisation
+import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HttpClient, _}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
 class DelegatedAuthorityConnector @Inject() (servicesConfig: ServicesConfig, http: HttpClient)(implicit val ec: ExecutionContext) {
