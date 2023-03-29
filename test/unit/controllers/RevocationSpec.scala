@@ -31,15 +31,16 @@ import utils._
 import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.auth.core.retrieve.EmptyRetrieval
+import uk.gov.hmrc.auth.core.{AuthConnector, InvalidBearerToken}
+import uk.gov.hmrc.http.SessionKeys
+
 import uk.gov.hmrc.apirevocationfrontend.connectors.AuthorityNotFound
 import uk.gov.hmrc.apirevocationfrontend.controllers.Revocation
 import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, ThirdPartyApplication}
 import uk.gov.hmrc.apirevocationfrontend.service.RevocationService
 import uk.gov.hmrc.apirevocationfrontend.views.html.ErrorView
 import uk.gov.hmrc.apirevocationfrontend.views.html.revocation._
-import uk.gov.hmrc.auth.core.retrieve.EmptyRetrieval
-import uk.gov.hmrc.auth.core.{AuthConnector, InvalidBearerToken}
-import uk.gov.hmrc.http.SessionKeys
 
 class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs {
   SharedMetricRegistries.clear()

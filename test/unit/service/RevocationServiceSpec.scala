@@ -24,10 +24,11 @@ import org.joda.time.DateTime
 import org.mockito.BDDMockito.given
 import utils._
 
+import uk.gov.hmrc.http.HeaderCarrier
+
 import uk.gov.hmrc.apirevocationfrontend.connectors.DelegatedAuthorityConnector
 import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import uk.gov.hmrc.apirevocationfrontend.service.RevocationService
-import uk.gov.hmrc.http.HeaderCarrier
 
 class RevocationServiceSpec extends AsyncHmrcSpec {
 

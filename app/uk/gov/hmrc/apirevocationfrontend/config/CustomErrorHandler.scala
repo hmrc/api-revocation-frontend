@@ -22,8 +22,9 @@ import play.api.Configuration
 import play.api.i18n.MessagesApi
 import play.api.mvc.Request
 import play.twirl.api.Html
-import uk.gov.hmrc.apirevocationfrontend.views.html.ErrorView
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
+
+import uk.gov.hmrc.apirevocationfrontend.views.html.ErrorView
 
 class CustomErrorHandler @Inject() (
     val messagesApi: MessagesApi,
