@@ -25,10 +25,11 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import stubs.DelegatedAuthorityStub
 import utils._
 
-import uk.gov.hmrc.apirevocationfrontend.connectors.{AuthorityNotFound, DelegatedAuthorityConnector}
-import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+
+import uk.gov.hmrc.apirevocationfrontend.connectors.{AuthorityNotFound, DelegatedAuthorityConnector}
+import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, Scope, ThirdPartyApplication}
 
 class DelegatedAuthorityConnectorSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with DelegatedAuthorityStub with WireMockSupport {
 

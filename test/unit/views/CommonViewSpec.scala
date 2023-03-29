@@ -24,6 +24,7 @@ import play.api.Application
 import play.api.i18n.{Lang, MessagesImpl, MessagesProvider}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.MessagesControllerComponents
+
 import uk.gov.hmrc.apirevocationfrontend.config.{FooterConfig, FrontendAppConfig}
 
 trait CommonViewSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite {

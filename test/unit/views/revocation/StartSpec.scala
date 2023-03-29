@@ -6,6 +6,7 @@ import unit.views.CommonViewSpec
 
 import play.api.test.FakeRequest
 import play.twirl.api.Html
+
 import uk.gov.hmrc.apirevocationfrontend.views.html.revocation.StartView
 
 class StartSpec extends CommonViewSpec {

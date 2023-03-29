@@ -25,6 +25,7 @@ import play.api.i18n.{Langs, MessagesApi}
 import play.api.mvc._
 import play.api.test.Helpers.{stubBodyParser, stubPlayBodyParsers}
 import play.api.test.{CSRFTokenHelper, FakeRequest, StubMessagesFactory}
+
 import uk.gov.hmrc.apirevocationfrontend.config.{FooterConfig, FrontendAppConfig}
 
 trait Stubs extends StubMessagesFactory {

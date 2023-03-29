@@ -11,15 +11,11 @@ import bloop.integrations.sbt.BloopDefaults
 
 lazy val appName = "api-revocation-frontend"
 
-ThisBuild / scalafixDependencies += "com.github.liancheng" %% "organize-imports" % "0.6.0"
+scalaVersion := "2.13.8"
 
-inThisBuild(
-  List(
-    scalaVersion := "2.12.12",
-    semanticdbEnabled := true,
-    semanticdbVersion := scalafixSemanticdb.revision
-  )
-)
+ThisBuild / scalafixDependencies += "com.github.liancheng" %% "organize-imports" % "0.6.0"
+ThisBuild / semanticdbEnabled := true
+ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
 
 lazy val playSettings: Seq[Setting[_]] = Seq.empty
 lazy val microservice = Project(appName, file("."))
@@ -28,18 +24,16 @@ lazy val microservice = Project(appName, file("."))
   .settings(scalaSettings: _*)
   .settings(publishingSettings: _*)
   .settings(defaultSettings(): _*)
-  .settings(SilencerSettings(): _*)
   .settings(ScoverageSettings(): _*)
   .settings(
     name := appName,
     majorVersion := 0,
-    scalaVersion := "2.12.12",
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,
     update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
   )
   .settings(
-  TwirlKeys.templateImports ++= Seq(
+    TwirlKeys.templateImports ++= Seq(
       "views.html.helper.CSPNonce",
       "uk.gov.hmrc.apirevocationfrontend.config.FrontendAppConfig",
       "uk.gov.hmrc.apirevocationfrontend.config.FooterConfig",
@@ -62,4 +56,12 @@ lazy val microservice = Project(appName, file("."))
     Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-eT"),
     Test / unmanagedSourceDirectories += baseDirectory.value / "test",
     addTestReportOption(Test, "test-reports")
+  )
+  .settings(
+    scalacOptions ++= Seq(
+      "-Wconf:cat=unused&src=views/.*\\.scala:s",
+      "-Wconf:cat=unused&src=.*RoutesPrefix\\.scala:s",
+      "-Wconf:cat=unused&src=.*Routes\\.scala:s",
+      "-Wconf:cat=unused&src=.*ReverseRoutes\\.scala:s"
+    )
   )
