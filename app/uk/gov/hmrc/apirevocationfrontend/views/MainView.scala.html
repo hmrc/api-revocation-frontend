@@ -17,14 +17,17 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.En
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.footer.Footer
 @import uk.gov.hmrc.apirevocationfrontend.config.{FooterConfig, FrontendAppConfig}
+@import views.html.helper.CSPNonce
 
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcScripts
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukLayout
 
 @this(
-  govukLayout: GovukLayout,
-  hmrcHeader: HmrcHeader,
-  hmrcFooter: HmrcFooter,
-  hmrcHead: HmrcHead
+        govukLayout: GovukLayout,
+        hmrcHeader: HmrcHeader,
+        hmrcFooter: HmrcFooter,
+        hmrcScripts: HmrcScripts,
+        hmrcHead: HmrcHead
 )
 
 @(title: Option[String] = None)(contentBlock: Html)(implicit request : Request[_], messages: Messages, applicationConfig: FrontendAppConfig, footerConfig: FooterConfig)
@@ -32,8 +35,7 @@
 @serviceInfoContent = {}
 
 @scriptElem = {
-    <script src='@routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
-    <script>window.GOVUKFrontend.initAll();</script>
+    @hmrcScripts()
 }
 
 @beforeContent = {
@@ -99,6 +101,5 @@
     beforeContentBlock = Some(beforeContent),
     scriptsBlock = Some(scriptElem),
     footerBlock = Some(siteFooter),
-    assetPath = None,
-    cspNonce = None
+    assetPath = None
 )(mainContentDefault)
