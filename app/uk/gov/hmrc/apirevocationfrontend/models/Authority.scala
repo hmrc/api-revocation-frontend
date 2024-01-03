@@ -46,5 +46,5 @@ object AppAuthorisation {
 case class ApplicationDetails(id: UUID, name: String)
 
 object ApplicationDetails {
-  implicit val format:OFormat[ApplicationDetails] = Json.format[ApplicationDetails]
+  implicit val format: OFormat[ApplicationDetails] = Json.format[ApplicationDetails]
 }
