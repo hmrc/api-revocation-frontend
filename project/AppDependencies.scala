@@ -17,6 +17,8 @@ object AppDependencies {
     "uk.gov.hmrc"           %% "bootstrap-test-play-28"   % bootstrapVersion,
     "org.jsoup"              % "jsoup"                    % "1.10.2",
     "com.github.tomakehurst" % "wiremock-jre8-standalone" % "2.24.1",
-    "org.mockito"           %% "mockito-scala-scalatest"  % "1.7.1"
+    "org.mockito"           %% "mockito-scala-scalatest"  % "1.17.29",
+    "org.scalatest"         %% "scalatest"                % "3.2.17",
+    "com.vladsch.flexmark"   % "flexmark-all"             % "0.62.2"
   ).map(_ % "test")
 }
