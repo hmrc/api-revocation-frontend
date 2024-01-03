@@ -20,18 +20,18 @@ import java.util.UUID
 
 import org.joda.time.DateTime
 
-import play.api.libs.json.{Format, JodaReads, JodaWrites, Json}
+import play.api.libs.json.{Format, JodaReads, JodaWrites, Json, OFormat}
 
 case class Scope(key: String, name: String, description: String)
 
 object Scope {
-  implicit val format = Json.format[Scope]
+  implicit val format: OFormat[Scope] = Json.format[Scope]
 }
 
 case class ThirdPartyApplication(id: UUID, name: String)
 
 object ThirdPartyApplication {
-  implicit val format = Json.format[ThirdPartyApplication]
+  implicit val format: OFormat[ThirdPartyApplication] = Json.format[ThirdPartyApplication]
 }
 
 case class AppAuthorisation(application: ThirdPartyApplication, scopes: Set[Scope], earliestGrantDate: DateTime)
@@ -39,12 +39,12 @@ case class AppAuthorisation(application: ThirdPartyApplication, scopes: Set[Scop
 object AppAuthorisation {
   implicit val dateFormat: Format[DateTime] = Format[DateTime](JodaReads.jodaDateReads("dd MMMM yyyy"), JodaWrites.jodaDateWrites("dd MMMM yyyy"))
 
-  implicit val format                               = Json.format[AppAuthorisation]
+  implicit val format: OFormat[AppAuthorisation]    = Json.format[AppAuthorisation]
   implicit val ordering: Ordering[AppAuthorisation] = Ordering.by(_.application.name)
 }
 
 case class ApplicationDetails(id: UUID, name: String)
 
 object ApplicationDetails {
-  implicit val format = Json.format[ApplicationDetails]
+  implicit val format:OFormat[ApplicationDetails] = Json.format[ApplicationDetails]
 }

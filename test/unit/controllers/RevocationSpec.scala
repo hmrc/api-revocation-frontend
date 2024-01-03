@@ -35,6 +35,7 @@ import uk.gov.hmrc.auth.core.retrieve.EmptyRetrieval
 import uk.gov.hmrc.auth.core.{AuthConnector, InvalidBearerToken}
 import uk.gov.hmrc.http.SessionKeys
 
+import uk.gov.hmrc.apirevocationfrontend.config.{FooterConfig, FrontendAppConfig}
 import uk.gov.hmrc.apirevocationfrontend.connectors.AuthorityNotFound
 import uk.gov.hmrc.apirevocationfrontend.controllers.Revocation
 import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, ThirdPartyApplication}
@@ -46,17 +47,17 @@ class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs {
   SharedMetricRegistries.clear()
 
   trait Setup {
-    val appId: UUID                          = UUID.randomUUID()
-    val authConnector: AuthConnector         = mock[AuthConnector]
-    val revocationService: RevocationService = mock[RevocationService]
-    val errorPage                            = app.injector.instanceOf[ErrorView]
-    val startPage                            = app.injector.instanceOf[StartView]
-    val loggedOutPage                        = app.injector.instanceOf[LoggedOutView]
-    val authorizedApplicationsPage           = app.injector.instanceOf[AuthorizedApplicationsView]
-    val permissionWithdrawnPage              = app.injector.instanceOf[PermissionWithdrawnView]
-    val withdrawPermissionPage               = app.injector.instanceOf[WithdrawPermissionView]
-    implicit val appconfig                   = minimalAppConfig
-    implicit val footerConfig                = minimalFooterConfig
+    val appId: UUID                           = UUID.randomUUID()
+    val authConnector: AuthConnector          = mock[AuthConnector]
+    val revocationService: RevocationService  = mock[RevocationService]
+    val errorPage                             = app.injector.instanceOf[ErrorView]
+    val startPage                             = app.injector.instanceOf[StartView]
+    val loggedOutPage                         = app.injector.instanceOf[LoggedOutView]
+    val authorizedApplicationsPage            = app.injector.instanceOf[AuthorizedApplicationsView]
+    val permissionWithdrawnPage               = app.injector.instanceOf[PermissionWithdrawnView]
+    val withdrawPermissionPage                = app.injector.instanceOf[WithdrawPermissionView]
+    implicit val appconfig: FrontendAppConfig = minimalAppConfig
+    implicit val footerConfig: FooterConfig   = minimalFooterConfig
 
     val underTest: Revocation = new Revocation(
       authConnector,
