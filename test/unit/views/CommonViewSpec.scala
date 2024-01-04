@@ -31,8 +31,8 @@ trait CommonViewSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite {
   val mcc                                         = app.injector.instanceOf[MessagesControllerComponents]
   val messagesApi                                 = mcc.messagesApi
   implicit val messagesProvider: MessagesProvider = MessagesImpl(Lang(Locale.ENGLISH), messagesApi)
-  implicit val appConfig                          = mock[FrontendAppConfig]
-  implicit val footerConfig                       = mock[FooterConfig]
+  implicit val appConfig: FrontendAppConfig       = mock[FrontendAppConfig]
+  implicit val footerConfig: FooterConfig         = mock[FooterConfig]
 
   override def fakeApplication(): Application =
     GuiceApplicationBuilder()
