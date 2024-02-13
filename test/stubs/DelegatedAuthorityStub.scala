@@ -76,7 +76,7 @@ trait DelegatedAuthorityStub {
        |    "name":"${application.application.name}"
        |  },
        |  "scopes": [${application.scopes.map(toScopeJson).mkString(",")}],
-       |  "earliestGrantDate":${application.earliestGrantDate.getMillis}
+       |  "earliestGrantDate":${application.earliestGrantDate.toEpochMilli}
        |}
        |""".stripMargin
   }

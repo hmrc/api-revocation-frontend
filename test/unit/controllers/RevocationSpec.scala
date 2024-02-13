@@ -22,7 +22,6 @@ import scala.concurrent.Future
 import scala.concurrent.Future.{failed, successful}
 
 import com.codahale.metrics.SharedMetricRegistries
-import org.joda.time.DateTime
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import stubs.FakeRequestCSRFSupport._
 import stubs.Stubs
@@ -31,6 +30,7 @@ import utils._
 import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.apiplatform.modules.common.utils.FixedClock
 import uk.gov.hmrc.auth.core.retrieve.EmptyRetrieval
 import uk.gov.hmrc.auth.core.{AuthConnector, InvalidBearerToken}
 import uk.gov.hmrc.http.SessionKeys
@@ -43,7 +43,7 @@ import uk.gov.hmrc.apirevocationfrontend.service.RevocationService
 import uk.gov.hmrc.apirevocationfrontend.views.html.ErrorView
 import uk.gov.hmrc.apirevocationfrontend.views.html.revocation._
 
-class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs {
+class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs with FixedClock {
   SharedMetricRegistries.clear()
 
   trait Setup {
@@ -123,7 +123,7 @@ class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs {
 
   "withdrawPage" should {
     "return 200" in new LoggedInSetup {
-      val appAuthority = AppAuthorisation(ThirdPartyApplication(appId, "appName"), Set(), DateTime.now)
+      val appAuthority = AppAuthorisation(ThirdPartyApplication(appId, "appName"), Set(), instant)
 
       when(underTest.revocationService.fetchdApplicationAuthority(eqTo(appId))(*))
         .thenReturn(successful(appAuthority))

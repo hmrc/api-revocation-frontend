@@ -16,22 +16,23 @@
 
 package unit.connectors
 
+import java.time.Instant
 import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import com.codahale.metrics.SharedMetricRegistries
-import org.joda.time.DateTime
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import stubs.DelegatedAuthorityStub
 import utils._
 
+import uk.gov.hmrc.apiplatform.modules.common.utils.FixedClock
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import uk.gov.hmrc.apirevocationfrontend.connectors.{AuthorityNotFound, DelegatedAuthorityConnector}
 import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, Scope, ThirdPartyApplication}
 
-class DelegatedAuthorityConnectorSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with DelegatedAuthorityStub with WireMockSupport {
+class DelegatedAuthorityConnectorSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with DelegatedAuthorityStub with WireMockSupport with FixedClock {
 
   private trait Setup {
     SharedMetricRegistries.clear()
@@ -117,7 +118,7 @@ class DelegatedAuthorityConnectorSpec extends AsyncHmrcSpec with GuiceOneAppPerS
     AppAuthorisation(
       application = ThirdPartyApplication(UUID.randomUUID(), "My App"),
       scopes = Set(Scope("read:api-name", "Access personal info", "Access personal info")),
-      earliestGrantDate = new DateTime(1460713641258L)
+      earliestGrantDate = Instant.ofEpochMilli(1460713641258L)
     )
   }
 }

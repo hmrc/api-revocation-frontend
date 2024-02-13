@@ -20,17 +20,17 @@ import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future.successful
 
-import org.joda.time.DateTime
 import org.mockito.BDDMockito.given
 import utils._
 
+import uk.gov.hmrc.apiplatform.modules.common.utils.FixedClock
 import uk.gov.hmrc.http.HeaderCarrier
 
 import uk.gov.hmrc.apirevocationfrontend.connectors.DelegatedAuthorityConnector
 import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import uk.gov.hmrc.apirevocationfrontend.service.RevocationService
 
-class RevocationServiceSpec extends AsyncHmrcSpec {
+class RevocationServiceSpec extends AsyncHmrcSpec with FixedClock {
 
   private trait Setup {
 
@@ -82,6 +82,6 @@ class RevocationServiceSpec extends AsyncHmrcSpec {
     AppAuthorisation(
       application = ThirdPartyApplication(UUID.randomUUID(), name),
       scopes = scopes,
-      earliestGrantDate = DateTime.now
+      earliestGrantDate = instant
     )
 }
