@@ -2,26 +2,26 @@ package unit.views.revocation
 
 import java.util.UUID
 
-import org.joda.time.DateTime
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import unit.views.CommonViewSpec
 
 import play.api.test.FakeRequest
 import play.twirl.api.Html
+import uk.gov.hmrc.apiplatform.modules.common.utils.FixedClock
 
 import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import uk.gov.hmrc.apirevocationfrontend.views.html.revocation.AuthorizedApplicationsView
 
-class AuthorizedApplicationsSpec extends CommonViewSpec {
+class AuthorizedApplicationsSpec extends CommonViewSpec with FixedClock {
 
   trait Setup {
     val authorizedApplicationsPage = app.injector.instanceOf[AuthorizedApplicationsView]
     private val scopes             = Set(Scope("read:api-1", "scope name", "Access personal information"), Scope("read:api-3", "scope name", "Access tax information"))
 
-    val auth1 = AppAuthorisation(ThirdPartyApplication(UUID.randomUUID(), "app1"), scopes, DateTime.now)
-    val auth2 = AppAuthorisation(ThirdPartyApplication(UUID.randomUUID(), "app2"), scopes, DateTime.now)
-    val auth3 = AppAuthorisation(ThirdPartyApplication(UUID.randomUUID(), "app3"), scopes, DateTime.now)
+    val auth1 = AppAuthorisation(ThirdPartyApplication(UUID.randomUUID(), "app1"), scopes, instant)
+    val auth2 = AppAuthorisation(ThirdPartyApplication(UUID.randomUUID(), "app2"), scopes, instant)
+    val auth3 = AppAuthorisation(ThirdPartyApplication(UUID.randomUUID(), "app3"), scopes, instant)
 
     val apps = List(auth1, auth2, auth3)
 
