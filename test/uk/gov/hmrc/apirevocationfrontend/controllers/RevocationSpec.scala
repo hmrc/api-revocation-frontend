@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package unit.controllers
+package uk.gov.hmrc.apirevocationfrontend.controllers
 
 import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -23,9 +23,6 @@ import scala.concurrent.Future.{failed, successful}
 
 import com.codahale.metrics.SharedMetricRegistries
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import stubs.FakeRequestCSRFSupport._
-import stubs.Stubs
-import utils._
 
 import play.api.http.Status
 import play.api.test.FakeRequest
@@ -40,6 +37,9 @@ import uk.gov.hmrc.apirevocationfrontend.connectors.AuthorityNotFound
 import uk.gov.hmrc.apirevocationfrontend.controllers.Revocation
 import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, ThirdPartyApplication}
 import uk.gov.hmrc.apirevocationfrontend.service.RevocationService
+import uk.gov.hmrc.apirevocationfrontend.stubs.FakeRequestCSRFSupport._
+import uk.gov.hmrc.apirevocationfrontend.stubs.Stubs
+import uk.gov.hmrc.apirevocationfrontend.utils.AsyncHmrcSpec
 import uk.gov.hmrc.apirevocationfrontend.views.html.ErrorView
 import uk.gov.hmrc.apirevocationfrontend.views.html.revocation._
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package stubs
+package uk.gov.hmrc.apirevocationfrontend.stubs
 
 import scala.concurrent.ExecutionContext
 
@@ -56,7 +56,7 @@ trait Stubs extends StubMessagesFactory {
       executionContext
     )
 
-  val minimalAppConfig: FrontendAppConfig = new FrontendAppConfig(
+  val minimalAppConfig: FrontendAppConfig = FrontendAppConfig(
     analyticsToken = "",
     analyticsHost = "",
     betaFeedbackUrl = "",

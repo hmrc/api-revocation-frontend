@@ -51,7 +51,7 @@ class Revocation @Inject() (
   private lazy val loginURL: String   = frontendAppConfig.signInUrl
   private lazy val loginUrlParameters = Map[String, Seq[String]]()
 
-  private def notFoundTemplate(implicit request: Request[_]): Html = {
+  private def notFoundTemplate(implicit request: RequestHeader): Html = {
     error(
       Messages("global.error.pageNotFound404.title"),
       Messages("global.error.pageNotFound404.heading"),

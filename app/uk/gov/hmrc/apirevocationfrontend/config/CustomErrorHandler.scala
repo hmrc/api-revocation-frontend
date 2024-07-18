@@ -17,10 +17,11 @@
 package uk.gov.hmrc.apirevocationfrontend.config
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 import play.api.Configuration
 import play.api.i18n.MessagesApi
-import play.api.mvc.Request
+import play.api.mvc.RequestHeader
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 
@@ -30,11 +31,12 @@ class CustomErrorHandler @Inject() (
     val messagesApi: MessagesApi,
     val configuration: Configuration,
     error: ErrorView
-  )(implicit frontendAppConfig: FrontendAppConfig,
+  )(implicit val ec: ExecutionContext,
+    frontendAppConfig: FrontendAppConfig,
     footerConfig: FooterConfig
   ) extends FrontendErrorHandler {
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html = {
-    error(pageTitle, heading, message)
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader): Future[Html] = {
+    Future.successful(error(pageTitle, heading, message))
   }
 }

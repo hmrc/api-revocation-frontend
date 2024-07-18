@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package unit.connectors
+package uk.gov.hmrc.apirevocationfrontend.connectors
 
 import java.time.Instant
 import java.util.UUID
@@ -22,15 +22,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import com.codahale.metrics.SharedMetricRegistries
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import stubs.DelegatedAuthorityStub
-import utils._
 
 import uk.gov.hmrc.apiplatform.modules.common.utils.FixedClock
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-import uk.gov.hmrc.apirevocationfrontend.connectors.{AuthorityNotFound, DelegatedAuthorityConnector}
 import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, Scope, ThirdPartyApplication}
+import uk.gov.hmrc.apirevocationfrontend.stubs.DelegatedAuthorityStub
+import uk.gov.hmrc.apirevocationfrontend.utils.{AsyncHmrcSpec, WireMockSupport}
 
 class DelegatedAuthorityConnectorSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with DelegatedAuthorityStub with WireMockSupport with FixedClock {
 
@@ -39,7 +39,7 @@ class DelegatedAuthorityConnectorSpec extends AsyncHmrcSpec with GuiceOneAppPerS
 
     implicit val hc: HeaderCarrier = HeaderCarrier()
     val serviceConfig              = mock[ServicesConfig]
-    val http                       = app.injector.instanceOf[HttpClient]
+    val http                       = app.injector.instanceOf[HttpClientV2]
 
     val connector = new DelegatedAuthorityConnector(serviceConfig, http) {
       override val delegatedAuthorityUrl: String = wireMockUrl
