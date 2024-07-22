@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package unit.service
+package uk.gov.hmrc.apirevocationfrontend.service
 
 import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future.successful
 
 import org.mockito.BDDMockito.given
-import utils._
 
 import uk.gov.hmrc.apiplatform.modules.common.utils.FixedClock
 import uk.gov.hmrc.http.HeaderCarrier
@@ -29,6 +28,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.apirevocationfrontend.connectors.DelegatedAuthorityConnector
 import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, Scope, ThirdPartyApplication}
 import uk.gov.hmrc.apirevocationfrontend.service.RevocationService
+import uk.gov.hmrc.apirevocationfrontend.utils.AsyncHmrcSpec
 
 class RevocationServiceSpec extends AsyncHmrcSpec with FixedClock {
 

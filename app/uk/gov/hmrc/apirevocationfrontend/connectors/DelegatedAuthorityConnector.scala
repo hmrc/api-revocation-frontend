@@ -22,26 +22,27 @@ import scala.concurrent.Future._
 import scala.concurrent.{ExecutionContext, Future}
 
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HttpClient, _}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import uk.gov.hmrc.apirevocationfrontend.models.AppAuthorisation
 
 @Singleton
-class DelegatedAuthorityConnector @Inject() (servicesConfig: ServicesConfig, http: HttpClient)(implicit val ec: ExecutionContext) {
+class DelegatedAuthorityConnector @Inject() (servicesConfig: ServicesConfig, http: HttpClientV2)(implicit val ec: ExecutionContext) {
 
   val delegatedAuthorityUrl: String = servicesConfig.baseUrl("third-party-delegated-authority")
 
   def fetchApplicationAuthorities()(implicit hc: HeaderCarrier): Future[Seq[AppAuthorisation]] = {
-    http.GET[Seq[AppAuthorisation]](s"$delegatedAuthorityUrl/authority/granted-applications")
+    http.get(url"$delegatedAuthorityUrl/authority/granted-applications").execute[Seq[AppAuthorisation]]
   }
 
   def fetchApplicationAuthority(applicationId: UUID)(implicit hc: HeaderCarrier): Future[AppAuthorisation] = {
-    http.GET[Option[AppAuthorisation]](s"$delegatedAuthorityUrl/authority/granted-application/$applicationId") flatMap (handleNotFound)
+    http.get(url"$delegatedAuthorityUrl/authority/granted-application/$applicationId").execute[Option[AppAuthorisation]].flatMap(handleNotFound)
   }
 
   def revokeApplicationAuthority(applicationId: UUID)(implicit hc: HeaderCarrier): Future[Unit] = {
-    http.DELETE[Option[Unit]](s"$delegatedAuthorityUrl/authority/granted-application/$applicationId") flatMap (handleNotFound _)
+    http.delete(url"$delegatedAuthorityUrl/authority/granted-application/$applicationId").execute[Option[Unit]].flatMap(handleNotFound)
   }
 
   def handleNotFound[T](o: Option[T]): Future[T] = {

@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package unit.views
+package uk.gov.hmrc.apirevocationfrontend.utils
 
-import org.mockito.ArgumentMatchersSugar
-import org.mockito.scalatest.MockitoSugar
+import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.{BeforeAndAfterEach, OptionValues}

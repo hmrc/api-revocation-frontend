@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package unit.views
+package uk.gov.hmrc.apirevocationfrontend.views
 
 import java.util.Locale
 
@@ -26,6 +26,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.MessagesControllerComponents
 
 import uk.gov.hmrc.apirevocationfrontend.config.{FooterConfig, FrontendAppConfig}
+import uk.gov.hmrc.apirevocationfrontend.utils.AsyncHmrcSpec
 
 trait CommonViewSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite {
   val mcc                                         = app.injector.instanceOf[MessagesControllerComponents]

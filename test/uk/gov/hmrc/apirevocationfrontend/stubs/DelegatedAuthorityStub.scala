@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package stubs
+package uk.gov.hmrc.apirevocationfrontend.stubs
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 

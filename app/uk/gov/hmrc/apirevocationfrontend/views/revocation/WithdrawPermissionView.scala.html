@@ -19,7 +19,7 @@
 
 @this(main: MainView)
 
-@(authorisation: AppAuthorisation)(implicit request: Request[_], messages: Messages, appConfig : FrontendAppConfig, footerConfig: FooterConfig)
+@(authorisation: AppAuthorisation)(implicit requestHeader: RequestHeader, messages: Messages, appConfig : FrontendAppConfig, footerConfig: FooterConfig)
 
 @body = {
   @helper.form(action = uk.gov.hmrc.apirevocationfrontend.controllers.routes.Revocation.withdrawAction(authorisation.application.id), Symbol("class") -> "form") {
