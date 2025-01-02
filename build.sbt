@@ -29,13 +29,6 @@ lazy val microservice = Project(appName, file("."))
     )
   )
   .settings(
-    Concat.groups := Seq(
-      "javascripts/apis-app.js" -> group(
-        (baseDirectory.value / "app" / "assets" / "javascripts") ** "*.js"
-      )
-    )
-  )
-  .settings(
     Test / fork := false,
     Test / parallelExecution := false,
     Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-eT"),
