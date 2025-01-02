@@ -10,9 +10,7 @@ addSbtPlugin("org.playframework"      % "sbt-plugin"             % "3.0.3")
 addSbtPlugin("ch.epfl.scala"          % "sbt-bloop"              % "1.5.15")
 addSbtPlugin("org.scalameta"          % "sbt-scalafmt"           % "2.5.2")
 addSbtPlugin("ch.epfl.scala"          % "sbt-scalafix"           % "0.11.1")
-addSbtPlugin("com.typesafe.sbt"       % "sbt-uglify"             % "2.0.0")
 addSbtPlugin("com.typesafe.sbt"       % "sbt-digest"             % "1.1.4")
 addSbtPlugin("io.github.irundaia"     % "sbt-sassify"            % "1.5.2")
-addSbtPlugin("net.ground5hark.sbt"    % "sbt-concat"             % "0.2.0")
 
 ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
