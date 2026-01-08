@@ -18,13 +18,14 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.footer.Footer
 @import uk.gov.hmrc.apirevocationfrontend.config.{FooterConfig, FrontendAppConfig}
 @import views.html.helper.CSPNonce
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.servicenavigation.{ServiceNavigation, ServiceNavigationItem}
 
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcScripts
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukLayout
 
 @this(
         govukLayout: GovukLayout,
-        hmrcHeader: HmrcHeader,
+        hmrcStandardHeader: HmrcStandardHeader,
         hmrcFooter: HmrcFooter,
         hmrcScripts: HmrcScripts,
         hmrcHead: HmrcHead
@@ -88,16 +89,16 @@
 @govukLayout(
     pageTitle = title,
     headBlock = Some(hmrcHead()),
-    headerBlock = Some(hmrcHeader(Header(
-        homepageUrl ="https://www.gov.uk",
+    headerBlock = Some(hmrcStandardHeader(
         serviceName = Some(messages("service.name")),
-        navigation = None,
-        serviceUrl = "",
+        serviceUrl = None,
         displayHmrcBanner = false,
         containerClasses = "govuk-width-container",
-        signOutHref = None,
-        language = En
-    ))),
+        serviceNavigation = Some(ServiceNavigation(
+            serviceName = Some(messages("service.name")),
+            serviceUrl = None
+        ))
+    )),
     beforeContentBlock = Some(beforeContent),
     scriptsBlock = Some(scriptElem),
     footerBlock = Some(siteFooter),
