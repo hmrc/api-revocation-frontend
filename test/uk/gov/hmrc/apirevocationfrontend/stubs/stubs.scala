@@ -22,7 +22,7 @@ import org.apache.pekko.stream.testkit.NoMaterializer
 
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypes, FileMimeTypesConfiguration}
 import play.api.i18n.{Langs, MessagesApi}
-import play.api.mvc._
+import play.api.mvc.*
 import play.api.test.Helpers.{stubBodyParser, stubPlayBodyParsers}
 import play.api.test.{CSRFTokenHelper, FakeRequest, StubMessagesFactory}
 
@@ -40,15 +40,15 @@ trait Stubs extends StubMessagesFactory {
 
   def stubMessagesControllerComponents(
       bodyParser: BodyParser[AnyContent] = stubBodyParser(AnyContentAsEmpty),
-      playBodyParsers: PlayBodyParsers = stubPlayBodyParsers(NoMaterializer),
+      playBodyParsers: PlayBodyParsers = stubPlayBodyParsers(using NoMaterializer),
       messagesApi: MessagesApi = stubbedMessagesApi,
       langs: Langs = stubLangs(),
       fileMimeTypes: FileMimeTypes = new DefaultFileMimeTypes(FileMimeTypesConfiguration()),
       executionContext: ExecutionContext = ExecutionContext.global
     ): MessagesControllerComponents =
     DefaultMessagesControllerComponents(
-      new DefaultMessagesActionBuilderImpl(bodyParser, messagesApi)(executionContext),
-      DefaultActionBuilder(bodyParser)(executionContext),
+      new DefaultMessagesActionBuilderImpl(bodyParser, messagesApi)(using executionContext),
+      DefaultActionBuilder(bodyParser)(using executionContext),
       playBodyParsers,
       messagesApi,
       langs,

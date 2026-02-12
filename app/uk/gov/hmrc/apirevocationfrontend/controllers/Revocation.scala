@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 import play.api.i18n.Messages
-import play.api.mvc._
+import play.api.mvc.*
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisationException, AuthorisedFunctions}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -30,7 +30,7 @@ import uk.gov.hmrc.apirevocationfrontend.config.{FooterConfig, FrontendAppConfig
 import uk.gov.hmrc.apirevocationfrontend.connectors.AuthorityNotFound
 import uk.gov.hmrc.apirevocationfrontend.service.RevocationService
 import uk.gov.hmrc.apirevocationfrontend.views.html.ErrorView
-import uk.gov.hmrc.apirevocationfrontend.views.html.revocation._
+import uk.gov.hmrc.apirevocationfrontend.views.html.revocation.*
 
 @Singleton
 class Revocation @Inject() (
@@ -54,7 +54,6 @@ class Revocation @Inject() (
   private def notFoundTemplate(implicit request: RequestHeader): Html = {
     error(
       Messages("global.error.pageNotFound404.title"),
-      Messages("global.error.pageNotFound404.heading"),
       Messages("global.error.pageNotFound404.message")
     )
   }
@@ -73,7 +72,7 @@ class Revocation @Inject() (
 
   val listAuthorizedApplications: Action[AnyContent] = Action.async { implicit request =>
     authorised() {
-      revocationService.fetchApplicationAuthorities() map {
+      revocationService.fetchApplicationAuthorities map {
         applications => Ok(authorizedApplicationsPage(applications))
       }
     } recover unauthorisedRecovery

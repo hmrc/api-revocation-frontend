@@ -22,11 +22,14 @@ import scala.concurrent.Future
 import scala.concurrent.Future.{failed, successful}
 
 import com.codahale.metrics.SharedMetricRegistries
+import org.mockito.ArgumentMatchers.{any as `*`, eq as eqTo}
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
 import play.api.http.Status
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.apiplatform.modules.common.utils.FixedClock
 import uk.gov.hmrc.auth.core.retrieve.EmptyRetrieval
 import uk.gov.hmrc.auth.core.{AuthConnector, InvalidBearerToken}
@@ -37,13 +40,13 @@ import uk.gov.hmrc.apirevocationfrontend.connectors.AuthorityNotFound
 import uk.gov.hmrc.apirevocationfrontend.controllers.Revocation
 import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, ThirdPartyApplication}
 import uk.gov.hmrc.apirevocationfrontend.service.RevocationService
-import uk.gov.hmrc.apirevocationfrontend.stubs.FakeRequestCSRFSupport._
+import uk.gov.hmrc.apirevocationfrontend.stubs.FakeRequestCSRFSupport.*
 import uk.gov.hmrc.apirevocationfrontend.stubs.Stubs
 import uk.gov.hmrc.apirevocationfrontend.utils.AsyncHmrcSpec
 import uk.gov.hmrc.apirevocationfrontend.views.html.ErrorView
-import uk.gov.hmrc.apirevocationfrontend.views.html.revocation._
+import uk.gov.hmrc.apirevocationfrontend.views.html.revocation.*
 
-class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs with FixedClock {
+class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs with FixedClock with MockitoSugar {
   SharedMetricRegistries.clear()
 
   trait Setup {
@@ -71,7 +74,7 @@ class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs w
       withdrawPermissionPage
     )
 
-    when(revocationService.fetchApplicationAuthorities()(*))
+    when(revocationService.fetchApplicationAuthorities(using *))
       .thenReturn(successful(Seq.empty))
   }
 
@@ -81,13 +84,13 @@ class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs w
       .withSession(SessionKeys.sessionId -> "SessionId")
       .withCSRFToken
 
-    when(authConnector.authorise(*, eqTo(EmptyRetrieval))(*, *)).thenReturn(successful(()))
+    when(authConnector.authorise(*, eqTo(EmptyRetrieval))(using *, *)).thenReturn(successful(()))
   }
 
   trait LoggedOutSetup extends Setup {
     lazy val request = FakeRequest()
 
-    when(authConnector.authorise(*, eqTo(EmptyRetrieval))(*, *)).thenReturn(Future.failed(InvalidBearerToken()))
+    when(authConnector.authorise(*, eqTo(EmptyRetrieval))(using *, *)).thenReturn(Future.failed(InvalidBearerToken()))
   }
 
   "Start" should {
@@ -125,7 +128,7 @@ class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs w
     "return 200" in new LoggedInSetup {
       val appAuthority = AppAuthorisation(ThirdPartyApplication(appId, "appName"), Set(), instant)
 
-      when(underTest.revocationService.fetchdApplicationAuthority(eqTo(appId))(*))
+      when(underTest.revocationService.fetchdApplicationAuthority(eqTo(appId))(using *))
         .thenReturn(successful(appAuthority))
 
       val result = underTest.withdrawPage(appId)(request)
@@ -136,7 +139,7 @@ class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs w
 
   "withdrawAction" should {
     "redirect to authorisation withdrawn page" in new LoggedInSetup {
-      when(underTest.revocationService.revokeApplicationAuthority(eqTo(appId))(*))
+      when(underTest.revocationService.revokeApplicationAuthority(eqTo(appId))(using *))
         .thenReturn(successful(()))
 
       val result = underTest.withdrawAction(appId)(request)
@@ -146,7 +149,7 @@ class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs w
     }
 
     "return 404 if the authorisation is not found" in new LoggedInSetup {
-      when(underTest.revocationService.revokeApplicationAuthority(eqTo(appId))(*))
+      when(underTest.revocationService.revokeApplicationAuthority(eqTo(appId))(using *))
         .thenReturn(failed(new AuthorityNotFound()))
 
       val result = underTest.withdrawAction(appId)(request)

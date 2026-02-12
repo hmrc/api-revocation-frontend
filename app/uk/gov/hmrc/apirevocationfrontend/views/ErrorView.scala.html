@@ -16,13 +16,9 @@
 
 @import uk.gov.hmrc.apirevocationfrontend.config.{FooterConfig, FrontendAppConfig}
 
-@this(appConfig: FrontendAppConfig, main: MainView)
+@this(main: MainView)
 
-@(pageTitle: String, heading: String, message: String)(implicit requestHeader: RequestHeader, messages: Messages, appConfig : FrontendAppConfig, footerConfig: FooterConfig)
-
-@contentHeader = {
-  <h1 class="govuk-heading-l">@heading</h1>
-}
+@(pageTitle: String, message: String)(implicit requestHeader: RequestHeader, messages: Messages, appConfig : FrontendAppConfig, footerConfig: FooterConfig)
 
 @mainContent = {
   <p class="govuk-body">@message</p>
