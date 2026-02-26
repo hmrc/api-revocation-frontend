@@ -18,10 +18,10 @@ package uk.gov.hmrc.apirevocationfrontend.connectors
 
 import java.util.UUID
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future._
+import scala.concurrent.Future.*
 import scala.concurrent.{ExecutionContext, Future}
 
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig

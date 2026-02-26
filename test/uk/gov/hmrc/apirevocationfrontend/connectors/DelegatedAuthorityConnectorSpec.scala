@@ -21,6 +21,7 @@ import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import com.codahale.metrics.SharedMetricRegistries
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
 import uk.gov.hmrc.apiplatform.modules.common.utils.FixedClock
@@ -32,7 +33,7 @@ import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, Scope, ThirdP
 import uk.gov.hmrc.apirevocationfrontend.stubs.DelegatedAuthorityStub
 import uk.gov.hmrc.apirevocationfrontend.utils.{AsyncHmrcSpec, WireMockSupport}
 
-class DelegatedAuthorityConnectorSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with DelegatedAuthorityStub with WireMockSupport with FixedClock {
+class DelegatedAuthorityConnectorSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with DelegatedAuthorityStub with WireMockSupport with FixedClock with MockitoSugar {
 
   private trait Setup {
     SharedMetricRegistries.clear()

@@ -17,6 +17,7 @@
 package uk.gov.hmrc.apirevocationfrontend.config
 
 import javax.inject.Inject
+import scala.annotation.unused
 import scala.concurrent.{ExecutionContext, Future}
 
 import play.api.Configuration
@@ -36,7 +37,7 @@ class CustomErrorHandler @Inject() (
     footerConfig: FooterConfig
   ) extends FrontendErrorHandler {
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader): Future[Html] = {
-    Future.successful(error(pageTitle, heading, message))
+  override def standardErrorTemplate(pageTitle: String, @unused heading: String, message: String)(implicit request: RequestHeader): Future[Html] = {
+    Future.successful(error(pageTitle, message))
   }
 }
