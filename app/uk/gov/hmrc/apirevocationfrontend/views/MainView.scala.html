@@ -18,7 +18,7 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.footer.Footer
 @import uk.gov.hmrc.apirevocationfrontend.config.{FooterConfig, FrontendAppConfig}
 @import views.html.helper.CSPNonce
-@import uk.gov.hmrc.govukfrontend.views.viewmodels.servicenavigation.{ServiceNavigation, ServiceNavigationItem}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.servicenavigation.ServiceNavigation
 
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcScripts
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukLayout
@@ -32,8 +32,6 @@
 )
 
 @(title: Option[String] = None)(contentBlock: Html)(implicit requestHeader : RequestHeader, messages: Messages, applicationConfig: FrontendAppConfig, footerConfig: FooterConfig)
-
-@serviceInfoContent = {}
 
 @scriptElem = {
     @hmrcScripts()

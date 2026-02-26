@@ -5,11 +5,14 @@ lazy val appName = "api-revocation-frontend"
 Global / bloopAggregateSourceDependencies := true
 Global / bloopExportJarClassifiers := Some(Set("sources"))
 
-ThisBuild / scalaVersion := "2.13.16"
-ThisBuild / majorVersion := 0
-ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
-ThisBuild / semanticdbEnabled := true
-ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
+inThisBuild(
+  List(
+    majorVersion := 0,
+    scalaVersion := "3.7.4",
+    semanticdbEnabled := true,
+    semanticdbVersion := scalafixSemanticdb.revision
+  )
+)
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin, SbtWeb)
@@ -35,10 +38,8 @@ lazy val microservice = Project(appName, file("."))
   )
   .settings(
     scalacOptions ++= Seq(
-      "-Wconf:cat=unused&src=views/.*\\.scala:s",
-      // https://www.scala-lang.org/2021/01/12/configuring-and-suppressing-warnings.html
-      // suppress warnings in generated routes files
-      "-Wconf:src=routes/.*:s"
+      "-Wconf:src=routes/.*:s",
+      "-Wconf:msg=unused import&src=html/.*:s"
     )
   )
 

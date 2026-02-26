@@ -19,7 +19,6 @@ package uk.gov.hmrc.apirevocationfrontend.config
 import javax.inject.{Inject, Provider, Singleton}
 
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 case class FrontendAppConfig(
     analyticsToken: String,
@@ -34,7 +33,7 @@ case class FrontendAppConfig(
   )
 
 @Singleton
-class FrontendAppConfigProvider @Inject() (val configuration: Configuration, val environment: Environment, servicesConfig: ServicesConfig) extends Provider[FrontendAppConfig] {
+class FrontendAppConfigProvider @Inject() (val configuration: Configuration, val environment: Environment) extends Provider[FrontendAppConfig] {
 
   private def loadConfig(key: String) = configuration.getOptional[String](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
