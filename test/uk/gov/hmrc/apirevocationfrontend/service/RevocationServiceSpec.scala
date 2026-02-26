@@ -20,7 +20,9 @@ import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future.successful
 
-import org.mockito.BDDMockito.given
+import org.mockito.BDDMockito.`given` as Given
+import org.mockito.Mockito.verify
+import org.scalatestplus.mockito.MockitoSugar
 
 import uk.gov.hmrc.apiplatform.modules.common.utils.FixedClock
 import uk.gov.hmrc.http.HeaderCarrier
@@ -30,12 +32,12 @@ import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, Scope, ThirdP
 import uk.gov.hmrc.apirevocationfrontend.service.RevocationService
 import uk.gov.hmrc.apirevocationfrontend.utils.AsyncHmrcSpec
 
-class RevocationServiceSpec extends AsyncHmrcSpec with FixedClock {
+class RevocationServiceSpec extends AsyncHmrcSpec with FixedClock with MockitoSugar {
 
   private trait Setup {
 
-    implicit val hc: HeaderCarrier = HeaderCarrier()
-    val appId                      = UUID.randomUUID()
+    given HeaderCarrier = HeaderCarrier()
+    val appId           = UUID.randomUUID()
 
     val delegatedAuthorityConnector = mock[DelegatedAuthorityConnector]
     val underTest                   = new RevocationService(delegatedAuthorityConnector)
@@ -46,33 +48,33 @@ class RevocationServiceSpec extends AsyncHmrcSpec with FixedClock {
       val authority1 = someAppAuthorisation("Zapplication")
       val authority2 = someAppAuthorisation("Application")
       val authority3 = someAppAuthorisation("4pplication")
-      given(underTest.delegatedAuthorityConnector.fetchApplicationAuthorities()(hc))
+      Given(underTest.delegatedAuthorityConnector.fetchApplicationAuthorities())
         .willReturn(successful(Seq(authority1, authority2, authority3)))
 
-      await(underTest.fetchApplicationAuthorities()) shouldBe Seq(authority3, authority2, authority1)
+      await(underTest.fetchApplicationAuthorities) shouldBe Seq(authority3, authority2, authority1)
     }
   }
 
   "fetchApplicationAuthority" should {
     "return authority" in new Setup {
       val authority = someAppAuthorisation()
-      given(underTest.delegatedAuthorityConnector.fetchApplicationAuthority(appId)(hc))
+      Given(underTest.delegatedAuthorityConnector.fetchApplicationAuthority(appId))
         .willReturn(successful(authority))
 
       await(underTest.fetchdApplicationAuthority(appId)) shouldBe authority
 
-      verify(underTest.delegatedAuthorityConnector).fetchApplicationAuthority(appId)(hc)
+      verify(underTest.delegatedAuthorityConnector).fetchApplicationAuthority(appId)
     }
   }
 
   "revokeApplicationAuthority" should {
     "revoke authority" in new Setup {
-      given(underTest.delegatedAuthorityConnector.revokeApplicationAuthority(appId)(hc))
+      Given(underTest.delegatedAuthorityConnector.revokeApplicationAuthority(appId))
         .willReturn(successful(()))
 
       await(underTest.revokeApplicationAuthority(appId))
 
-      verify(underTest.delegatedAuthorityConnector).revokeApplicationAuthority(appId)(hc)
+      verify(underTest.delegatedAuthorityConnector).revokeApplicationAuthority(appId)
     }
   }
 

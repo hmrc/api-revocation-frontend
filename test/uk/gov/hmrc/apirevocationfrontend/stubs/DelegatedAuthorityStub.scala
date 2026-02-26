@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.apirevocationfrontend.stubs
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 
 import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, Scope}
 

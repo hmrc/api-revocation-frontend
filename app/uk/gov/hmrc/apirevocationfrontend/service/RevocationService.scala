@@ -28,7 +28,7 @@ import uk.gov.hmrc.apirevocationfrontend.models.AppAuthorisation
 @Singleton
 class RevocationService @Inject() (val delegatedAuthorityConnector: DelegatedAuthorityConnector)(implicit val ec: ExecutionContext) {
 
-  def fetchApplicationAuthorities()(implicit hc: HeaderCarrier): Future[Seq[AppAuthorisation]] = {
+  def fetchApplicationAuthorities(implicit hc: HeaderCarrier): Future[Seq[AppAuthorisation]] = {
     delegatedAuthorityConnector.fetchApplicationAuthorities().map(_.sorted)
   }
 
