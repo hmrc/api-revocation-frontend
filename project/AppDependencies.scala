@@ -3,8 +3,8 @@ import sbt._
 
 object AppDependencies {
 
-  val bootstrapVersion    = "10.5.0"
-  val commonDomainVersion = "1.0.0"
+  val bootstrapVersion    = "10.7.0"
+  val commonDomainVersion = "1.1.0"
 
   def apply(): Seq[ModuleID] = compile ++ test
 
