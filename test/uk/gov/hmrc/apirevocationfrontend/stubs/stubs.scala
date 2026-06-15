@@ -77,7 +77,7 @@ trait Stubs extends StubMessagesFactory {
 
 object FakeRequestCSRFSupport {
 
-  implicit class CSRFFakeRequest[A](request: FakeRequest[A]) {
-    def withCSRFToken: Request[A] = CSRFTokenHelper.addCSRFToken(request)
+  extension [T](request: FakeRequest[T]) {
+    def withCSRFToken: FakeRequest[T] = CSRFTokenHelper.addCSRFToken(request).asInstanceOf[FakeRequest[T]]
   }
 }
