@@ -10,6 +10,6 @@ addSbtPlugin("ch.epfl.scala"          % "sbt-bloop"              % "2.0.19")
 addSbtPlugin("org.scalameta"          % "sbt-scalafmt"           % "2.5.6")
 addSbtPlugin("ch.epfl.scala"          % "sbt-scalafix"           % "0.14.6")
 addSbtPlugin("com.github.sbt"         % "sbt-digest"             % "2.1.0")
-addSbtPlugin("io.github.irundaia"     % "sbt-sassify"            % "1.5.2")
+addSbtPlugin("uk.gov.hmrc"            % "sbt-sass-compiler"      % "0.13.0")
 
 ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
