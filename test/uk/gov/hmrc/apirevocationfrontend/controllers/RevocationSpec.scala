@@ -22,9 +22,6 @@ import scala.concurrent.Future
 import scala.concurrent.Future.{failed, successful}
 
 import com.codahale.metrics.SharedMetricRegistries
-import org.mockito.ArgumentMatchers.{any as `*`, eq as eqTo}
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
 import play.api.http.Status
@@ -46,7 +43,7 @@ import uk.gov.hmrc.apirevocationfrontend.utils.AsyncHmrcSpec
 import uk.gov.hmrc.apirevocationfrontend.views.html.ErrorView
 import uk.gov.hmrc.apirevocationfrontend.views.html.revocation.*
 
-class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs with FixedClock with MockitoSugar {
+class RevocationSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with Stubs with FixedClock {
   SharedMetricRegistries.clear()
 
   trait Setup {

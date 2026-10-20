@@ -32,7 +32,7 @@ import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, Scope, ThirdP
 import uk.gov.hmrc.apirevocationfrontend.service.RevocationService
 import uk.gov.hmrc.apirevocationfrontend.utils.AsyncHmrcSpec
 
-class RevocationServiceSpec extends AsyncHmrcSpec with FixedClock with MockitoSugar {
+class RevocationServiceSpec extends AsyncHmrcSpec with FixedClock {
 
   private trait Setup {
 
