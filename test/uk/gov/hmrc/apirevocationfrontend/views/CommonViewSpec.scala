@@ -18,7 +18,6 @@ package uk.gov.hmrc.apirevocationfrontend.views
 
 import java.util.Locale
 
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
 import play.api.Application
@@ -29,7 +28,7 @@ import play.api.mvc.MessagesControllerComponents
 import uk.gov.hmrc.apirevocationfrontend.config.{FooterConfig, FrontendAppConfig}
 import uk.gov.hmrc.apirevocationfrontend.utils.AsyncHmrcSpec
 
-trait CommonViewSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with MockitoSugar {
+trait CommonViewSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite {
   val mcc                                         = app.injector.instanceOf[MessagesControllerComponents]
   val messagesApi                                 = mcc.messagesApi
   implicit val messagesProvider: MessagesProvider = MessagesImpl(Lang(Locale.ENGLISH), messagesApi)

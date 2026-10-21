@@ -4,13 +4,13 @@ import sbt._
 object AppDependencies {
 
   val bootstrapVersion    = "10.7.0"
-  val commonDomainVersion = "1.1.0"
+  val commonDomainVersion = "1.4.0"
 
   def apply(): Seq[ModuleID] = compile ++ test
 
   val compile = Seq(
     "uk.gov.hmrc" %% "bootstrap-frontend-play-30" % bootstrapVersion,
-    "uk.gov.hmrc" %% "play-frontend-hmrc-play-30" % "13.11.0"
+    "uk.gov.hmrc" %% "play-frontend-hmrc-play-30" % "13.16.0"
   )
 
   val test = Seq(

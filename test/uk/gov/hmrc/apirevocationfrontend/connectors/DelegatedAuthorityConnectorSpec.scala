@@ -33,7 +33,7 @@ import uk.gov.hmrc.apirevocationfrontend.models.{AppAuthorisation, Scope, ThirdP
 import uk.gov.hmrc.apirevocationfrontend.stubs.DelegatedAuthorityStub
 import uk.gov.hmrc.apirevocationfrontend.utils.{AsyncHmrcSpec, WireMockSupport}
 
-class DelegatedAuthorityConnectorSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with DelegatedAuthorityStub with WireMockSupport with FixedClock with MockitoSugar {
+class DelegatedAuthorityConnectorSpec extends AsyncHmrcSpec with GuiceOneAppPerSuite with DelegatedAuthorityStub with WireMockSupport with FixedClock {
 
   private trait Setup {
     SharedMetricRegistries.clear()
